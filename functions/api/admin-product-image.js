@@ -233,8 +233,8 @@ export async function onRequestPost(context) {
     if (!uploadResponse.ok) {
       return json({
         success: false,
-        message: "GitHub product image upload failed.",
-        details: result.message || "Unknown GitHub error."
+        message: "GitHub product image upload failed: " + (result.message || "Unknown GitHub error."),
+        details: result
       }, 500);
     }
 

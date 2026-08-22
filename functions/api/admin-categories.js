@@ -126,7 +126,6 @@ export async function onRequestGet(context) {
         c.name,
         c.slug,
         c.description,
-        c.image_url,
         c.sort_order,
         c.active,
         COUNT(p.id) AS product_count
@@ -138,7 +137,6 @@ export async function onRequestGet(context) {
         c.name,
         c.slug,
         c.description,
-        c.image_url,
         c.sort_order,
         c.active
       ORDER BY c.sort_order ASC, c.id ASC
