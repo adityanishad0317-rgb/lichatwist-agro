@@ -1084,6 +1084,7 @@ body {
   <div class="card">
     <h3>👥 Clients</h3>
     <p>Create and manage client accounts.</p>
+<button onclick="goTo('productManagement')">📦 Products</button>
     <button onclick="goTo('clientManagement')">Create Client</button>
     <button
       class="secondary"
@@ -1395,6 +1396,32 @@ It is shown here only after account creation.
 
 </div>
 
+</section>
+
+<section class="editor-section" id="productManagement">
+<h2>📦 Product Management</h2>
+<p class="editor-description">Create, edit, publish, feature and delete products.</p>
+<div class="info-box">Manage products through the secure admin product API.</div>
+<div class="field"><label>Category</label><select id="productCategory"></select></div>
+<div class="field"><label>Product Title</label><input id="productTitle" type="text"></div>
+<div class="field"><label>Slug</label><input id="productSlug" type="text"></div>
+<div class="field"><label>Short Description</label><textarea id="productShortDescription"></textarea></div>
+<div class="field"><label>Description</label><textarea id="productDescription"></textarea></div>
+<div class="field"><label>Specifications</label><textarea id="productSpecifications"></textarea></div>
+<div class="field"><label>Origin</label><input id="productOrigin" type="text"></div>
+<div class="field"><label>Packaging</label><input id="productPackaging" type="text"></div>
+<div class="field"><label>Minimum Order Quantity</label><input id="productMOQ" type="text"></div>
+<div class="field"><label>Availability</label><input id="productAvailability" type="text"></div>
+<div class="field"><label>Main Image URL</label><input id="productImage" type="text"></div>
+<div class="field"><label><input id="productFeatured" type="checkbox"> Featured</label></div>
+<div class="field"><label><input id="productPublished" type="checkbox" checked> Published</label></div>
+<button type="button" id="productSaveButton">➕ Create Product</button>
+<button type="button" class="secondary" onclick="clearProductForm()">Clear</button>
+<div id="productMessage" class="message"></div>
+<hr>
+<h3>Existing Products</h3>
+<button type="button" class="secondary" onclick="loadAdminProducts()">🔄 Refresh Products</button>
+<div id="adminProductList"><div class="info-box">Loading products...</div></div>
 </section>
 
 <!-- MANAGE CLIENTS -->
@@ -3323,5 +3350,93 @@ loadClientManagement();
 loadWebsiteTheme();
 </script>
 
+<script>
+let adminProducts=[];
+let adminCategories=[];
+let editingProductId=null;
+
+function productValue(id){const e=document.getElementById(id);return e?e.value.trim():"";}
+function productChecked(id){const e=document.getElementById(id);return e?e.checked:false;}
+function productMessage(t,type){const e=document.getElementById("productMessage");if(e){e.className="message "+type;e.textContent=t;e.style.display="block";}}
+
+async function loadAdminProducts(){
+try{
+productMessage("Loading products...","info");
+const r=await fetch("/api/admin-products",{credentials:"same-origin"});
+const d=await r.json();
+if(!r.ok||!d.success)throw new Error(d.message||"Unable to load products.");
+adminProducts=d.products||[];
+adminCategories=d.categories||[];
+const c=document.getElementById("productCategory");
+if(c){c.innerHTML="";adminCategories.forEach(x=>{const o=document.createElement("option");o.value=x.id;o.textContent=x.name;c.appendChild(o);});}
+renderAdminProducts();
+productMessage("Products loaded successfully.","success");
+}catch(e){console.error(e);productMessage(e.message,"error");}
+}
+
+function renderAdminProducts(){
+const list=document.getElementById("adminProductList");
+if(!list)return;
+list.innerHTML="";
+if(!adminProducts.length){list.innerHTML="<div class=\"info-box\">No products found.</div>";return;}
+adminProducts.forEach(p=>{
+const box=document.createElement("div");box.className="info-box";box.style.marginBottom="12px";
+const h=document.createElement("h3");h.textContent=p.title||"Untitled Product";
+const info=document.createElement("p");info.textContent=(p.category_name||"No category")+" • "+(Number(p.published)?"Published":"Draft")+" • "+(Number(p.featured)?"Featured":"Standard");
+const edit=document.createElement("button");edit.type="button";edit.textContent="✏️ Edit";edit.onclick=()=>editAdminProduct(p);
+const del=document.createElement("button");del.type="button";del.className="secondary";del.textContent="🗑️ Delete";del.onclick=()=>deleteAdminProduct(p.id);
+box.appendChild(h);box.appendChild(info);box.appendChild(edit);box.appendChild(del);list.appendChild(box);
+});
+}
+
+function editAdminProduct(p){
+editingProductId=p.id;
+const set=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v==null?"":v;};
+set("productCategory",p.category_id);set("productTitle",p.title);set("productSlug",p.slug);set("productShortDescription",p.short_description);set("productDescription",p.description);set("productSpecifications",p.specifications);set("productOrigin",p.origin);set("productPackaging",p.packaging);set("productMOQ",p.minimum_order_quantity);set("productAvailability",p.availability);set("productImage",p.main_image_url);
+document.getElementById("productFeatured").checked=Number(p.featured)===1;
+document.getElementById("productPublished").checked=Number(p.published)===1;
+document.getElementById("productSaveButton").textContent="💾 Update Product";
+productMessage("Editing "+p.title,"info");
+document.getElementById("productManagement").scrollIntoView({behavior:"smooth"});
+}
+
+function clearProductForm(){
+editingProductId=null;
+["productTitle","productSlug","productShortDescription","productDescription","productSpecifications","productOrigin","productPackaging","productMOQ","productAvailability","productImage"].forEach(id=>{const e=document.getElementById(id);if(e)e.value="";});
+document.getElementById("productFeatured").checked=false;
+document.getElementById("productPublished").checked=true;
+document.getElementById("productSaveButton").textContent="➕ Create Product";
+}
+
+async function saveAdminProduct(){
+const payload={categoryId:Number(productValue("productCategory")),title:productValue("productTitle"),slug:productValue("productSlug"),shortDescription:productValue("productShortDescription"),description:productValue("productDescription"),specifications:productValue("productSpecifications"),origin:productValue("productOrigin"),packaging:productValue("productPackaging"),minimumOrderQuantity:productValue("productMOQ"),availability:productValue("productAvailability"),mainImageUrl:productValue("productImage"),featured:productChecked("productFeatured")?1:0,published:productChecked("productPublished")?1:0};
+if(!payload.categoryId||!payload.title||!payload.slug){productMessage("Category, title and slug are required.","error");return;}
+if(editingProductId)payload.id=editingProductId;
+try{
+productMessage(editingProductId?"Updating product...":"Creating product...","info");
+const r=await fetch("/api/admin-products",{method:editingProductId?"PUT":"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+const d=await r.json();
+if(!r.ok||!d.success)throw new Error(d.message||"Unable to save product.");
+productMessage(editingProductId?"✓ Product updated successfully.":"✓ Product created successfully.","success");
+clearProductForm();await loadAdminProducts();
+}catch(e){console.error(e);productMessage(e.message,"error");}
+}
+
+async function deleteAdminProduct(id){
+if(!confirm("Delete this product permanently?"))return;
+try{
+const r=await fetch("/api/admin-products?id="+encodeURIComponent(id),{method:"DELETE",credentials:"same-origin"});
+const d=await r.json();
+if(!r.ok||!d.success)throw new Error(d.message||"Unable to delete product.");
+productMessage("✓ Product deleted successfully.","success");await loadAdminProducts();
+}catch(e){console.error(e);productMessage(e.message,"error");}
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+const b=document.getElementById("productSaveButton");
+if(b)b.onclick=saveAdminProduct;
+loadAdminProducts();
+});
+</script>
 </body>
 </html>
