@@ -7565,3 +7565,44 @@ footer a:hover {
     font-size: 20px;
   }
 }
+
+/* =========================================================
+   FLOATING CONTACT LAYER FIX
+   Keep floating controls visually above page sections.
+   ========================================================= */
+
+.floating-contact-buttons {
+  position: fixed;
+  isolation: isolate;
+  z-index: 2147483000;
+}
+
+.floating-contact-buttons a {
+  position: relative;
+  z-index: 1;
+  opacity: 1;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+
+.floating-whatsapp {
+  background: #25D366 !important;
+}
+
+.floating-phone {
+  background: #0d4f8b !important;
+}
+
+.social-media-buttons {
+  position: fixed;
+  isolation: isolate;
+  z-index: 2147482999;
+}
+
+.social-media-buttons a {
+  position: relative;
+  z-index: 1;
+  opacity: 1;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
