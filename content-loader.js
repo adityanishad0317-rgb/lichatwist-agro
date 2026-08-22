@@ -1541,3 +1541,89 @@ async function loadAgroProducts(){
 loadPublicTheme();
 loadWebsiteContent();
 loadAgroProducts();
+
+
+/* =====================================================
+   FINAL PRODUCT INTERACTIONS
+   ===================================================== */
+
+document.addEventListener("click", function(event) {
+
+  const inquiryButton =
+    event.target.closest(".product-inquiry-btn");
+
+  if (inquiryButton) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const product =
+      inquiryButton.getAttribute("data-product") ||
+      "Agricultural Product";
+
+    const form =
+      document.querySelector("form.message-form");
+
+    if (!form) {
+      console.log("Message form not found.");
+      return;
+    }
+
+    const subject =
+      form.querySelector('input[name="subject"]');
+
+    const message =
+      form.querySelector('textarea[name="message"]');
+
+    if (subject) {
+      subject.value = "Inquiry: " + product;
+    }
+
+    if (message) {
+      message.value =
+        "Hello LichaTwist Agro,\n\n" +
+        "I am interested in: " + product + "\n\n" +
+        "Please share availability, pricing, specifications and minimum order details.\n\n" +
+        "Thank you.";
+    }
+
+    form.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+    setTimeout(() => {
+      const nameField =
+        form.querySelector('input[name="name"]');
+
+      if (nameField) {
+        nameField.focus();
+      }
+    }, 700);
+
+    return;
+  }
+
+  const whatsappButton =
+    event.target.closest(".product-whatsapp-btn");
+
+  if (whatsappButton) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const product =
+      whatsappButton.getAttribute("data-product") ||
+      "Agricultural Product";
+
+    const message =
+      "Hello LichaTwist Agro,\n\n" +
+      "I am interested in: " + product + "\n\n" +
+      "Please share availability, pricing, specifications and minimum order details.";
+
+    const url =
+      "https://api.whatsapp.com/send?phone=919026777932&text=" +
+      encodeURIComponent(message);
+
+    window.location.assign(url);
+  }
+
+});
