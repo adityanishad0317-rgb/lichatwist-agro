@@ -1422,5 +1422,51 @@ if (content.project3_description) {
 }
 
 
+
+async function loadAgroProducts(){
+  const grid=document.getElementById("agroProductsGrid");
+  if(!grid) return;
+
+  try{
+    const response=await fetch("/api/products",{cache:"no-store"});
+    const data=await response.json();
+
+    if(!data.success || !Array.isArray(data.products)){
+      throw new Error("Products unavailable");
+    }
+
+    if(!data.products.length){
+      grid.innerHTML="<p>No agricultural products available.</p>";
+      return;
+    }
+
+    grid.innerHTML=data.products.map(p=>{
+      const image=p.main_image_url || "images/agriculture.jpg";
+      return `
+        <article class="agro-product-card">
+          <div class="agro-product-image">
+            <img src="${image}" alt="${p.title || "Agricultural product"}" loading="lazy">
+          </div>
+          <div class="agro-product-content">
+            <small>${p.category_name || "AGRICULTURAL PRODUCT"}</small>
+            <h3>${p.title || "Product"}</h3>
+            <p>${p.short_description || p.description || ""}</p>
+            <div class="agro-product-meta">
+              <span>Origin: ${p.origin || "India"}</span>
+              <span>${p.availability || "Available"}</span>
+            </div>
+            <a href="#contact">Send Inquiry <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+  }catch(error){
+    console.log("Products could not be loaded.",error);
+    grid.innerHTML="<p>Products are currently unavailable.</p>";
+  }
+}
+
 loadPublicTheme();
 loadWebsiteContent();
+loadAgroProducts();
