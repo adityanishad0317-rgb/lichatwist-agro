@@ -609,14 +609,10 @@ document.addEventListener("click", function(event) {
         messageField.dispatchEvent(new Event("change", { bubbles: true }));
       }
 
-      const contact = document.getElementById("contact");
-
-      if (contact) {
-        contact.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
+      form.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
 
       setTimeout(function() {
         const nameField = form.querySelector('input[name="name"]');
@@ -646,10 +642,10 @@ document.addEventListener("click", function(event) {
       "Please share availability, pricing, specifications and minimum order details.";
 
     const url =
-      "https://wa.me/919026777932?text=" +
+      "https://api.whatsapp.com/send?phone=919026777932&text=" +
       encodeURIComponent(message);
 
-    window.location.href = url;
+    window.location.assign(url);
   }
 
 });
