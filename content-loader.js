@@ -1474,6 +1474,63 @@ async function loadAgroProducts(){
         </article>
       `;
     }).join("");
+    const filter = document.getElementById("productsFilter");
+    const count = document.getElementById("productsCount");
+    const cards = Array.from(grid.querySelectorAll(".agro-product-card"));
+
+    if (filter && cards.length) {
+      const categories = [...new Set(
+        cards.map(card => {
+          const el = card.querySelector(".agro-product-content small");
+          return el ? el.textContent.trim() : "";
+        }).filter(Boolean)
+      )];
+
+      filter.innerHTML =
+        '<button type="button" class="active" data-category="all">All</button>' +
+        categories.map(category =>
+          '<button type="button" data-category="' +
+          category.replace(/"/g, "&quot;") +
+          '">' + category + '</button>'
+        ).join("");
+
+      const updateCount = number => {
+        if (count) {
+          count.textContent =
+            number + (number === 1 ? " product" : " products");
+        }
+      };
+
+      updateCount(cards.length);
+
+      filter.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", function () {
+          const selected = this.dataset.category;
+
+          filter.querySelectorAll("button").forEach(btn =>
+            btn.classList.remove("active")
+          );
+
+          this.classList.add("active");
+
+          let visible = 0;
+
+          cards.forEach(card => {
+            const category =
+              card.querySelector(".agro-product-content small")?.textContent.trim() || "";
+
+            const show =
+              selected === "all" || category === selected;
+
+            card.style.display = show ? "" : "none";
+
+            if (show) visible++;
+          });
+
+          updateCount(visible);
+        });
+      });
+    }
 
   }catch(error){
     console.log("Products could not be loaded.",error);
