@@ -1399,6 +1399,73 @@ It is shown here only after account creation.
 </section>
 
 <section class="editor-section" id="productManagement">
+<div id="adminCategoryManagement" style="margin-bottom:28px;">
+  <h3>🗂️ Category Management</h3>
+  <p class="editor-description">
+    Create, edit, activate, deactivate and delete product categories.
+  </p>
+
+  <div class="field">
+    <label for="adminCategoryName">Category Name</label>
+    <input id="adminCategoryName" type="text" maxlength="100"
+           placeholder="Enter category name">
+  </div>
+
+  <div class="field">
+    <label for="adminCategorySlug">Category Slug</label>
+    <input id="adminCategorySlug" type="text" maxlength="120"
+           placeholder="category-slug">
+  </div>
+
+  <div class="field">
+    <label for="adminCategoryDescription">Description</label>
+    <textarea id="adminCategoryDescription"
+              placeholder="Category description"></textarea>
+  </div>
+
+  <div class="field">
+    <label for="adminCategoryImage">Category Image URL</label>
+    <input id="adminCategoryImage" type="text"
+           placeholder="https://...">
+  </div>
+
+  <div class="field">
+    <label for="adminCategorySort">Display Order</label>
+    <input id="adminCategorySort" type="number" value="0" min="0">
+  </div>
+
+  <div class="field">
+    <label>
+      <input id="adminCategoryActive" type="checkbox" checked>
+      Active Category
+    </label>
+  </div>
+
+  <button type="button" id="adminCategorySaveButton">
+    ➕ Create Category
+  </button>
+
+  <button type="button" class="secondary"
+          onclick="clearAdminCategoryForm()">
+    Clear
+  </button>
+
+  <div id="adminCategoryMessage" class="message"></div>
+
+  <hr>
+
+  <h3>Existing Categories</h3>
+
+  <button type="button" class="secondary"
+          onclick="loadAdminCategories()">
+    🔄 Refresh Categories
+  </button>
+
+  <div id="adminCategoryList">
+    <div class="info-box">Loading categories...</div>
+  </div>
+</div>
+
 <h2>📦 Product Management</h2>
 <p class="editor-description">Create, edit, publish, feature and delete products.</p>
 <div class="info-box">Manage products through the secure admin product API.</div>
@@ -3438,5 +3505,285 @@ if(b)b.onclick=saveAdminProduct;
 loadAdminProducts();
 });
 </script>
+
+<script>
+let editingAdminCategoryId = null;
+
+function adminCategoryMessage(text, type) {
+  const box = document.getElementById("adminCategoryMessage");
+  if (!box) return;
+  box.className = "message " + (type || "");
+  box.textContent = text || "";
+  box.style.display = text ? "block" : "none";
+}
+
+function clearAdminCategoryForm() {
+  editingAdminCategoryId = null;
+
+  const name = document.getElementById("adminCategoryName");
+  const slug = document.getElementById("adminCategorySlug");
+  const description = document.getElementById("adminCategoryDescription");
+  const image = document.getElementById("adminCategoryImage");
+  const sort = document.getElementById("adminCategorySort");
+  const active = document.getElementById("adminCategoryActive");
+  const button = document.getElementById("adminCategorySaveButton");
+
+  if (name) name.value = "";
+  if (slug) slug.value = "";
+  if (description) description.value = "";
+  if (image) image.value = "";
+  if (sort) sort.value = "0";
+  if (active) active.checked = true;
+
+  if (button) button.textContent = "➕ Create Category";
+  adminCategoryMessage("", "");
+}
+
+function editAdminCategory(category) {
+  editingAdminCategoryId = Number(category.id);
+
+  document.getElementById("adminCategoryName").value =
+    category.name || "";
+
+  document.getElementById("adminCategorySlug").value =
+    category.slug || "";
+
+  document.getElementById("adminCategoryDescription").value =
+    category.description || "";
+
+  document.getElementById("adminCategoryImage").value =
+    category.image_url || "";
+
+  document.getElementById("adminCategorySort").value =
+    category.sort_order ?? 0;
+
+  document.getElementById("adminCategoryActive").checked =
+    Number(category.active) === 1;
+
+  document.getElementById("adminCategorySaveButton").textContent =
+    "💾 Update Category";
+
+  document.getElementById("adminCategoryManagement")
+    .scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function loadAdminCategories() {
+  const list = document.getElementById("adminCategoryList");
+  if (!list) return;
+
+  list.innerHTML =
+    '<div class="info-box">Loading categories...</div>';
+
+  try {
+    const response = await fetch(
+      "/api/admin-categories",
+      { credentials: "same-origin" }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.message || "Unable to load categories."
+      );
+    }
+
+    list.innerHTML = "";
+
+    const categories = data.categories || [];
+
+    if (!categories.length) {
+      list.innerHTML =
+        '<div class="info-box">No categories found.</div>';
+    }
+
+    categories.forEach(function(category) {
+      const card = document.createElement("div");
+
+      card.style.cssText =
+        "border:1px solid rgba(0,0,0,.12);" +
+        "border-radius:14px;" +
+        "padding:16px;" +
+        "margin-top:12px;" +
+        "background:rgba(255,255,255,.55);";
+
+      const title = document.createElement("h4");
+      title.textContent =
+        category.name +
+        (Number(category.active) ? " • Active" : " • Inactive");
+
+      const details = document.createElement("p");
+      details.textContent =
+        "Slug: " + (category.slug || "-") +
+        " | Products: " + (category.product_count || 0) +
+        " | Order: " + (category.sort_order ?? 0);
+
+      const edit = document.createElement("button");
+      edit.type = "button";
+      edit.textContent = "✏️ Edit";
+      edit.onclick = function() {
+        editAdminCategory(category);
+      };
+
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "secondary";
+      del.style.marginLeft = "8px";
+      del.textContent = "🗑️ Delete";
+      del.onclick = async function() {
+        if (!confirm(
+          "Delete category '" +
+          category.name +
+          "'?"
+        )) return;
+
+        try {
+          const response = await fetch(
+            "/api/admin-categories?id=" +
+            encodeURIComponent(category.id),
+            {
+              method: "DELETE",
+              credentials: "same-origin"
+            }
+          );
+
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(
+              data.message || "Unable to delete category."
+            );
+          }
+
+          adminCategoryMessage(
+            "✓ Category deleted successfully.",
+            "success"
+          );
+
+          clearAdminCategoryForm();
+          await loadAdminCategories();
+
+          if (typeof loadAdminProducts === "function") {
+            await loadAdminProducts();
+          }
+        } catch (error) {
+          adminCategoryMessage(
+            error.message || "Unable to delete category.",
+            "error"
+          );
+        }
+      };
+
+      card.appendChild(title);
+      card.appendChild(details);
+      card.appendChild(edit);
+      card.appendChild(del);
+
+      list.appendChild(card);
+    });
+
+  } catch (error) {
+    list.innerHTML =
+      '<div class="info-box">' +
+      (error.message || "Unable to load categories.") +
+      "</div>";
+  }
+}
+
+async function saveAdminCategory() {
+  const name =
+    document.getElementById("adminCategoryName").value.trim();
+
+  const slug =
+    document.getElementById("adminCategorySlug").value.trim();
+
+  const description =
+    document.getElementById("adminCategoryDescription").value.trim();
+
+  const imageUrl =
+    document.getElementById("adminCategoryImage").value.trim();
+
+  const sortOrder =
+    Number(document.getElementById("adminCategorySort").value) || 0;
+
+  const active =
+    document.getElementById("adminCategoryActive").checked ? 1 : 0;
+
+  if (!name) {
+    adminCategoryMessage(
+      "Category name is required.",
+      "error"
+    );
+    return;
+  }
+
+  const payload = {
+    id: editingAdminCategoryId || undefined,
+    name,
+    slug,
+    description,
+    imageUrl,
+    sortOrder,
+    active
+  };
+
+  try {
+    const response = await fetch(
+      "/api/admin-categories",
+      {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.message || "Unable to save category."
+      );
+    }
+
+    adminCategoryMessage(
+      editingAdminCategoryId
+        ? "✓ Category updated successfully."
+        : "✓ Category created successfully.",
+      "success"
+    );
+
+    clearAdminCategoryForm();
+    await loadAdminCategories();
+
+    if (typeof loadAdminProducts === "function") {
+      await loadAdminProducts();
+    }
+
+  } catch (error) {
+    adminCategoryMessage(
+      error.message || "Unable to save category.",
+      "error"
+    );
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const button =
+    document.getElementById("adminCategorySaveButton");
+
+  if (button) {
+    button.addEventListener(
+      "click",
+      saveAdminCategory
+    );
+  }
+
+  loadAdminCategories();
+});
+</script>
+
 </body>
 </html>
