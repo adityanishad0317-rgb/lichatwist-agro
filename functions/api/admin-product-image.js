@@ -234,7 +234,11 @@ export async function onRequestPost(context) {
       return json({
         success: false,
         message: "GitHub product image upload failed: " + (result.message || "Unknown GitHub error."),
-        details: result
+        details: {
+          status: uploadResponse.status,
+          statusText: uploadResponse.statusText,
+          github: result
+        }
       }, 500);
     }
 
