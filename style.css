@@ -7426,3 +7426,142 @@ footer a:hover {
     justify-content:center;
   }
 }
+
+/* =========================================================
+   FINAL PUBLIC WEBSITE MOBILE POLISH
+   Surgical overrides — keep existing desktop design intact
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .hero-section {
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .hero-container {
+    min-height: 100svh;
+    padding-top: 105px;
+    padding-bottom: 90px;
+    justify-content: center;
+  }
+
+  .hero-content {
+    width: 100%;
+    padding-top: 0;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(38px, 11vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 18px;
+  }
+
+  .hero-description {
+    max-width: 620px;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .hero-actions {
+    width: 100%;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .hero-button {
+    width: 100%;
+    min-height: 52px;
+  }
+
+  .hero-trust {
+    width: 100%;
+    margin-top: 28px;
+    gap: 12px;
+  }
+
+  .trust-item {
+    min-width: 0;
+  }
+
+  .floating-contact-buttons {
+    right: 14px;
+    bottom: 16px;
+    gap: 9px;
+  }
+
+  .floating-contact-buttons a {
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+  }
+
+  .social-media-buttons {
+    right: 14px;
+    bottom: 139px;
+    gap: 9px;
+  }
+
+  .social-media-buttons a {
+    width: 50px;
+    height: 50px;
+    font-size: 21px;
+  }
+}
+
+@media (max-width: 420px) {
+
+  .hero-container {
+    padding-top: 96px;
+    padding-bottom: 82px;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(34px, 11.5vw, 48px);
+    line-height: 1.06;
+    margin-bottom: 16px;
+  }
+
+  .hero-description {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .hero-actions {
+    margin-top: 20px;
+  }
+
+  .hero-button {
+    min-height: 50px;
+  }
+
+  .hero-trust {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .floating-contact-buttons {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .floating-contact-buttons a {
+    width: 50px;
+    height: 50px;
+    font-size: 21px;
+  }
+
+  .social-media-buttons {
+    right: 12px;
+    bottom: 130px;
+    gap: 8px;
+  }
+
+  .social-media-buttons a {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
