@@ -1472,7 +1472,14 @@ It is shown here only after account creation.
 <div class="field"><label>Origin</label><input id="productOrigin" type="text"></div>
 <div class="field"><label>Packaging</label><input id="productPackaging" type="text"></div>
 <div class="field"><label>Minimum Order Quantity</label><input id="productMOQ" type="text"></div>
-<div class="field"><label>Availability</label><input id="productAvailability" type="text"></div>
+<div class="field">
+<label for="productAvailability">Availability</label>
+<select id="productAvailability">
+<option value="available" selected>Available</option>
+<option value="limited">Limited</option>
+<option value="out_of_stock">Out of Stock</option>
+</select>
+</div>
 <div class="field">
 <label for="productImageFile">Product Main Image</label>
 <input id="productImageFile" type="file" accept="image/jpeg,image/png,image/webp">
