@@ -490,7 +490,6 @@ const revealElements =
     ".mission-card, " +
     ".service-card, " +
     ".company-card, " +
-    ".project-card, " +
     ".testimonial-card, " +
     ".faq-item, " +
     ".contact-grid, " +

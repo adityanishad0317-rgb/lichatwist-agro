@@ -765,17 +765,6 @@ body {
 
 
 /* SERVICES */
-
-#servicesEditor::before {
-    background:
-        linear-gradient(
-            90deg,
-            var(--admin-green-dark),
-            #48bf96
-        );
-}
-
-
 /* COMPANIES */
 
 #companiesEditor::before {
@@ -789,17 +778,6 @@ body {
 
 
 /* PROJECTS */
-
-#projectsEditor::before {
-    background:
-        linear-gradient(
-            90deg,
-            var(--admin-cyan),
-            #64d2e4
-        );
-}
-
-
 /* CONTACT */
 
 #contactEditor::before {
@@ -1079,9 +1057,7 @@ body {
     <button onclick="goTo('homeEditor')">🏠 Home</button>
     <button onclick="goTo('aboutEditor')">ℹ️ About</button>
     <button onclick="goTo('missionEditor')">🎯 Mission</button>
-    <button onclick="goTo('servicesEditor')">🛠️ Services</button>
     <button onclick="goTo('companiesEditor')">🏢 Companies</button>
-    <button onclick="goTo('projectsEditor')">📁 Projects</button>
     <button onclick="goTo('contactEditor')">📞 Contact</button>
     <button onclick="goTo('saveEditor')">💾 Save</button>
   </div>
@@ -1562,77 +1538,6 @@ Edit the main content visitors see on the homepage.
 
 </section>
 
-<!-- SERVICES -->
-
-<section class="editor-section" id="servicesEditor">
-
-<h2>🛠️ Services</h2>
-
-<div class="service-box">
-
-<h3>🌱 Agriculture</h3>
-
-<div class="field">
-<label>Title</label>
-<input id="agricultureTitle">
-</div>
-
-<div class="field">
-<label>Description</label>
-<textarea id="agricultureDescription"></textarea>
-</div>
-
-<div class="field">
-<label>Image Path</label>
-<input id="agricultureImage">
-</div>
-
-</div>
-
-<div class="service-box">
-
-<h3>🏗️ Construction</h3>
-
-<div class="field">
-<label>Title</label>
-<input id="constructionTitle">
-</div>
-
-<div class="field">
-<label>Description</label>
-<textarea id="constructionDescription"></textarea>
-</div>
-
-<div class="field">
-<label>Image Path</label>
-<input id="constructionImage">
-</div>
-
-</div>
-
-<div class="service-box">
-
-<h3>🚚 Transport</h3>
-
-<div class="field">
-<label>Title</label>
-<input id="transportTitle">
-</div>
-
-<div class="field">
-<label>Description</label>
-<textarea id="transportDescription"></textarea>
-</div>
-
-<div class="field">
-<label>Image Path</label>
-<input id="transportImage">
-</div>
-
-</div>
-
-</section>
-
 <!-- COMPANIES -->
 
 <section class="editor-section" id="companiesEditor">
@@ -1698,102 +1603,6 @@ Edit the main content visitors see on the homepage.
 <div class="field">
 <label>Company Image</label>
 <input id="transportCompanyImage" placeholder="images/transport-company.jpg">
-</div>
-
-</div>
-
-</section>
-
-<!-- PROJECTS -->
-
-<section class="editor-section" id="projectsEditor">
-
-<h2>📁 Projects</h2>
-
-<div class="field">
-<label>Projects Heading</label>
-<input id="projectsHeading">
-</div>
-
-<div class="field">
-<label>Projects Description</label>
-<textarea id="projectsDescription"></textarea>
-</div>
-
-<div class="service-box">
-
-<h3>🌱 Project 01</h3>
-
-<div class="field">
-<label>Category</label>
-<input id="project1Category">
-</div>
-
-<div class="field">
-<label>Project Title</label>
-<input id="project1Title">
-</div>
-
-<div class="field">
-<label>Project Description</label>
-<textarea id="project1Description"></textarea>
-</div>
-
-<div class="field">
-<label>Project Image</label>
-<input id="project1Image">
-</div>
-
-</div>
-
-<div class="service-box">
-
-<h3>🏗️ Project 02</h3>
-
-<div class="field">
-<label>Category</label>
-<input id="project2Category">
-</div>
-
-<div class="field">
-<label>Project Title</label>
-<input id="project2Title">
-</div>
-
-<div class="field">
-<label>Project Description</label>
-<textarea id="project2Description"></textarea>
-</div>
-
-<div class="field">
-<label>Project Image</label>
-<input id="project2Image">
-</div>
-
-</div>
-
-<div class="service-box">
-
-<h3>🚚 Project 03</h3>
-
-<div class="field">
-<label>Category</label>
-<input id="project3Category">
-</div>
-
-<div class="field">
-<label>Project Title</label>
-<input id="project3Title">
-</div>
-
-<div class="field">
-<label>Project Description</label>
-<textarea id="project3Description"></textarea>
-</div>
-
-<div class="field">
-<label>Project Image</label>
-<input id="project3Image">
 </div>
 
 </div>
@@ -2603,9 +2412,6 @@ async function loadContent(){
       transportCompanyDescription:c.transport_company_description,
       transportCompanyImage:c.transport_company_image,
 
-      projectsHeading:c.projects_heading,
-      projectsDescription:c.projects_description,
-
       project1Category:c.project1_category,
       project1Title:c.project1_title,
       project1Description:c.project1_description,
@@ -2698,9 +2504,6 @@ async function saveAllContent(){
     transportCompanyName:getValue("transportCompanyName"),
     transportCompanyDescription:getValue("transportCompanyDescription"),
     transportCompanyImage:getValue("transportCompanyImage"),
-
-    projectsHeading:getValue("projectsHeading"),
-    projectsDescription:getValue("projectsDescription"),
 
     project1Category:getValue("project1Category"),
     project1Title:getValue("project1Title"),

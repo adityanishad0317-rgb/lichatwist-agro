@@ -490,10 +490,8 @@ function applyLichaTwistTheme(
         var(--gold) !important;
     }
 
-
-    .premium-service-card:hover,
     .company-feature-card:hover,
-    .project-card:hover{
+
       border-color:
         rgba(
           var(--theme-gold-rgb),
@@ -1221,30 +1219,6 @@ if (content.transport_company_image) {
  * =========================
  */
 
-if (content.projects_heading) {
-
-  const el =
-    document.getElementById("projectsHeading");
-
-  if (el) {
-    el.textContent =
-      content.projects_heading;
-  }
-
-}
-
-
-if (content.projects_description) {
-
-  const el =
-    document.getElementById("projectsDescription");
-
-  if (el) {
-    el.textContent =
-      content.projects_description;
-  }
-
-}
 /* PROJECT IMAGES */
 
 if (content.project1_image) {
