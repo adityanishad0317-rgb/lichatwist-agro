@@ -1441,7 +1441,7 @@ async function loadAgroProducts(){
     }
 
     grid.innerHTML=data.products.map(p=>{
-      const image=p.main_image_url || "images/agriculture.jpg";
+      const image=(p.main_image_url ? (p.main_image_url.startsWith("/") ? p.main_image_url : "/" + p.main_image_url) : "/images/agriculture.jpg");
       return `
         <article class="agro-product-card">
           <div class="agro-product-image">
