@@ -383,7 +383,7 @@ export async function onRequestPost(context) {
     return json(
       {
         success: false,
-        message: "Unable to create product."
+        message: "Unable to create product: " + (error?.message || "Unknown database error.")
       },
       500
     );
