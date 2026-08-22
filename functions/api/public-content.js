@@ -45,7 +45,7 @@ construction_company_image,
 
 transport_company_name,
 transport_company_description,
-transport_company_image,
+transport_company_image
 FROM site_content
       WHERE id = 1
     `).first();
