@@ -7771,3 +7771,23 @@ iframe {
     max-width: 100% !important;
   }
 }
+
+/* MOBILE HORIZONTAL OVERFLOW FIX */
+@media (max-width: 700px) {
+  .brand {
+    min-width: 0 !important;
+    max-width: 100%;
+    flex-shrink: 1;
+  }
+
+  .brand-text {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+  }
+}
