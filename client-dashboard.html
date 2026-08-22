@@ -1,0 +1,3467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>LichaTwist Client Dashboard</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+
+      margin: 0;
+
+      min-height: 100vh;
+
+      font-family:
+        Arial,
+        sans-serif;
+
+      background:
+        linear-gradient(
+          135deg,
+          #edf2f6,
+          #e4eaf0
+        );
+
+      color:
+        #16263a;
+    }
+
+
+    .topbar {
+
+      background:
+        #071a33;
+
+      color:
+        white;
+
+      padding:
+        17px 22px;
+
+      display:
+        flex;
+
+      justify-content:
+        space-between;
+
+      align-items:
+        center;
+
+      gap:
+        15px;
+
+      flex-wrap:
+        wrap;
+    }
+
+
+    .brand {
+
+      font-size:
+        21px;
+
+      font-weight:
+        700;
+    }
+
+
+    .subtitle {
+
+      margin-top:
+        4px;
+
+      font-size:
+        12px;
+
+      opacity:
+        .75;
+    }
+
+
+    .logout {
+
+      border:
+        0;
+
+      border-radius:
+        10px;
+
+      padding:
+        10px 16px;
+
+      background:
+        white;
+
+      color:
+        #071a33;
+
+      font-weight:
+        700;
+
+      cursor:
+        pointer;
+    }
+
+
+    .logout:disabled {
+
+      opacity:
+        .65;
+
+      cursor:
+        wait;
+    }
+
+
+    .container {
+
+      width:
+        min(1100px, 94%);
+
+      margin:
+        25px auto 50px;
+    }
+
+
+    .welcome {
+
+      background:
+        #f8fafc;
+
+      border:
+        1px solid #d7e0e8;
+
+      border-radius:
+        18px;
+
+      padding:
+        24px;
+
+      box-shadow:
+        0 8px 24px
+        rgba(16,36,62,.06);
+    }
+
+
+    .welcome h1 {
+
+      margin:
+        0 0 8px;
+
+      color:
+        #071a33;
+
+      font-size:
+        27px;
+    }
+
+
+    .welcome p {
+
+      margin:
+        0;
+
+      color:
+        #667589;
+
+      line-height:
+        1.5;
+    }
+
+
+    .status {
+
+      display:
+        inline-block;
+
+      margin-top:
+        16px;
+
+      padding:
+        8px 12px;
+
+      border-radius:
+        20px;
+
+      background:
+        #ecfdf5;
+
+      color:
+        #065f46;
+
+      border:
+        1px solid #a9dfcc;
+
+      font-size:
+        13px;
+
+      font-weight:
+        700;
+    }
+
+
+    .message {
+
+      display:
+        none;
+
+      margin-top:
+        20px;
+
+      padding:
+        14px 16px;
+
+      border-radius:
+        12px;
+
+      line-height:
+        1.5;
+
+      font-size:
+        14px;
+
+      word-break:
+        break-word;
+    }
+
+
+    .message.info {
+
+      display:
+        block;
+
+      background:
+        #eff6ff;
+
+      color:
+        #1e40af;
+
+      border:
+        1px solid #bfdbfe;
+    }
+
+
+    .message.success {
+
+      display:
+        block;
+
+      background:
+        #ecfdf5;
+
+      color:
+        #065f46;
+
+      border:
+        1px solid #a9dfcc;
+    }
+
+
+    .message.error {
+
+      display:
+        block;
+
+      background:
+        #fef2f2;
+
+      color:
+        #991b1b;
+
+      border:
+        1px solid #fecaca;
+    }
+
+
+    .section {
+
+      margin-top:
+        22px;
+
+      background:
+        #f8fafc;
+
+      border:
+        1px solid #d7e0e8;
+
+      border-radius:
+        18px;
+
+      padding:
+        22px;
+
+      box-shadow:
+        0 8px 24px
+        rgba(16,36,62,.06);
+    }
+
+
+    .section-header {
+
+      margin-bottom:
+        20px;
+
+      padding-bottom:
+        14px;
+
+      border-bottom:
+        1px solid #e1e7ed;
+    }
+
+
+    .section-header h2 {
+
+      margin:
+        0 0 6px;
+
+      color:
+        #10243e;
+
+      font-size:
+        20px;
+    }
+
+
+    .section-header p {
+
+      margin:
+        0;
+
+      color:
+        #667589;
+
+      font-size:
+        13px;
+
+      line-height:
+        1.5;
+    }
+
+
+    .field-grid {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
+      gap:
+        18px;
+    }
+
+
+    .field {
+
+      min-width:
+        0;
+    }
+
+
+    .field.full {
+
+      grid-column:
+        1 / -1;
+    }
+
+
+    label {
+
+      display:
+        block;
+
+      margin-bottom:
+        7px;
+
+      color:
+        #071a33;
+
+      font-size:
+        14px;
+
+      font-weight:
+        700;
+    }
+
+
+    input,
+    textarea {
+
+      width:
+        100%;
+
+      border:
+        1.5px solid #cfd9e3;
+
+      border-radius:
+        11px;
+
+      background:
+        #eef3f7;
+
+      color:
+        #16263a;
+
+      font-family:
+        Arial,
+        sans-serif;
+
+      font-size:
+        15px;
+
+      padding:
+        12px 13px;
+    }
+
+
+    input {
+
+      min-height:
+        46px;
+    }
+
+
+    textarea {
+
+      min-height:
+        105px;
+
+      resize:
+        vertical;
+
+      line-height:
+        1.5;
+    }
+
+
+    input:focus,
+    textarea:focus {
+
+      outline:
+        none;
+
+      background:
+        white;
+
+      border-color:
+        #1769e0;
+
+      box-shadow:
+        0 0 0 4px
+        rgba(23,105,224,.10);
+    }
+
+
+    .save-area {
+
+      position:
+        sticky;
+
+      bottom:
+        10px;
+
+      z-index:
+        10;
+
+      margin-top:
+        22px;
+
+      padding:
+        12px;
+
+      background:
+        rgba(237,242,246,.95);
+
+      backdrop-filter:
+        blur(8px);
+
+      border:
+        1px solid #d7e0e8;
+
+      border-radius:
+        16px;
+    }
+
+
+    #saveButton {
+
+      width:
+        100%;
+
+      min-height:
+        54px;
+
+      border:
+        0;
+
+      border-radius:
+        13px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #1769e0,
+          #0d4fae
+        );
+
+      color:
+        white;
+
+      font-size:
+        16px;
+
+      font-weight:
+        700;
+
+      cursor:
+        pointer;
+    }
+
+
+    #saveButton:disabled {
+
+      opacity:
+        .65;
+
+      cursor:
+        wait;
+    }
+
+
+    .save-status {
+
+      display:
+        none;
+
+      margin-top:
+        10px;
+
+      padding:
+        12px 14px;
+
+      border-radius:
+        10px;
+
+      font-size:
+        13px;
+
+      line-height:
+        1.5;
+
+      font-weight:
+        700;
+
+      word-break:
+        break-word;
+    }
+
+
+    .save-status.info {
+
+      display:
+        block;
+
+      background:
+        #eff6ff;
+
+      color:
+        #1e40af;
+
+      border:
+        1px solid #bfdbfe;
+    }
+
+
+    .save-status.success {
+
+      display:
+        block;
+
+      background:
+        #ecfdf5;
+
+      color:
+        #065f46;
+
+      border:
+        1px solid #a9dfcc;
+    }
+
+
+    .save-status.error {
+
+      display:
+        block;
+
+      background:
+        #fef2f2;
+
+      color:
+        #991b1b;
+
+      border:
+        1px solid #fecaca;
+    }
+
+
+    .image-grid {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
+      gap:
+        20px;
+    }
+
+
+    .image-card {
+
+      border:
+        1px solid #d7e0e8;
+
+      border-radius:
+        16px;
+
+      background:
+        #ffffff;
+
+      padding:
+        16px;
+
+      overflow:
+        hidden;
+    }
+
+
+    .image-card h3 {
+
+      margin:
+        0 0 6px;
+
+      color:
+        #10243e;
+
+      font-size:
+        17px;
+    }
+
+
+    .image-card p {
+
+      margin:
+        0 0 13px;
+
+      color:
+        #667589;
+
+      font-size:
+        12px;
+
+      line-height:
+        1.45;
+    }
+
+
+    .image-preview {
+
+      width:
+        100%;
+
+      height:
+        190px;
+
+      border:
+        1px solid #d7e0e8;
+
+      border-radius:
+        12px;
+
+      background:
+        #eef3f7;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      overflow:
+        hidden;
+
+      margin-bottom:
+        12px;
+    }
+
+
+    .image-preview img {
+
+      width:
+        100%;
+
+      height:
+        100%;
+
+      object-fit:
+        cover;
+
+      display:
+        none;
+    }
+
+
+    .image-placeholder {
+
+      color:
+        #7a8999;
+
+      font-size:
+        13px;
+
+      text-align:
+        center;
+
+      padding:
+        15px;
+    }
+
+
+    .file-input {
+
+      width:
+        100%;
+
+      padding:
+        9px;
+
+      border:
+        1px solid #cfd9e3;
+
+      border-radius:
+        10px;
+
+      background:
+        #eef3f7;
+
+      font-size:
+        13px;
+    }
+
+
+    .upload-button {
+
+      width:
+        100%;
+
+      min-height:
+        44px;
+
+      margin-top:
+        10px;
+
+      border:
+        0;
+
+      border-radius:
+        10px;
+
+      background:
+        #10243e;
+
+      color:
+        white;
+
+      font-size:
+        14px;
+
+      font-weight:
+        700;
+
+      cursor:
+        pointer;
+    }
+
+
+    .upload-button:disabled {
+
+      opacity:
+        .6;
+
+      cursor:
+        wait;
+    }
+
+
+    .upload-status {
+
+      display:
+        none;
+
+      margin-top:
+        10px;
+
+      padding:
+        9px 10px;
+
+      border-radius:
+        9px;
+
+      font-size:
+        12px;
+
+      line-height:
+        1.4;
+    }
+
+
+    .upload-status.success {
+
+      display:
+        block;
+
+      background:
+        #ecfdf5;
+
+      color:
+        #065f46;
+    }
+
+
+    .upload-status.error {
+
+      display:
+        block;
+
+      background:
+        #fef2f2;
+
+      color:
+        #991b1b;
+    }
+
+
+    .upload-status.info {
+
+      display:
+        block;
+
+      background:
+        #eff6ff;
+
+      color:
+        #1e40af;
+    }
+
+
+    .image-note {
+
+      margin-top:
+        16px;
+
+      padding:
+        12px;
+
+      border-radius:
+        10px;
+
+      background:
+        #eef3f7;
+
+      color:
+        #536477;
+
+      font-size:
+        12px;
+
+      line-height:
+        1.5;
+    }
+
+
+    .security-grid {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
+      gap:
+        18px;
+    }
+
+
+    .security-actions {
+
+      margin-top:
+        18px;
+    }
+
+
+    #changePasswordButton {
+
+      width:
+        100%;
+
+      min-height:
+        50px;
+
+      border:
+        0;
+
+      border-radius:
+        12px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #10243e,
+          #071a33
+        );
+
+      color:
+        white;
+
+      font-size:
+        15px;
+
+      font-weight:
+        700;
+
+      cursor:
+        pointer;
+    }
+
+
+    #changePasswordButton:disabled {
+
+      opacity:
+        .65;
+
+      cursor:
+        wait;
+    }
+
+
+    .security-note {
+
+      margin-top:
+        14px;
+
+      padding:
+        12px 14px;
+
+      border-radius:
+        10px;
+
+      background:
+        #eef3f7;
+
+      color:
+        #536477;
+
+      font-size:
+        12px;
+
+      line-height:
+        1.5;
+    }
+
+
+    .footer {
+
+      text-align:
+        center;
+
+      color:
+        #667589;
+
+      font-size:
+        13px;
+
+      margin:
+        30px 0;
+    }
+
+
+    @media (
+      max-width: 700px
+    ) {
+
+      .field-grid,
+      .image-grid,
+      .security-grid {
+
+        grid-template-columns:
+          1fr;
+      }
+
+
+      .container {
+
+        width:
+          min(94%, 1100px);
+
+        margin:
+          20px auto 40px;
+      }
+
+
+      .section {
+
+        padding:
+          18px;
+      }
+
+
+      .welcome {
+
+        padding:
+          20px;
+      }
+
+
+      .topbar {
+
+        padding:
+          15px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<header class="topbar">
+
+  <div>
+
+    <div class="brand">
+      LichaTwist
+    </div>
+
+    <div class="subtitle">
+      Client Dashboard
+    </div>
+
+  </div>
+
+
+  <button
+    class="logout"
+    id="logoutButton"
+    type="button"
+  >
+    Sign Out
+  </button>
+
+</header>
+
+
+<main class="container">
+
+
+<section class="welcome">
+
+  <h1>
+    Client Dashboard
+  </h1>
+
+  <p>
+    Welcome to your LichaTwist website
+    management area.
+  </p>
+
+  <span class="status">
+    ✓ Secure client session
+  </span>
+
+</section>
+
+
+<div
+  id="message"
+  class="message"
+  role="status"
+  aria-live="polite"
+></div>
+
+
+<!-- CONTACT -->
+
+<section class="section">
+
+  <div class="section-header">
+
+    <h2>
+      Company Information
+    </h2>
+
+    <p>
+      Manage the basic company information
+      available to your website.
+    </p>
+
+  </div>
+
+
+  <div class="field-grid">
+
+
+    <div class="field">
+
+      <label for="business_name">
+        Business Name
+      </label>
+
+      <input
+        id="business_name"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="phone">
+        Phone
+      </label>
+
+      <input
+        id="phone"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="email">
+        Email
+      </label>
+
+      <input
+        id="email"
+        type="email"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="whatsapp">
+        WhatsApp
+      </label>
+
+      <input
+        id="whatsapp"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="address">
+        Address
+      </label>
+
+      <textarea
+        id="address"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="about">
+        About
+      </label>
+
+      <textarea
+        id="about"
+      ></textarea>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- HERO -->
+
+<section class="section">
+
+  <div class="section-header">
+
+    <h2>
+      Homepage / Hero
+    </h2>
+
+    <p>
+      Manage the main homepage title,
+      subtitle and introduction.
+    </p>
+
+  </div>
+
+
+  <div class="field-grid">
+
+
+    <div class="field full">
+
+      <label for="hero_title">
+        Hero Title
+      </label>
+
+      <input
+        id="hero_title"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="hero_subtitle">
+        Hero Subtitle
+      </label>
+
+      <input
+        id="hero_subtitle"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="hero_description">
+        Hero Description
+      </label>
+
+      <textarea
+        id="hero_description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="approach_title">
+        Approach Title
+      </label>
+
+      <input
+        id="approach_title"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="approach_description">
+        Approach Description
+      </label>
+
+      <textarea
+        id="approach_description"
+      ></textarea>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- ABOUT -->
+
+<section class="section">
+
+  <div class="section-header">
+
+    <h2>
+      About Us
+    </h2>
+
+    <p>
+      Manage About, Mission, Vision and
+      Values information.
+    </p>
+
+  </div>
+
+
+  <div class="field-grid">
+
+
+    <div class="field full">
+
+      <label for="about_heading">
+        About Heading
+      </label>
+
+      <input
+        id="about_heading"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="about_description">
+        About Description
+      </label>
+
+      <textarea
+        id="about_description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="mission">
+        Mission
+      </label>
+
+      <textarea id="mission"></textarea>
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="vision">
+        Vision
+      </label>
+
+      <textarea id="vision"></textarea>
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="values_text">
+        Values
+      </label>
+
+      <textarea id="values_text"></textarea>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- SERVICES -->
+
+<section class="section">
+
+  <div class="section-header">
+
+    <h2>
+      Services
+    </h2>
+
+    <p>
+      Manage Agriculture, Construction
+      and Transport information.
+    </p>
+
+  </div>
+
+
+  <div class="field-grid">
+
+
+    <div class="field">
+
+      <label for="agriculture_title">
+        Agriculture Title
+      </label>
+
+      <input
+        id="agriculture_title"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="construction_title">
+        Construction Title
+      </label>
+
+      <input
+        id="construction_title"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="agriculture_description">
+        Agriculture Description
+      </label>
+
+      <textarea
+        id="agriculture_description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="construction_description">
+        Construction Description
+      </label>
+
+      <textarea
+        id="construction_description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="transport_title">
+        Transport Title
+      </label>
+
+      <input
+        id="transport_title"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="transport_description">
+        Transport Description
+      </label>
+
+      <textarea
+        id="transport_description"
+      ></textarea>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- SUBSIDIARIES -->
+
+<section class="section">
+
+  <div class="section-header">
+
+    <h2>
+      Subsidiary Companies
+    </h2>
+
+    <p>
+      Manage subsidiary company names
+      and descriptions.
+    </p>
+
+  </div>
+
+
+  <div class="field-grid">
+
+
+    <div class="field">
+
+      <label for="agro_company_name">
+        LichaTwist Agro Name
+      </label>
+
+      <input
+        id="agro_company_name"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="construction_company_name">
+        LichaTwist Construction Name
+      </label>
+
+      <input
+        id="construction_company_name"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="agro_company_description">
+        LichaTwist Agro Description
+      </label>
+
+      <textarea
+        id="agro_company_description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="construction_company_description">
+        LichaTwist Construction Description
+      </label>
+
+      <textarea
+        id="construction_company_description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="transport_company_name">
+        LichaTwist Transport Name
+      </label>
+
+      <input
+        id="transport_company_name"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="transport_company_description">
+        LichaTwist Transport Description
+      </label>
+
+      <textarea
+        id="transport_company_description"
+      ></textarea>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- PROJECTS -->
+
+<section class="section">
+
+  <div class="section-header">
+
+    <h2>
+      Projects
+    </h2>
+
+    <p>
+      Manage project headings and
+      descriptions.
+    </p>
+
+  </div>
+
+
+  <div class="field-grid">
+
+
+    <div class="field full">
+
+      <label for="projects_heading">
+        Projects Heading
+      </label>
+
+      <input
+        id="projects_heading"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="projects_description">
+        Projects Description
+      </label>
+
+      <textarea
+        id="projects_description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="project1_category">
+        Project 1 Category
+      </label>
+
+      <input
+        id="project1_category"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="project1_title">
+        Project 1 Title
+      </label>
+
+      <input
+        id="project1_title"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="project1_description">
+        Project 1 Description
+      </label>
+
+      <textarea
+        id="project1_description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="project2_category">
+        Project 2 Category
+      </label>
+
+      <input
+        id="project2_category"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="project2_title">
+        Project 2 Title
+      </label>
+
+      <input
+        id="project2_title"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="project2_description">
+        Project 2 Description
+      </label>
+
+      <textarea
+        id="project2_description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="project3_category">
+        Project 3 Category
+      </label>
+
+      <input
+        id="project3_category"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="project3_title">
+        Project 3 Title
+      </label>
+
+      <input
+        id="project3_title"
+        type="text"
+      >
+
+    </div>
+
+
+    <div class="field full">
+
+      <label for="project3_description">
+        Project 3 Description
+      </label>
+
+      <textarea
+        id="project3_description"
+      ></textarea>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- IMAGE MANAGEMENT -->
+
+<section class="section">
+
+  <div class="section-header">
+
+    <h2>
+      Image Management
+    </h2>
+
+    <p>
+      Upload permitted website images.
+      Existing images are shown below.
+    </p>
+
+  </div>
+
+
+  <div
+    id="imageGrid"
+    class="image-grid"
+  ></div>
+
+
+  <div class="image-note">
+
+    <strong>Image requirements:</strong>
+    JPG, PNG or WebP. Maximum file size:
+    5 MB. Only permitted website image
+    areas can be changed from this account.
+
+  </div>
+
+</section>
+
+
+<!-- ACCOUNT SECURITY -->
+
+<section class="section">
+
+  <div class="section-header">
+
+    <h2>
+      Account Security
+    </h2>
+
+    <p>
+      Change the password for your own client account.
+      This section cannot change the owner's password.
+    </p>
+
+  </div>
+
+
+  <div class="security-grid">
+
+    <div class="field">
+
+      <label for="currentClientPassword">
+        Current Password
+      </label>
+
+      <input
+        id="currentClientPassword"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter your current password"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="newClientPassword">
+        New Password
+      </label>
+
+      <input
+        id="newClientPassword"
+        type="password"
+        autocomplete="new-password"
+        placeholder="Enter a new password"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="confirmClientPassword">
+        Confirm New Password
+      </label>
+
+      <input
+        id="confirmClientPassword"
+        type="password"
+        autocomplete="new-password"
+        placeholder="Confirm your new password"
+      >
+
+    </div>
+
+  </div>
+
+
+  <div class="security-actions">
+
+    <button
+      id="changePasswordButton"
+      type="button"
+    >
+      Change My Password
+    </button>
+
+  </div>
+
+
+  <div
+    id="passwordChangeStatus"
+    class="save-status"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <div class="security-note">
+
+    <strong>Security note:</strong>
+    Your password belongs only to your client account.
+    Changing it does not change the owner's password.
+    After a successful change, your existing client sessions
+    are invalidated and you will be returned to the client login page.
+
+  </div>
+
+</section>
+
+
+<!-- SAVE -->
+
+<div class="save-area">
+
+  <button
+    id="saveButton"
+    type="button"
+  >
+    Save All Content Changes
+  </button>
+
+
+  <div
+    id="saveStatus"
+    class="save-status"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+</div>
+
+
+<div class="footer">
+
+  LichaTwist Client Administration
+
+</div>
+
+
+</main>
+
+
+<script>
+
+
+/* =====================================
+   ELEMENTS
+===================================== */
+
+const message =
+  document.getElementById(
+    "message"
+  );
+
+
+const saveButton =
+  document.getElementById(
+    "saveButton"
+  );
+
+
+const saveStatus =
+  document.getElementById(
+    "saveStatus"
+  );
+
+
+const imageGrid =
+  document.getElementById(
+    "imageGrid"
+  );
+
+
+const logoutButton =
+  document.getElementById(
+    "logoutButton"
+  );
+
+
+/* =====================================
+   CONTENT FIELDS
+===================================== */
+
+const CLIENT_FIELDS = [
+
+  "business_name",
+  "phone",
+  "email",
+  "address",
+  "about",
+  "whatsapp",
+
+  "hero_title",
+  "hero_subtitle",
+  "hero_description",
+
+  "approach_title",
+  "approach_description",
+
+  "about_heading",
+  "about_description",
+
+  "mission",
+  "vision",
+  "values_text",
+
+  "agriculture_title",
+  "agriculture_description",
+
+  "construction_title",
+  "construction_description",
+
+  "transport_title",
+  "transport_description",
+
+  "agro_company_name",
+  "agro_company_description",
+
+  "construction_company_name",
+  "construction_company_description",
+
+  "transport_company_name",
+  "transport_company_description",
+
+  "projects_heading",
+  "projects_description",
+
+  "project1_category",
+  "project1_title",
+  "project1_description",
+
+  "project2_category",
+  "project2_title",
+  "project2_description",
+
+  "project3_category",
+  "project3_title",
+  "project3_description"
+
+];
+
+
+/* =====================================
+   IMAGE FIELDS
+===================================== */
+
+const IMAGE_FIELDS = [
+
+  {
+    type:
+      "agriculture",
+
+    title:
+      "Agriculture Image",
+
+    description:
+      "Main image used for Agriculture.",
+
+    field:
+      "agriculture_image"
+  },
+
+
+  {
+    type:
+      "construction",
+
+    title:
+      "Construction Image",
+
+    description:
+      "Main image used for Construction.",
+
+    field:
+      "construction_image"
+  },
+
+
+  {
+    type:
+      "transport",
+
+    title:
+      "Transport Image",
+
+    description:
+      "Main image used for Transport.",
+
+    field:
+      "transport_image"
+  },
+
+
+  {
+    type:
+      "agroCompany",
+
+    title:
+      "LichaTwist Agro Image",
+
+    description:
+      "Image displayed for LichaTwist Agro.",
+
+    field:
+      "agro_company_image"
+  },
+
+
+  {
+    type:
+      "constructionCompany",
+
+    title:
+      "LichaTwist Construction Image",
+
+    description:
+      "Image displayed for LichaTwist Construction.",
+
+    field:
+      "construction_company_image"
+  },
+
+
+  {
+    type:
+      "transportCompany",
+
+    title:
+      "LichaTwist Transport Image",
+
+    description:
+      "Image displayed for LichaTwist Transport.",
+
+    field:
+      "transport_company_image"
+  },
+
+
+  {
+    type:
+      "project1",
+
+    title:
+      "Project 1 Image",
+
+    description:
+      "Image used for Project 1.",
+
+    field:
+      "project1_image"
+  },
+
+
+  {
+    type:
+      "project2",
+
+    title:
+      "Project 2 Image",
+
+    description:
+      "Image used for Project 2.",
+
+    field:
+      "project2_image"
+  },
+
+
+  {
+    type:
+      "project3",
+
+    title:
+      "Project 3 Image",
+
+    description:
+      "Image used for Project 3.",
+
+    field:
+      "project3_image"
+  }
+
+];
+
+
+let currentContent = {};
+
+
+/* =====================================
+   MESSAGE
+===================================== */
+
+function showMessage(
+  text,
+  type
+) {
+
+  message.className =
+    "message " + type;
+
+  message.textContent =
+    text;
+
+  message.style.display =
+    "block";
+
+}
+
+
+function hideMessage() {
+
+  message.style.display =
+    "none";
+
+  message.textContent =
+    "";
+
+  message.className =
+    "message";
+
+}
+
+
+/* =====================================
+   FIELD HELPERS
+===================================== */
+
+function setFieldValue(
+  field,
+  value
+) {
+
+  const element =
+    document.getElementById(
+      field
+    );
+
+  if (!element) {
+    return;
+  }
+
+  element.value =
+    value ??
+    "";
+
+}
+
+
+function getFieldValue(
+  field
+) {
+
+  const element =
+    document.getElementById(
+      field
+    );
+
+  if (!element) {
+    return "";
+  }
+
+  return element.value;
+
+}
+
+
+/* =====================================
+   IMAGE CARDS
+===================================== */
+
+function renderImageCards(
+  content
+) {
+
+  imageGrid.innerHTML =
+    "";
+
+
+  IMAGE_FIELDS.forEach(
+    function(item) {
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "image-card";
+
+
+      const title =
+        document.createElement(
+          "h3"
+        );
+
+
+      title.textContent =
+        item.title;
+
+
+      const description =
+        document.createElement(
+          "p"
+        );
+
+
+      description.textContent =
+        item.description;
+
+
+      const preview =
+        document.createElement(
+          "div"
+        );
+
+
+      preview.className =
+        "image-preview";
+
+
+      const image =
+        document.createElement(
+          "img"
+        );
+
+
+      const placeholder =
+        document.createElement(
+          "div"
+        );
+
+
+      placeholder.className =
+        "image-placeholder";
+
+
+      placeholder.textContent =
+        "No image available";
+
+
+      preview.appendChild(
+        image
+      );
+
+
+      preview.appendChild(
+        placeholder
+      );
+
+
+      const imagePath =
+        content[
+          item.field
+        ] || "";
+
+
+      const imageUrl =
+        imagePath
+          ? imagePath
+          : "";
+
+
+      if (imageUrl) {
+
+        image.src =
+          imageUrl +
+          (
+            imageUrl.includes("?")
+              ? "&"
+              : "?"
+          ) +
+          "v=" +
+          Date.now();
+
+
+        image.style.display =
+          "block";
+
+
+        placeholder.style.display =
+          "none";
+
+
+        image.onerror =
+          function() {
+
+            image.style.display =
+              "none";
+
+            placeholder.style.display =
+              "block";
+
+            placeholder.textContent =
+              "Image could not be loaded.";
+
+          };
+
+      }
+
+
+      const fileInput =
+        document.createElement(
+          "input"
+        );
+
+
+      fileInput.type =
+        "file";
+
+
+      fileInput.accept =
+        "image/jpeg,image/png,image/webp";
+
+
+      fileInput.className =
+        "file-input";
+
+
+      const uploadButton =
+        document.createElement(
+          "button"
+        );
+
+
+      uploadButton.type =
+        "button";
+
+
+      uploadButton.className =
+        "upload-button";
+
+
+      uploadButton.textContent =
+        "Upload Image";
+
+
+      const uploadStatus =
+        document.createElement(
+          "div"
+        );
+
+
+      uploadStatus.className =
+        "upload-status";
+
+
+      fileInput.addEventListener(
+        "change",
+        function() {
+
+          const file =
+            fileInput.files[0];
+
+
+          if (!file) {
+            return;
+          }
+
+
+          if (
+            !file.type.startsWith(
+              "image/"
+            )
+          ) {
+
+            uploadStatus.className =
+              "upload-status error";
+
+            uploadStatus.textContent =
+              "Please select an image file.";
+
+            return;
+
+          }
+
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            function(event) {
+
+              image.src =
+                event.target.result;
+
+              image.style.display =
+                "block";
+
+              placeholder.style.display =
+                "none";
+
+            };
+
+
+          reader.readAsDataURL(
+            file
+          );
+
+        }
+      );
+
+
+      uploadButton.addEventListener(
+        "click",
+        function() {
+
+          uploadImage(
+            item,
+            fileInput,
+            uploadButton,
+            uploadStatus,
+            image,
+            placeholder
+          );
+
+        }
+      );
+
+
+      card.appendChild(
+        title
+      );
+
+
+      card.appendChild(
+        description
+      );
+
+
+      card.appendChild(
+        preview
+      );
+
+
+      card.appendChild(
+        fileInput
+      );
+
+
+      card.appendChild(
+        uploadButton
+      );
+
+
+      card.appendChild(
+        uploadStatus
+      );
+
+
+      imageGrid.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+/* =====================================
+   UPLOAD IMAGE
+===================================== */
+
+async function uploadImage(
+  item,
+  fileInput,
+  uploadButton,
+  uploadStatus,
+  previewImage,
+  placeholder
+) {
+
+  const file =
+    fileInput.files[0];
+
+
+  if (!file) {
+
+    uploadStatus.className =
+      "upload-status error";
+
+    uploadStatus.textContent =
+      "Please select an image first.";
+
+    return;
+
+  }
+
+
+  if (file.size > 5 * 1024 * 1024) {
+
+    uploadStatus.className =
+      "upload-status error";
+
+    uploadStatus.textContent =
+      "Image must be smaller than 5 MB.";
+
+    return;
+
+  }
+
+
+  const allowedTypes = [
+
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+
+  ];
+
+
+  if (
+    !allowedTypes.includes(
+      file.type
+    )
+  ) {
+
+    uploadStatus.className =
+      "upload-status error";
+
+    uploadStatus.textContent =
+      "Only JPG, PNG and WebP images are allowed.";
+
+    return;
+
+  }
+
+
+  uploadButton.disabled =
+    true;
+
+
+  fileInput.disabled =
+    true;
+
+
+  uploadStatus.className =
+    "upload-status info";
+
+
+  uploadStatus.textContent =
+    "Uploading image...";
+
+
+  try {
+
+    const formData =
+      new FormData();
+
+
+    formData.append(
+      "image",
+      file
+    );
+
+
+    formData.append(
+      "imageType",
+      item.type
+    );
+
+
+    const response =
+      await fetch(
+        "/api/client-upload-image",
+        {
+          method:
+            "POST",
+
+          credentials:
+            "include",
+
+          body:
+            formData
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      response.status ===
+      401
+    ) {
+
+      window.location.href =
+        "/client-login.html";
+
+      return;
+
+    }
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.message ||
+        "Unable to upload image."
+      );
+
+    }
+
+
+    if (data.path) {
+
+      currentContent[
+        item.field
+      ] =
+        data.path;
+
+
+      previewImage.src =
+        data.path +
+        (
+          data.path.includes("?")
+            ? "&"
+            : "?"
+        ) +
+        "v=" +
+        Date.now();
+
+
+      previewImage.style.display =
+        "block";
+
+
+      placeholder.style.display =
+        "none";
+
+    }
+
+
+    uploadStatus.className =
+      "upload-status success";
+
+
+    uploadStatus.textContent =
+      "✓ Image uploaded successfully.";
+
+
+    fileInput.value =
+      "";
+
+
+  } catch (error) {
+
+    uploadStatus.className =
+      "upload-status error";
+
+
+    uploadStatus.textContent =
+      error.message ||
+      "Unable to upload image.";
+
+  } finally {
+
+    uploadButton.disabled =
+      false;
+
+
+    fileInput.disabled =
+      false;
+
+  }
+
+}
+
+
+/* =====================================
+   LOAD CONTENT
+===================================== */
+
+async function loadContent() {
+
+  try {
+
+    showMessage(
+      "Loading your website information...",
+      "info"
+    );
+
+
+    const response =
+      await fetch(
+        "/api/client-content",
+        {
+          method:
+            "GET",
+
+          credentials:
+            "include",
+
+          cache:
+            "no-store"
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      response.status ===
+      401
+    ) {
+
+      window.location.href =
+        "/client-login.html";
+
+      return;
+
+    }
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.message ||
+        "Unable to load website information."
+      );
+
+    }
+
+
+    currentContent =
+      data.content ||
+      {};
+
+
+    CLIENT_FIELDS.forEach(
+      function(field) {
+
+        setFieldValue(
+          field,
+          currentContent[field]
+        );
+
+      }
+    );
+
+
+    renderImageCards(
+      currentContent
+    );
+
+
+    showMessage(
+      "✓ Website information loaded successfully.",
+      "success"
+    );
+
+
+    setTimeout(
+      hideMessage,
+      3000
+    );
+
+
+  } catch (error) {
+
+    showMessage(
+      error.message ||
+      "Unable to load website information.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =====================================
+   COLLECT CONTENT
+===================================== */
+
+function collectContent() {
+
+  const content =
+    {};
+
+
+  CLIENT_FIELDS.forEach(
+    function(field) {
+
+      content[field] =
+        getFieldValue(
+          field
+        );
+
+    }
+  );
+
+
+  return content;
+
+}
+
+
+/* =====================================
+   SAVE CONTENT
+===================================== */
+
+async function saveContent() {
+
+  const content =
+    collectContent();
+
+
+  saveButton.disabled =
+    true;
+
+
+  saveButton.textContent =
+    "Saving Changes...";
+
+
+  showMessage(
+    "Saving website content...",
+    "info"
+  );
+
+
+  saveStatus.className =
+    "save-status info";
+
+  saveStatus.textContent =
+    "Saving website content...";
+
+  saveStatus.style.display =
+    "block";
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/client-content",
+        {
+          method:
+            "POST",
+
+          credentials:
+            "include",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              content:
+                content
+            })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      response.status ===
+      401
+    ) {
+
+      window.location.href =
+        "/client-login.html";
+
+      return;
+
+    }
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.message ||
+        "Unable to save website content."
+      );
+
+    }
+
+
+    currentContent =
+      {
+        ...currentContent,
+        ...content
+      };
+
+
+    const successMessage =
+      "✓ All website content changes have been saved successfully.";
+
+
+    showMessage(
+      successMessage,
+      "success"
+    );
+
+
+    saveStatus.className =
+      "save-status success";
+
+    saveStatus.textContent =
+      successMessage;
+
+    saveStatus.style.display =
+      "block";
+
+
+  } catch (error) {
+
+    const errorMessage =
+      error.message ||
+      "Unable to save website content.";
+
+
+    showMessage(
+      errorMessage,
+      "error"
+    );
+
+
+    saveStatus.className =
+      "save-status error";
+
+    saveStatus.textContent =
+      "✕ " + errorMessage;
+
+    saveStatus.style.display =
+      "block";
+
+
+  } finally {
+
+    saveButton.disabled =
+      false;
+
+
+    saveButton.textContent =
+      "Save All Content Changes";
+
+  }
+
+}
+
+
+/* =====================================
+   SAVE BUTTON
+===================================== */
+
+saveButton.addEventListener(
+  "click",
+  saveContent
+);
+
+
+/* =====================================
+   CLIENT PASSWORD CHANGE
+===================================== */
+
+const changePasswordButton =
+  document.getElementById(
+    "changePasswordButton"
+  );
+
+
+const passwordChangeStatus =
+  document.getElementById(
+    "passwordChangeStatus"
+  );
+
+
+const currentClientPassword =
+  document.getElementById(
+    "currentClientPassword"
+  );
+
+
+const newClientPassword =
+  document.getElementById(
+    "newClientPassword"
+  );
+
+
+const confirmClientPassword =
+  document.getElementById(
+    "confirmClientPassword"
+  );
+
+
+function showPasswordChangeStatus(
+  text,
+  type
+) {
+
+  passwordChangeStatus.className =
+    "save-status " + type;
+
+  passwordChangeStatus.textContent =
+    text;
+
+  passwordChangeStatus.style.display =
+    "block";
+
+}
+
+
+changePasswordButton.addEventListener(
+  "click",
+  async function() {
+
+    const currentPassword =
+      currentClientPassword.value;
+
+
+    const newPassword =
+      newClientPassword.value;
+
+
+    const confirmPassword =
+      confirmClientPassword.value;
+
+
+    if (!currentPassword) {
+
+      showPasswordChangeStatus(
+        "Please enter your current password.",
+        "error"
+      );
+
+      currentClientPassword.focus();
+
+      return;
+
+    }
+
+
+    if (!newPassword) {
+
+      showPasswordChangeStatus(
+        "Please enter your new password.",
+        "error"
+      );
+
+      newClientPassword.focus();
+
+      return;
+
+    }
+
+
+    if (newPassword.length < 8) {
+
+      showPasswordChangeStatus(
+        "New password must be at least 8 characters.",
+        "error"
+      );
+
+      newClientPassword.focus();
+
+      return;
+
+    }
+
+
+    if (newPassword !== confirmPassword) {
+
+      showPasswordChangeStatus(
+        "New passwords do not match.",
+        "error"
+      );
+
+      confirmClientPassword.focus();
+
+      return;
+
+    }
+
+
+    if (currentPassword === newPassword) {
+
+      showPasswordChangeStatus(
+        "New password must be different from the current password.",
+        "error"
+      );
+
+      newClientPassword.focus();
+
+      return;
+
+    }
+
+
+    changePasswordButton.disabled =
+      true;
+
+
+    changePasswordButton.textContent =
+      "Changing Password...";
+
+
+    showPasswordChangeStatus(
+      "Changing your password...",
+      "info"
+    );
+
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/client-change-password",
+          {
+            method:
+              "POST",
+
+            credentials:
+              "include",
+
+            cache:
+              "no-store",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+                currentPassword:
+                  currentPassword,
+
+                newPassword:
+                  newPassword
+              })
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (
+        response.status ===
+        401
+      ) {
+
+        window.location.href =
+          "/client-login.html";
+
+        return;
+
+      }
+
+
+      if (
+        !response.ok ||
+        !data.success
+      ) {
+
+        throw new Error(
+          data.message ||
+          "Unable to change your password."
+        );
+
+      }
+
+
+      showPasswordChangeStatus(
+        "✓ Password changed successfully. Please sign in again with your new password.",
+        "success"
+      );
+
+
+      currentClientPassword.value =
+        "";
+
+
+      newClientPassword.value =
+        "";
+
+
+      confirmClientPassword.value =
+        "";
+
+
+      setTimeout(
+        function() {
+
+          window.location.href =
+            "/client-login.html";
+
+        },
+        1500
+      );
+
+
+    } catch (error) {
+
+      showPasswordChangeStatus(
+        error.message ||
+        "Unable to change your password. Please try again.",
+        "error"
+      );
+
+    } finally {
+
+      changePasswordButton.disabled =
+        false;
+
+
+      changePasswordButton.textContent =
+        "Change My Password";
+
+    }
+
+  }
+);
+
+
+/* =====================================
+   SECURE CLIENT LOGOUT
+===================================== */
+
+logoutButton.addEventListener(
+  "click",
+  async function() {
+
+    logoutButton.disabled =
+      true;
+
+
+    logoutButton.textContent =
+      "Signing out...";
+
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/client-logout",
+          {
+            method:
+              "POST",
+
+            credentials:
+              "include",
+
+            cache:
+              "no-store"
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (
+        !response.ok ||
+        !data.success
+      ) {
+
+        throw new Error(
+          data.message ||
+          "Logout failed."
+        );
+
+      }
+
+
+      /*
+       * The server has now:
+       *
+       * 1. Invalidated the client session.
+       * 2. Cleared CLIENT_SESSION_V1.
+       *
+       * Now return to client login.
+       */
+
+      window.location.href =
+        "/client-login.html";
+
+
+    } catch (error) {
+
+      logoutButton.disabled =
+        false;
+
+
+      logoutButton.textContent =
+        "Sign Out";
+
+
+      showMessage(
+        error.message ||
+        "Unable to sign out. Please try again.",
+        "error"
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================
+   INITIAL LOAD
+===================================== */
+
+loadContent();
+
+
+</script>
+
+
+</body>
+
+</html>

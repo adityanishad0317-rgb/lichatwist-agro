@@ -1,0 +1,3650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LichaTwist Admin Panel</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --navy:#071a33;
+  --navy2:#10243e;
+  --blue:#1769e0;
+  --green:#07966e;
+  --red:#dc2626;
+  --gold:#c9a227;
+  --page:#e9eef3;
+  --card:#f8fafc;
+  --input:#eef3f7;
+  --text:#16263a;
+  --muted:#667589;
+  --border:#d7e0e8;
+}
+
+html,body{
+  min-height:100%;
+  background:var(--page);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:
+    radial-gradient(circle at 0 0,rgba(201,162,39,.10),transparent 28%),
+    radial-gradient(circle at 100% 10%,rgba(23,105,224,.08),transparent 30%),
+    linear-gradient(135deg,#edf2f6,#e4eaf0);
+}
+
+header{
+  background:linear-gradient(135deg,#071a33,#12365b);
+  color:#fff;
+  border-bottom:3px solid var(--gold);
+  box-shadow:0 10px 30px rgba(7,26,51,.18);
+}
+
+.header-inner{
+  max-width:1100px;
+  margin:auto;
+  padding:18px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+
+header h1{font-size:22px}
+header p{margin-top:5px;color:#cbd5e1;font-size:14px}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+.welcome,
+.card,
+.editor-section{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 10px 28px rgba(16,36,62,.07);
+}
+
+.welcome{
+  padding:22px;
+  margin-bottom:20px;
+}
+
+.welcome h2{margin-bottom:8px}
+.welcome p{color:var(--muted)}
+
+.quick-nav{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:20px;
+}
+
+.quick-nav-title{
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+.quick-nav-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+}
+
+.quick-nav-links button{
+  min-height:auto;
+  padding:9px 12px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+}
+
+.card{
+  padding:20px;
+}
+
+.card h3{
+  margin-bottom:10px;
+  color:var(--navy2);
+}
+
+.card p{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:15px;
+}
+
+.editor-section{
+  padding:22px;
+  margin-top:20px;
+}
+
+.editor-section h2{
+  margin-bottom:7px;
+  color:var(--navy);
+}
+
+.editor-description{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:20px;
+}
+
+.field{
+  margin-bottom:16px;
+}
+
+.field label{
+  display:block;
+  font-weight:700;
+  margin-bottom:7px;
+  color:var(--navy2);
+}
+
+input,textarea,select{
+  width:100%;
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:12px;
+  font:15px Arial,sans-serif;
+  background:var(--input);
+  color:var(--text);
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+input:focus,textarea:focus,select:focus{
+  outline:none;
+  background:#fff;
+  border-color:var(--blue);
+  box-shadow:0 0 0 4px rgba(23,105,224,.10);
+}
+
+.two-column{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.service-box{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:17px;
+  margin-bottom:16px;
+  background:#fbfcfd;
+}
+
+.service-box h3{
+  margin-bottom:15px;
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  min-height:48px;
+  padding:11px 17px;
+  background:linear-gradient(135deg,#1769e0,#0d4fae);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 7px 18px rgba(23,105,224,.18);
+}
+
+button:hover{
+  transform:translateY(-1px);
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.logout{
+  background:linear-gradient(135deg,#dc2626,#991b1b);
+  min-height:44px;
+}
+
+.save-panel{
+  background:#111827;
+  color:#fff;
+  border-radius:18px;
+  padding:22px;
+  margin-top:20px;
+  text-align:center;
+}
+
+.save-panel p{
+  color:#cbd5e1;
+  margin:8px 0 18px;
+}
+
+.save-button{
+  background:linear-gradient(135deg,#07966e,#087b5c);
+  font-size:16px;
+}
+
+.message{
+  display:none;
+  margin-top:14px;
+  padding:12px;
+  border-radius:10px;
+  word-break:break-word;
+}
+
+.success{
+  display:block!important;
+  background:#e5f6ef!important;
+  color:#087b5c!important;
+  border:1px solid #a9dfcc;
+}
+
+.error{
+  display:block!important;
+  background:#fef2f2!important;
+  color:#991b1b!important;
+  border:1px solid #fecaca;
+}
+
+.info{
+  display:block!important;
+  background:#eff6ff!important;
+  color:#1e40af!important;
+  border:1px solid #bfdbfe;
+}
+
+.info-box{
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  color:#1e40af;
+  padding:13px;
+  border-radius:10px;
+  margin-bottom:18px;
+  font-size:14px;
+}
+
+.preview{
+  width:180px;
+  height:100px;
+  object-fit:cover;
+  border-radius:9px;
+  margin-top:7px;
+  border:1px solid var(--border);
+}
+
+.client-toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
+
+.client-list{
+  display:grid;
+  gap:16px;
+}
+
+.client-card{
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px;
+  background:#fbfcfd;
+}
+
+.client-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.client-title{
+  font-size:17px;
+  font-weight:700;
+  color:var(--navy2);
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  margin-left:5px;
+}
+
+.badge-active{
+  background:#e5f6ef;
+  color:#087b5c;
+  border:1px solid #a9dfcc;
+}
+
+.badge-inactive{
+  background:#fef2f2;
+  color:#991b1b;
+  border:1px solid #fecaca;
+}
+
+.badge-temp{
+  background:#fff7ed;
+  color:#9a3412;
+  border:1px solid #fed7aa;
+}
+
+.client-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:8px;
+}
+
+.client-actions button{
+  min-width:145px;
+}
+
+.secondary{
+  background:#475569;
+}
+
+.danger{
+  background:linear-gradient(135deg,#dc2626,#991b1b);
+}
+
+.green{
+  background:linear-gradient(135deg,#059669,#047857);
+}
+
+.temp-box{
+  display:none;
+  margin-top:14px;
+  padding:14px;
+  border-radius:11px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+}
+
+.temp-box strong{color:#9a3412}
+
+.temp-password{
+  margin-top:8px;
+  font-family:monospace;
+  font-weight:700;
+}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  padding:30px 10px;
+}
+
+@media(max-width:700px){
+  .two-column{grid-template-columns:1fr}
+  .header-inner{align-items:flex-start}
+  .quick-nav-links button{width:100%}
+  .client-actions button{width:100%}
+}
+  /* =========================================================
+   LICHATWIST ADMIN PREMIUM CONTROL PANEL THEME
+   VISUAL ONLY
+   DOES NOT CHANGE ADMIN LOGIC
+========================================================= */
+
+:root {
+
+    --admin-blue: #2477e8;
+    --admin-blue-dark: #1554ad;
+
+    --admin-green: #15966d;
+    --admin-green-dark: #08704f;
+
+    --admin-purple: #7957d5;
+    --admin-purple-dark: #5133a5;
+
+    --admin-gold: #d6a83a;
+    --admin-gold-dark: #9d741c;
+
+    --admin-orange: #e27a27;
+    --admin-orange-dark: #ad4e0b;
+
+    --admin-cyan: #159eb5;
+    --admin-cyan-dark: #087486;
+
+    --admin-rose: #c94c78;
+    --admin-rose-dark: #963454;
+
+    --admin-red: #d64c4c;
+    --admin-red-dark: #9e2929;
+
+    --admin-shadow:
+        0 18px 45px rgba(8,28,52,.10);
+
+    --admin-shadow-hover:
+        0 28px 65px rgba(8,28,52,.17);
+}
+
+
+/* =========================================================
+   ADMIN PAGE
+========================================================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/* =========================================================
+   QUICK NAV
+========================================================= */
+
+.quick-nav {
+    position: sticky;
+
+    top: 12px;
+
+    z-index: 20;
+
+    border:
+        1px solid rgba(215,224,232,.9);
+
+    background:
+        rgba(248,250,252,.84);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    box-shadow:
+        0 14px 38px rgba(8,28,52,.09);
+
+    border-radius:
+        20px;
+}
+
+
+.quick-nav-links {
+    gap: 10px;
+}
+
+
+.quick-nav-links button {
+    border:
+        1px solid #d7e0e8;
+
+    border-radius:
+        12px;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+
+.quick-nav-links button:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 24px rgba(8,28,52,.10);
+}
+
+
+/* =========================================================
+   TOP DASHBOARD CARDS
+   FIVE UNIQUE THEMES
+========================================================= */
+
+.quick-nav + .grid {
+    gap: 22px;
+}
+
+
+.quick-nav + .grid > .card {
+    position: relative;
+
+    overflow: hidden;
+
+    min-height: 185px;
+
+    border:
+        1px solid rgba(215,224,232,.95);
+
+    border-radius:
+        24px;
+
+    box-shadow:
+        var(--admin-shadow);
+
+    transition:
+        transform .4s ease,
+        box-shadow .4s ease;
+}
+
+
+.quick-nav + .grid > .card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+
+    height: 5px;
+}
+
+
+.quick-nav + .grid > .card:nth-child(1)::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-blue),
+            #72afff
+        );
+}
+
+
+.quick-nav + .grid > .card:nth-child(2)::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-purple),
+            #aa91ed
+        );
+}
+
+
+.quick-nav + .grid > .card:nth-child(3)::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-green),
+            #59d2ab
+        );
+}
+
+
+.quick-nav + .grid > .card:nth-child(4)::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-orange),
+            #f1a365
+        );
+}
+
+
+.quick-nav + .grid > .card:nth-child(5)::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-red),
+            #f08484
+        );
+}
+
+
+.quick-nav + .grid > .card:hover {
+    transform:
+        translateY(-8px);
+
+    box-shadow:
+        var(--admin-shadow-hover);
+}
+
+
+.quick-nav + .grid > .card:nth-child(1) h3 {
+    color:
+        var(--admin-blue-dark) !important;
+}
+
+
+.quick-nav + .grid > .card:nth-child(2) h3 {
+    color:
+        var(--admin-purple-dark) !important;
+}
+
+
+.quick-nav + .grid > .card:nth-child(3) h3 {
+    color:
+        var(--admin-green-dark) !important;
+}
+
+
+.quick-nav + .grid > .card:nth-child(4) h3 {
+    color:
+        var(--admin-orange-dark) !important;
+}
+
+
+.quick-nav + .grid > .card:nth-child(5) h3 {
+    color:
+        var(--admin-red-dark) !important;
+}
+
+
+/* =========================================================
+   EDITOR SECTIONS
+========================================================= */
+
+.editor-section {
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius:
+        24px !important;
+
+    border:
+        1px solid rgba(215,224,232,.92) !important;
+
+    box-shadow:
+        var(--admin-shadow) !important;
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+}
+
+
+.editor-section::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+
+    height: 5px;
+}
+
+
+.editor-section:hover {
+    box-shadow:
+        var(--admin-shadow-hover) !important;
+}
+
+
+/* OWNER PASSWORD */
+
+#adminPassword::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-red),
+            #f08a8a
+        );
+}
+
+
+/* CLIENT MANAGEMENT */
+
+#clientManagement::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-orange),
+            #f3ad68
+        );
+}
+
+
+/* IMAGES */
+
+#imageManagement::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-green),
+            #62d6b0
+        );
+}
+
+
+/* HOME */
+
+#homeEditor::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-blue),
+            #6ba9ff
+        );
+}
+
+
+/* ABOUT */
+
+#aboutEditor::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-purple),
+            #ad95ed
+        );
+}
+
+
+/* MISSION */
+
+#missionEditor::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-gold),
+            #f2d27c
+        );
+}
+
+
+/* SERVICES */
+
+#servicesEditor::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-green-dark),
+            #48bf96
+        );
+}
+
+
+/* COMPANIES */
+
+#companiesEditor::before {
+    background:
+        linear-gradient(
+            90deg,
+            #10243e,
+            #41698e
+        );
+}
+
+
+/* PROJECTS */
+
+#projectsEditor::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-cyan),
+            #64d2e4
+        );
+}
+
+
+/* CONTACT */
+
+#contactEditor::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-rose),
+            #e58bab
+        );
+}
+
+
+/* SAVE */
+
+#saveEditor::before {
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-green),
+            #72dcb9
+        );
+}
+
+
+/* =========================================================
+   EDITOR HEADINGS
+========================================================= */
+
+.editor-section h2 {
+    letter-spacing:
+        -.5px;
+}
+
+
+.editor-section h2::after {
+    content: "";
+
+    display: block;
+
+    width: 48px;
+
+    height: 3px;
+
+    margin-top: 10px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--admin-blue),
+            var(--admin-gold)
+        );
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.editor-section input,
+.editor-section textarea,
+.editor-section select {
+    border:
+        1px solid #d7e0e8 !important;
+
+    border-radius:
+        13px !important;
+
+    background:
+        #f7fafc !important;
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+}
+
+
+.editor-section input:focus,
+.editor-section textarea:focus,
+.editor-section select:focus {
+    outline:
+        none;
+
+    background:
+        #ffffff !important;
+
+    border-color:
+        var(--admin-blue) !important;
+
+    box-shadow:
+        0 0 0 4px rgba(36,119,232,.10) !important;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.editor-section button {
+    border:
+        0;
+
+    border-radius:
+        13px;
+
+    font-weight:
+        700;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        filter .25s ease;
+}
+
+
+.editor-section button:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 28px rgba(8,28,52,.15);
+
+    filter:
+        brightness(1.04);
+}
+
+
+/* =========================================================
+   STATUS / MESSAGE
+========================================================= */
+
+.message,
+.status {
+    border-radius:
+        14px !important;
+}
+
+
+#status {
+    box-shadow:
+        0 10px 28px rgba(8,28,52,.06);
+}
+
+
+/* =========================================================
+   INFO BOX
+========================================================= */
+
+.info-box {
+    border-radius:
+        14px !important;
+
+    border-left:
+        4px solid var(--admin-blue);
+
+    background:
+        linear-gradient(
+            135deg,
+            #f4f8ff,
+            #eef5ff
+        ) !important;
+}
+
+
+/* =========================================================
+   RECOVERY AREA
+   VISUAL ONLY — NO RECOVERY LOGIC CHANGES
+========================================================= */
+
+#adminRecovery {
+    border-top:
+        0 !important;
+}
+
+
+#adminRecovery::before {
+    background:
+        linear-gradient(
+            90deg,
+            #8b5cf6,
+            #c084fc
+        );
+}
+
+
+#adminRecovery h2::after {
+    background:
+        linear-gradient(
+            90deg,
+            #8b5cf6,
+            #d6a83a
+        );
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .quick-nav {
+        position:
+            relative;
+
+        top:
+            auto;
+    }
+
+
+    .quick-nav-links {
+        display:
+            grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .quick-nav-links button {
+        width:
+            100%;
+    }
+
+
+    .quick-nav + .grid > .card {
+        min-height:
+            160px;
+    }
+
+
+    .editor-section {
+        border-radius:
+            20px !important;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <h1>🔐 LichaTwist Admin Panel</h1>
+      <p>Owner dashboard • Secure administration</p>
+    </div>
+
+    <button
+      type="button"
+      class="logout"
+      onclick="logoutAdmin()">
+      🚪 Log Out
+    </button>
+  </div>
+</header>
+
+<main class="container">
+
+<section class="welcome">
+  <h2>Welcome, Owner</h2>
+  <p>
+    Manage your LichaTwist website, images, security and client accounts.
+  </p>
+</section>
+
+<nav class="quick-nav">
+  <div class="quick-nav-title">Quick Edit</div>
+
+  <div class="quick-nav-links">
+    <button onclick="goTo('clientManagement')">👤 Create Client</button>
+    <button onclick="goTo('clientAccountsManagement')">👥 Manage Clients</button>
+    <button onclick="goTo('imageManagement')">🖼️ Images</button>
+    <button onclick="goTo('homeEditor')">🏠 Home</button>
+    <button onclick="goTo('aboutEditor')">ℹ️ About</button>
+    <button onclick="goTo('missionEditor')">🎯 Mission</button>
+    <button onclick="goTo('servicesEditor')">🛠️ Services</button>
+    <button onclick="goTo('companiesEditor')">🏢 Companies</button>
+    <button onclick="goTo('projectsEditor')">📁 Projects</button>
+    <button onclick="goTo('contactEditor')">📞 Contact</button>
+    <button onclick="goTo('saveEditor')">💾 Save</button>
+  </div>
+</nav>
+
+<section class="grid">
+
+  <div class="card">
+    <h3>🌐 Website</h3>
+    <p>Open and check the public website.</p>
+    <button onclick="openWebsite()">Open Website</button>
+  </div>
+
+  <div class="card">
+    <h3>📝 Content</h3>
+    <p>Manage the complete website content.</p>
+    <button onclick="goTo('homeEditor')">Manage Content</button>
+  </div>
+
+  <div class="card">
+    <h3>🖼️ Images</h3>
+    <p>Upload and replace website images.</p>
+    <button onclick="goTo('imageManagement')">Manage Images</button>
+  </div>
+
+  <div class="card">
+    <h3>👥 Clients</h3>
+    <p>Create and manage client accounts.</p>
+    <button onclick="goTo('clientManagement')">Create Client</button>
+    <button
+      class="secondary"
+      style="margin-top:8px"
+      onclick="goTo('clientAccountsManagement')">
+      Manage Clients
+    </button>
+  </div>
+
+  <div class="card">
+    <h3>🔐 Security</h3>
+    <p>Change the owner administration password.</p>
+    <button onclick="goTo('adminPassword')">Security</button>
+    <button onclick="goTo('themeManagement')">
+  🎨 Theme
+</button>
+  </div>
+
+</section>
+
+<div id="status" class="message info" style="display:block">
+  Admin panel loaded successfully.
+</div>
+
+<!-- OWNER PASSWORD -->
+
+<section class="editor-section" id="adminPassword">
+
+<h2>🔐 Change Admin Password</h2>
+
+<p class="editor-description">
+Change the password used to access the LichaTwist Admin Panel.
+</p>
+
+<div class="info-box">
+Your new password replaces the current admin password.
+Keep it secure.
+</div>
+
+<div class="field">
+<label for="currentAdminPassword">Current Password</label>
+<input
+  id="currentAdminPassword"
+  type="password"
+  autocomplete="current-password"
+  placeholder="Enter current password">
+</div>
+
+<div class="field">
+<label for="newAdminPassword">New Password</label>
+<input
+  id="newAdminPassword"
+  type="password"
+  autocomplete="new-password"
+  placeholder="Enter new password">
+</div>
+
+<div class="field">
+<label for="confirmAdminPassword">Confirm New Password</label>
+<input
+  id="confirmAdminPassword"
+  type="password"
+  autocomplete="new-password"
+  placeholder="Confirm new password">
+</div>
+
+<button onclick="changeAdminPassword()">
+🔑 Change Password
+</button>
+
+<div id="passwordMessage" class="message"></div>
+
+</section>
+
+
+<!-- OWNER RECOVERY KEY -->
+
+<section class="editor-section" id="adminRecovery">
+
+  <h2>🛡️ Owner Password Recovery</h2>
+
+  <p class="editor-description">
+    Set or change the private recovery key that can be used
+    to recover the owner Admin Panel password.
+  </p>
+
+  <div class="info-box">
+    The recovery key is stored securely and is never displayed
+    after it has been saved. Use the hint as a private memory clue.
+    Do not put the actual recovery key inside the hint.
+  </div>
+
+
+  <div class="field">
+
+    <label for="recoveryCurrentPassword">
+      Current Admin Password
+    </label>
+
+    <input
+      id="recoveryCurrentPassword"
+      type="password"
+      autocomplete="current-password"
+      placeholder="Enter your current admin password"
+    >
+
+  </div>
+
+
+  <div class="field">
+
+    <label for="recoveryKey">
+      New Recovery Key
+    </label>
+
+    <input
+      id="recoveryKey"
+      type="password"
+      autocomplete="new-password"
+      minlength="8"
+      maxlength="200"
+      placeholder="Enter a recovery key"
+    >
+
+  </div>
+
+
+  <div class="field">
+
+    <label for="confirmRecoveryKey">
+      Confirm Recovery Key
+    </label>
+
+    <input
+      id="confirmRecoveryKey"
+      type="password"
+      autocomplete="new-password"
+      minlength="8"
+      maxlength="200"
+      placeholder="Confirm the recovery key"
+    >
+
+  </div>
+
+
+  <div class="field">
+
+    <label for="recoveryKeyHint">
+      Recovery Key Hint
+    </label>
+
+    <input
+      id="recoveryKeyHint"
+      type="text"
+      maxlength="200"
+      placeholder="Example: My first business idea"
+    >
+
+  </div>
+
+
+  <button
+    type="button"
+    onclick="saveRecoveryKey()"
+  >
+    🔑 Save Recovery Key & Hint
+  </button>
+
+
+  <div
+    id="recoveryKeyMessage"
+    class="message"
+  ></div>
+
+</section>
+<!-- WEBSITE THEME -->
+
+<section
+  class="editor-section"
+  id="themeManagement">
+
+  <h2>🎨 Website Theme</h2>
+
+  <p class="editor-description">
+    Choose one of the fixed LichaTwist themes.
+    The selected theme will be applied to the public website.
+  </p>
+
+
+  <div class="info-box">
+
+    Theme changes affect the visual appearance only.
+    Your website content, images, clients, passwords and
+    existing settings are not changed.
+
+  </div>
+
+
+  <div class="field">
+
+    <label for="websiteTheme">
+      Select Website Theme
+    </label>
+
+    <select id="websiteTheme">
+
+      <option value="classic">
+        Classic Navy & Gold
+      </option>
+
+      <option value="ocean">
+        Ocean Blue
+      </option>
+
+      <option value="emerald">
+        Emerald Green
+      </option>
+
+      <option value="purple">
+        Royal Purple
+      </option>
+
+      <option value="sunset">
+        Sunset Orange
+      </option>
+
+      <option value="slate">
+        Slate Silver
+      </option>
+
+      <option value="earth">
+        Earth Brown
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <button
+    type="button"
+    onclick="saveWebsiteTheme()">
+
+    🎨 Apply Theme
+
+  </button>
+
+
+  <div
+    id="themeMessage"
+    class="message">
+  </div>
+
+</section>
+
+<!-- CREATE CLIENT -->
+<section class="editor-section" id="clientManagement">
+
+<h2>👤 Create Client Account</h2>
+
+<p class="editor-description">
+Create a client account that can access the client dashboard.
+</p>
+
+<div class="info-box">
+A temporary password will be generated. The client must create a private
+password after the first login.
+</div>
+
+<div class="field">
+<label for="clientName">Client Name</label>
+<input
+  id="clientName"
+  type="text"
+  maxlength="100"
+  autocomplete="name"
+  placeholder="Enter client name">
+</div>
+
+<div class="field">
+<label for="clientEmail">Client Email</label>
+<input
+  id="clientEmail"
+  type="email"
+  autocomplete="email"
+  placeholder="Enter client email">
+</div>
+
+<button onclick="createClientAccount()">
+👤 Create Client Account
+</button>
+
+<div id="clientMessage" class="message"></div>
+
+<div id="temporaryPasswordBox" class="temp-box">
+
+<strong>⚠️ Temporary Client Password</strong>
+
+<p style="margin-top:6px">
+Give this password securely to the client.
+It is shown here only after account creation.
+</p>
+
+<input
+  id="temporaryClientPassword"
+  class="temp-password"
+  type="text"
+  readonly>
+
+</div>
+
+</section>
+
+<!-- MANAGE CLIENTS -->
+
+<section class="editor-section" id="clientAccountsManagement">
+
+<h2>👥 Manage Client Accounts</h2>
+
+<p class="editor-description">
+The owner can view, edit, activate, deactivate and reset client accounts.
+</p>
+
+<div class="info-box">
+Client password resets generate a new temporary password.
+The owner account and owner password are never exposed to clients.
+</div>
+
+<div class="client-toolbar">
+
+<strong id="clientCountLabel">
+Client accounts
+</strong>
+
+<button
+  class="secondary"
+  onclick="loadClientManagement()">
+🔄 Refresh Clients
+</button>
+
+</div>
+
+<div id="clientManagementMessage" class="message"></div>
+
+<div id="clientList" class="client-list">
+<div class="info-box">Loading client accounts...</div>
+</div>
+
+</section>
+
+<!-- IMAGE MANAGEMENT -->
+
+<section class="editor-section" id="imageManagement">
+
+<h2>🖼️ Image Management</h2>
+
+<p class="editor-description">
+Upload and replace images used on the public website.
+Maximum file size: 5 MB.
+</p>
+
+<div id="imageManagementContainer"></div>
+
+</section>
+
+<!-- HOME -->
+
+<section class="editor-section" id="homeEditor">
+
+<h2>🏠 Home / Hero</h2>
+
+<p class="editor-description">
+Edit the main content visitors see on the homepage.
+</p>
+
+<div class="field">
+<label>Hero Title</label>
+<input id="heroTitle">
+</div>
+
+<div class="field">
+<label>Hero Subtitle</label>
+<input id="heroSubtitle">
+</div>
+
+<div class="field">
+<label>Hero Description</label>
+<textarea id="heroDescription"></textarea>
+</div>
+
+<div class="two-column">
+
+<div class="field">
+<label>Approach Card Title</label>
+<input id="approachTitle">
+</div>
+
+<div class="field">
+<label>Approach Card Description</label>
+<textarea id="approachDescription"></textarea>
+</div>
+
+</div>
+
+</section>
+
+<!-- ABOUT -->
+
+<section class="editor-section" id="aboutEditor">
+
+<h2>ℹ️ About LichaTwist</h2>
+
+<div class="field">
+<label>About Heading</label>
+<input id="aboutHeading">
+</div>
+
+<div class="field">
+<label>About Description</label>
+<textarea id="aboutDescription"></textarea>
+</div>
+
+<div class="field">
+<label>Company Description</label>
+<textarea id="about"></textarea>
+</div>
+
+</section>
+
+<!-- MISSION -->
+
+<section class="editor-section" id="missionEditor">
+
+<h2>🎯 Mission, Vision & Values</h2>
+
+<div class="field">
+<label>Mission</label>
+<textarea id="mission"></textarea>
+</div>
+
+<div class="field">
+<label>Vision</label>
+<textarea id="vision"></textarea>
+</div>
+
+<div class="field">
+<label>Values</label>
+<textarea id="valuesText"></textarea>
+</div>
+
+</section>
+
+<!-- SERVICES -->
+
+<section class="editor-section" id="servicesEditor">
+
+<h2>🛠️ Services</h2>
+
+<div class="service-box">
+
+<h3>🌱 Agriculture</h3>
+
+<div class="field">
+<label>Title</label>
+<input id="agricultureTitle">
+</div>
+
+<div class="field">
+<label>Description</label>
+<textarea id="agricultureDescription"></textarea>
+</div>
+
+<div class="field">
+<label>Image Path</label>
+<input id="agricultureImage">
+</div>
+
+</div>
+
+<div class="service-box">
+
+<h3>🏗️ Construction</h3>
+
+<div class="field">
+<label>Title</label>
+<input id="constructionTitle">
+</div>
+
+<div class="field">
+<label>Description</label>
+<textarea id="constructionDescription"></textarea>
+</div>
+
+<div class="field">
+<label>Image Path</label>
+<input id="constructionImage">
+</div>
+
+</div>
+
+<div class="service-box">
+
+<h3>🚚 Transport</h3>
+
+<div class="field">
+<label>Title</label>
+<input id="transportTitle">
+</div>
+
+<div class="field">
+<label>Description</label>
+<textarea id="transportDescription"></textarea>
+</div>
+
+<div class="field">
+<label>Image Path</label>
+<input id="transportImage">
+</div>
+
+</div>
+
+</section>
+
+<!-- COMPANIES -->
+
+<section class="editor-section" id="companiesEditor">
+
+<h2>🏢 Companies</h2>
+
+<div class="service-box">
+
+<h3>LichaTwist Agro</h3>
+
+<div class="field">
+<label>Company Name</label>
+<input id="agroCompanyName">
+</div>
+
+<div class="field">
+<label>Description</label>
+<textarea id="agroCompanyDescription"></textarea>
+</div>
+
+<div class="field">
+<label>Company Image</label>
+<input id="agroCompanyImage" placeholder="images/agro-company.jpg">
+</div>
+
+</div>
+
+<div class="service-box">
+
+<h3>LichaTwist Construction</h3>
+
+<div class="field">
+<label>Company Name</label>
+<input id="constructionCompanyName">
+</div>
+
+<div class="field">
+<label>Description</label>
+<textarea id="constructionCompanyDescription"></textarea>
+</div>
+
+<div class="field">
+<label>Company Image</label>
+<input id="constructionCompanyImage" placeholder="images/construction-company.jpg">
+</div>
+
+</div>
+
+<div class="service-box">
+
+<h3>LichaTwist Transport</h3>
+
+<div class="field">
+<label>Company Name</label>
+<input id="transportCompanyName">
+</div>
+
+<div class="field">
+<label>Description</label>
+<textarea id="transportCompanyDescription"></textarea>
+</div>
+
+<div class="field">
+<label>Company Image</label>
+<input id="transportCompanyImage" placeholder="images/transport-company.jpg">
+</div>
+
+</div>
+
+</section>
+
+<!-- PROJECTS -->
+
+<section class="editor-section" id="projectsEditor">
+
+<h2>📁 Projects</h2>
+
+<div class="field">
+<label>Projects Heading</label>
+<input id="projectsHeading">
+</div>
+
+<div class="field">
+<label>Projects Description</label>
+<textarea id="projectsDescription"></textarea>
+</div>
+
+<div class="service-box">
+
+<h3>🌱 Project 01</h3>
+
+<div class="field">
+<label>Category</label>
+<input id="project1Category">
+</div>
+
+<div class="field">
+<label>Project Title</label>
+<input id="project1Title">
+</div>
+
+<div class="field">
+<label>Project Description</label>
+<textarea id="project1Description"></textarea>
+</div>
+
+<div class="field">
+<label>Project Image</label>
+<input id="project1Image">
+</div>
+
+</div>
+
+<div class="service-box">
+
+<h3>🏗️ Project 02</h3>
+
+<div class="field">
+<label>Category</label>
+<input id="project2Category">
+</div>
+
+<div class="field">
+<label>Project Title</label>
+<input id="project2Title">
+</div>
+
+<div class="field">
+<label>Project Description</label>
+<textarea id="project2Description"></textarea>
+</div>
+
+<div class="field">
+<label>Project Image</label>
+<input id="project2Image">
+</div>
+
+</div>
+
+<div class="service-box">
+
+<h3>🚚 Project 03</h3>
+
+<div class="field">
+<label>Category</label>
+<input id="project3Category">
+</div>
+
+<div class="field">
+<label>Project Title</label>
+<input id="project3Title">
+</div>
+
+<div class="field">
+<label>Project Description</label>
+<textarea id="project3Description"></textarea>
+</div>
+
+<div class="field">
+<label>Project Image</label>
+<input id="project3Image">
+</div>
+
+</div>
+
+</section>
+
+<!-- CONTACT -->
+
+<section class="editor-section" id="contactEditor">
+
+<h2>📞 Contact Information</h2>
+
+<div class="field">
+<label>Business Name</label>
+<input id="businessName">
+</div>
+
+<div class="field">
+<label>Phone Number</label>
+<input id="phone">
+</div>
+
+<div class="field">
+<label>Email Address</label>
+<input id="email">
+</div>
+
+<div class="field">
+<label>WhatsApp Number</label>
+<input id="whatsapp">
+</div>
+
+<div class="field">
+<label>Address / Location</label>
+<textarea id="address"></textarea>
+</div>
+
+</section>
+
+<!-- SAVE -->
+
+<section class="save-panel" id="saveEditor">
+
+<h2>💾 Save All Website Changes</h2>
+
+<p>
+Save everything you've changed above to the secure database.
+</p>
+
+<button
+  class="save-button"
+  onclick="saveAllContent()">
+💾 Save All Changes
+</button>
+
+<div id="editorMessage" class="message"></div>
+
+</section>
+
+</main>
+
+<footer>
+LichaTwist Website • Owner Administration Panel
+</footer>
+
+<script>
+
+/* =========================================
+   GENERAL HELPERS
+========================================= */
+
+function goTo(id){
+  const element=document.getElementById(id);
+
+  if(element){
+    element.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+}
+
+function openWebsite(){
+  window.open(
+    "https://lichatwist-website.pages.dev",
+    "_blank"
+  );
+}
+
+function setValue(id,value){
+  const element=document.getElementById(id);
+
+  if(element){
+    element.value=value ?? "";
+  }
+}
+
+function getValue(id){
+  const element=document.getElementById(id);
+
+  return element
+    ? element.value
+    : "";
+}
+
+function showMessage(id,text,type){
+  const element=document.getElementById(id);
+
+  if(!element){
+    return;
+  }
+
+  element.className="message "+type;
+  element.textContent=text;
+}
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+async function logoutAdmin(){
+
+  try{
+
+    const response=await fetch(
+      "/api/logout",
+      {
+        method:"GET",
+        credentials:"include"
+      }
+    );
+
+    if(!response.ok){
+      throw new Error();
+    }
+
+    window.location.href="/admin-login.html";
+
+  }catch(error){
+
+    alert(
+      "Unable to log out. Please try again."
+    );
+
+  }
+}
+
+
+/* =========================================
+   CREATE CLIENT
+========================================= */
+
+async function createClientAccount(){
+
+  const nameInput=
+    document.getElementById("clientName");
+
+  const emailInput=
+    document.getElementById("clientEmail");
+
+  const name=nameInput.value.trim();
+  const email=emailInput.value.trim();
+
+  document.getElementById(
+    "temporaryPasswordBox"
+  ).style.display="none";
+
+  if(!name){
+    showMessage(
+      "clientMessage",
+      "Please enter the client name.",
+      "error"
+    );
+    return;
+  }
+
+  if(!email){
+    showMessage(
+      "clientMessage",
+      "Please enter the client email.",
+      "error"
+    );
+    return;
+  }
+
+  showMessage(
+    "clientMessage",
+    "Creating client account...",
+    "info"
+  );
+
+  try{
+
+    const response=await fetch(
+      "/api/create-client",
+      {
+        method:"POST",
+        credentials:"include",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          name:name,
+          email:email
+        })
+      }
+    );
+
+    const data=await response.json();
+
+    if(!response.ok || !data.success){
+      throw new Error(
+        data.message ||
+        "Unable to create client account."
+      );
+    }
+
+    showMessage(
+      "clientMessage",
+      "✓ Client account created successfully.",
+      "success"
+    );
+
+    document.getElementById(
+      "temporaryClientPassword"
+    ).value=
+      data.temporaryPassword || "";
+
+    document.getElementById(
+      "temporaryPasswordBox"
+    ).style.display="block";
+
+    nameInput.value="";
+    emailInput.value="";
+
+    /*
+     * The create-client operation is kept
+     * independent from the management list.
+     *
+     * This preserves the original working
+     * client creation behavior.
+     */
+
+  }catch(error){
+
+    showMessage(
+      "clientMessage",
+      error.message ||
+      "Unable to create client account.",
+      "error"
+    );
+
+  }
+}
+
+
+/* =========================================
+   ADMIN PASSWORD
+========================================= */
+
+async function changeAdminPassword(){
+
+  const currentPassword=
+    getValue("currentAdminPassword");
+
+  const newPassword=
+    getValue("newAdminPassword");
+
+  const confirmPassword=
+    getValue("confirmAdminPassword");
+
+  if(!currentPassword){
+    showMessage(
+      "passwordMessage",
+      "Please enter your current password.",
+      "error"
+    );
+    return;
+  }
+
+  if(!newPassword){
+    showMessage(
+      "passwordMessage",
+      "Please enter a new password.",
+      "error"
+    );
+    return;
+  }
+
+  if(newPassword.length<8){
+    showMessage(
+      "passwordMessage",
+      "New password must be at least 8 characters.",
+      "error"
+    );
+    return;
+  }
+
+  if(newPassword!==confirmPassword){
+    showMessage(
+      "passwordMessage",
+      "New passwords do not match.",
+      "error"
+    );
+    return;
+  }
+
+  showMessage(
+    "passwordMessage",
+    "Changing password...",
+    "info"
+  );
+
+  try{
+
+    const response=await fetch(
+      "/api/change-password",
+      {
+        method:"POST",
+        credentials:"include",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          currentPassword:currentPassword,
+          newPassword:newPassword
+        })
+      }
+    );
+
+    const data=await response.json();
+
+    if(!response.ok || !data.success){
+      throw new Error(
+        data.message ||
+        "Unable to change password."
+      );
+    }
+
+    showMessage(
+      "passwordMessage",
+      "✓ Password changed successfully. Please log in again.",
+      "success"
+    );
+
+    setValue("currentAdminPassword","");
+    setValue("newAdminPassword","");
+    setValue("confirmAdminPassword","");
+
+    setTimeout(function(){
+      window.location.href="/admin-login.html";
+    },1500);
+
+  }catch(error){
+
+    showMessage(
+      "passwordMessage",
+      error.message ||
+      "Unable to connect to password service.",
+      "error"
+    );
+
+  }
+}
+
+/* =========================================
+   OWNER RECOVERY KEY
+========================================= */
+
+async function saveRecoveryKey(){
+
+  const currentPassword =
+    getValue("recoveryCurrentPassword");
+
+  const recoveryKey =
+    getValue("recoveryKey").trim();
+
+  const confirmRecoveryKey =
+    getValue("confirmRecoveryKey").trim();
+
+  const recoveryKeyHint =
+    getValue("recoveryKeyHint").trim();
+
+
+  if(!currentPassword){
+
+    showMessage(
+      "recoveryKeyMessage",
+      "Please enter your current admin password.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(!recoveryKey){
+
+    showMessage(
+      "recoveryKeyMessage",
+      "Please enter a recovery key.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(recoveryKey.length < 8){
+
+    showMessage(
+      "recoveryKeyMessage",
+      "Recovery key must be at least 8 characters.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(recoveryKey !== confirmRecoveryKey){
+
+    showMessage(
+      "recoveryKeyMessage",
+      "Recovery keys do not match.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(!recoveryKeyHint){
+
+    showMessage(
+      "recoveryKeyMessage",
+      "Please enter a recovery key hint.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    recoveryKeyHint.length < 3
+  ){
+
+    showMessage(
+      "recoveryKeyMessage",
+      "Recovery key hint is too short.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    recoveryKeyHint.length > 200
+  ){
+
+    showMessage(
+      "recoveryKeyMessage",
+      "Recovery key hint is too long.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  showMessage(
+    "recoveryKeyMessage",
+    "Saving recovery key...",
+    "info"
+  );
+
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/admin-recovery-key",
+        {
+          method:
+            "POST",
+
+          credentials:
+            "include",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              currentPassword:
+                currentPassword,
+
+              recoveryKey:
+                recoveryKey,
+
+              recoveryKeyHint:
+                recoveryKeyHint
+            })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if(
+      !response.ok ||
+      !data.success
+    ){
+
+      throw new Error(
+        data.message ||
+        "Unable to save recovery key."
+      );
+
+    }
+
+
+    showMessage(
+      "recoveryKeyMessage",
+      "✓ Recovery key and hint saved successfully.",
+      "success"
+    );
+
+
+    setValue(
+      "recoveryCurrentPassword",
+      ""
+    );
+
+    setValue(
+      "recoveryKey",
+      ""
+    );
+
+    setValue(
+      "confirmRecoveryKey",
+      ""
+    );
+
+
+  }catch(error){
+
+    showMessage(
+      "recoveryKeyMessage",
+      error.message ||
+      "Unable to connect to recovery service.",
+      "error"
+    );
+
+  }
+
+}
+  /* =========================================
+   WEBSITE THEME MANAGEMENT
+========================================= */
+
+async function loadWebsiteTheme(){
+
+  const select =
+    document.getElementById(
+      "websiteTheme"
+    );
+
+
+  if(!select){
+
+    return;
+
+  }
+
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/theme",
+        {
+          method:
+            "GET",
+
+          credentials:
+            "include",
+
+          cache:
+            "no-store"
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if(
+      response.ok &&
+      data.success &&
+      data.theme
+    ){
+
+      select.value =
+        data.theme;
+
+    }
+
+
+  }catch(error){
+
+    console.log(
+      "Unable to load website theme.",
+      error
+    );
+
+  }
+
+}
+
+
+async function saveWebsiteTheme(){
+
+  const select =
+    document.getElementById(
+      "websiteTheme"
+    );
+
+
+  if(!select){
+
+    return;
+
+  }
+
+
+  const theme =
+    select.value;
+
+
+  showMessage(
+    "themeMessage",
+    "Applying website theme...",
+    "info"
+  );
+
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/theme",
+        {
+          method:
+            "POST",
+
+          credentials:
+            "include",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              theme:
+                theme
+            })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if(
+      !response.ok ||
+      !data.success
+    ){
+
+      throw new Error(
+        data.message ||
+        "Unable to update website theme."
+      );
+
+    }
+
+
+    showMessage(
+      "themeMessage",
+      "✓ Website theme updated successfully.",
+      "success"
+    );
+
+
+  }catch(error){
+
+    showMessage(
+      "themeMessage",
+      error.message ||
+      "Unable to update website theme.",
+      "error"
+    );
+
+  }
+
+}
+/* =========================================
+   LOAD WEBSITE CONTENT
+========================================= */
+
+async function loadContent(){
+
+  const message=
+    document.getElementById("editorMessage");
+
+  try{
+
+    const response=await fetch(
+      "/api/content",
+      {
+        method:"GET",
+        credentials:"include",
+        cache:"no-store"
+      }
+    );
+
+    const data=await response.json();
+
+    if(!response.ok || !data.success){
+      throw new Error(
+        data.message ||
+        "Unable to load content."
+      );
+    }
+
+    const c=data.content || {};
+
+    const fields={
+      businessName:c.business_name,
+      phone:c.phone,
+      email:c.email,
+      whatsapp:c.whatsapp,
+      address:c.address,
+      about:c.about,
+
+      heroTitle:c.hero_title,
+      heroSubtitle:c.hero_subtitle,
+      heroDescription:c.hero_description,
+      approachTitle:c.approach_title,
+      approachDescription:c.approach_description,
+
+      aboutHeading:c.about_heading,
+      aboutDescription:c.about_description,
+
+      mission:c.mission,
+      vision:c.vision,
+      valuesText:c.values_text,
+
+      agricultureTitle:c.agriculture_title,
+      agricultureDescription:c.agriculture_description,
+      agricultureImage:c.agriculture_image,
+
+      constructionTitle:c.construction_title,
+      constructionDescription:c.construction_description,
+      constructionImage:c.construction_image,
+
+      transportTitle:c.transport_title,
+      transportDescription:c.transport_description,
+      transportImage:c.transport_image,
+
+      agroCompanyName:c.agro_company_name,
+      agroCompanyDescription:c.agro_company_description,
+      agroCompanyImage:c.agro_company_image,
+
+      constructionCompanyName:c.construction_company_name,
+      constructionCompanyDescription:c.construction_company_description,
+      constructionCompanyImage:c.construction_company_image,
+
+      transportCompanyName:c.transport_company_name,
+      transportCompanyDescription:c.transport_company_description,
+      transportCompanyImage:c.transport_company_image,
+
+      projectsHeading:c.projects_heading,
+      projectsDescription:c.projects_description,
+
+      project1Category:c.project1_category,
+      project1Title:c.project1_title,
+      project1Description:c.project1_description,
+      project1Image:c.project1_image,
+
+      project2Category:c.project2_category,
+      project2Title:c.project2_title,
+      project2Description:c.project2_description,
+      project2Image:c.project2_image,
+
+      project3Category:c.project3_category,
+      project3Title:c.project3_title,
+      project3Description:c.project3_description,
+      project3Image:c.project3_image
+    };
+
+    Object.entries(fields).forEach(
+      ([id,value])=>{
+        setValue(id,value);
+      }
+    );
+
+  }catch(error){
+
+    showMessage(
+      "editorMessage",
+      "Unable to load saved website information.",
+      "error"
+    );
+
+  }
+}
+
+
+/* =========================================
+   SAVE WEBSITE CONTENT
+========================================= */
+
+async function saveAllContent(){
+
+  showMessage(
+    "editorMessage",
+    "Saving website changes...",
+    "info"
+  );
+
+  const data={
+
+    businessName:getValue("businessName"),
+    phone:getValue("phone"),
+    email:getValue("email"),
+    whatsapp:getValue("whatsapp"),
+    address:getValue("address"),
+    about:getValue("about"),
+
+    heroTitle:getValue("heroTitle"),
+    heroSubtitle:getValue("heroSubtitle"),
+    heroDescription:getValue("heroDescription"),
+
+    approachTitle:getValue("approachTitle"),
+    approachDescription:getValue("approachDescription"),
+
+    aboutHeading:getValue("aboutHeading"),
+    aboutDescription:getValue("aboutDescription"),
+
+    mission:getValue("mission"),
+    vision:getValue("vision"),
+    valuesText:getValue("valuesText"),
+
+    agricultureTitle:getValue("agricultureTitle"),
+    agricultureDescription:getValue("agricultureDescription"),
+    agricultureImage:getValue("agricultureImage"),
+
+    constructionTitle:getValue("constructionTitle"),
+    constructionDescription:getValue("constructionDescription"),
+    constructionImage:getValue("constructionImage"),
+
+    transportTitle:getValue("transportTitle"),
+    transportDescription:getValue("transportDescription"),
+    transportImage:getValue("transportImage"),
+
+    agroCompanyName:getValue("agroCompanyName"),
+    agroCompanyDescription:getValue("agroCompanyDescription"),
+    agroCompanyImage:getValue("agroCompanyImage"),
+
+    constructionCompanyName:getValue("constructionCompanyName"),
+    constructionCompanyDescription:getValue("constructionCompanyDescription"),
+    constructionCompanyImage:getValue("constructionCompanyImage"),
+
+    transportCompanyName:getValue("transportCompanyName"),
+    transportCompanyDescription:getValue("transportCompanyDescription"),
+    transportCompanyImage:getValue("transportCompanyImage"),
+
+    projectsHeading:getValue("projectsHeading"),
+    projectsDescription:getValue("projectsDescription"),
+
+    project1Category:getValue("project1Category"),
+    project1Title:getValue("project1Title"),
+    project1Description:getValue("project1Description"),
+    project1Image:getValue("project1Image"),
+
+    project2Category:getValue("project2Category"),
+    project2Title:getValue("project2Title"),
+    project2Description:getValue("project2Description"),
+    project2Image:getValue("project2Image"),
+
+    project3Category:getValue("project3Category"),
+    project3Title:getValue("project3Title"),
+    project3Description:getValue("project3Description"),
+    project3Image:getValue("project3Image")
+  };
+
+  try{
+
+    const response=await fetch(
+      "/api/content",
+      {
+        method:"POST",
+        credentials:"include",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify(data)
+      }
+    );
+
+    const result=await response.json();
+
+    if(!response.ok || !result.success){
+      throw new Error(
+        result.message ||
+        "Unable to save changes."
+      );
+    }
+
+    showMessage(
+      "editorMessage",
+      "✓ All website changes saved successfully.",
+      "success"
+    );
+
+  }catch(error){
+
+    showMessage(
+      "editorMessage",
+      error.message ||
+      "Unable to save changes. Please try again.",
+      "error"
+    );
+
+  }
+}
+
+
+/* =========================================
+   IMAGE MANAGEMENT UI
+========================================= */
+
+const imageDefinitions=[
+
+  ["hero","Hero Image","heroImageFile","heroImage","/images/hero.jpg"],
+
+  ["about","About Image","aboutImageFile","aboutImage","/images/office.jpg"],
+
+  ["agriculture","Agriculture Image","agricultureImageFile","agricultureImage","/images/agriculture.jpg"],
+
+  ["construction","Construction Image","constructionImageFile","constructionImage","/images/construction.jpg"],
+
+  ["transport","Transport Image","transportImageFile","transportImage","/images/transport.jpg"],
+
+  ["agroCompany","Agro Company Image","agroCompanyImageFile","agroCompanyImage","/images/agro-company.jpg"],
+
+  ["constructionCompany","Construction Company Image","constructionCompanyImageFile","constructionCompanyImage","/images/construction-company.jpg"],
+
+  ["transportCompany","Transport Company Image","transportCompanyImageFile","transportCompanyImage","/images/transport-company.jpg"],
+
+  ["project1","Project 1 Image","project1ImageFile","project1Image","/images/project1.jpg"],
+
+  ["project2","Project 2 Image","project2ImageFile","project2Image","/images/project2.jpg"],
+
+  ["project3","Project 3 Image","project3ImageFile","project3Image","/images/project3.jpg"]
+
+];
+
+function buildImageManagement(){
+
+  const container=
+    document.getElementById(
+      "imageManagementContainer"
+    );
+
+  container.innerHTML="";
+
+  imageDefinitions.forEach(
+    function(item){
+
+      const type=item[0];
+      const title=item[1];
+      const fileId=item[2];
+      const fieldId=item[3];
+      const image=item[4];
+
+      container.insertAdjacentHTML(
+        "beforeend",
+        `
+        <div class="service-box">
+
+          <h3>🖼️ ${escapeHtml(title)}</h3>
+
+          <div class="field">
+
+            <label>Select Image</label>
+
+            <input
+              type="file"
+              id="${fileId}"
+              accept="image/jpeg,image/png,image/webp">
+
+            <div style="margin-top:10px">
+
+              <small>Current Image</small><br>
+
+              <img
+                id="${fileId}Preview"
+                class="preview"
+                src="${image}"
+                alt="${escapeHtml(title)}">
+
+            </div>
+
+          </div>
+
+          <div class="field">
+
+            <label>Image Path</label>
+
+            <input
+              id="${fieldId}"
+              type="text">
+
+          </div>
+
+          <button
+            type="button"
+            onclick="uploadWebsiteImage(
+              '${type}',
+              '${fileId}',
+              '${fieldId}',
+              '${fileId}Message'
+            )">
+            Upload ${escapeHtml(title)}
+          </button>
+
+          <div
+            id="${fileId}Message"
+            class="message">
+          </div>
+
+        </div>
+        `
+      );
+
+    }
+  );
+
+  imageDefinitions.forEach(
+    function(item){
+
+      const fileId=item[2];
+
+      const input=
+        document.getElementById(fileId);
+
+      const preview=
+        document.getElementById(
+          fileId+"Preview"
+        );
+
+      if(!input || !preview){
+        return;
+      }
+
+      input.addEventListener(
+        "change",
+        function(){
+
+          const file=this.files[0];
+
+          if(!file){
+            return;
+          }
+
+          if(!file.type.startsWith("image/")){
+            return;
+          }
+
+          const reader=new FileReader();
+
+          reader.onload=function(event){
+            preview.src=event.target.result;
+          };
+
+          reader.readAsDataURL(file);
+
+        }
+      );
+
+    }
+  );
+}
+
+
+/* =========================================
+   UPLOAD WEBSITE IMAGE
+========================================= */
+
+async function uploadWebsiteImage(
+  imageType,
+  fileInputId,
+  targetFieldId,
+  messageId
+){
+
+  const fileInput=
+    document.getElementById(fileInputId);
+
+  if(!fileInput || !fileInput.files.length){
+
+    showMessage(
+      messageId,
+      "Please select an image first.",
+      "error"
+    );
+
+    return;
+  }
+
+  const file=fileInput.files[0];
+
+  if(file.size>5*1024*1024){
+
+    showMessage(
+      messageId,
+      "Image must be smaller than 5 MB.",
+      "error"
+    );
+
+    return;
+  }
+
+  const allowed=[
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+  ];
+
+  if(!allowed.includes(file.type)){
+
+    showMessage(
+      messageId,
+      "Only JPG, PNG and WebP images are allowed.",
+      "error"
+    );
+
+    return;
+  }
+
+  showMessage(
+    messageId,
+    "Uploading image...",
+    "info"
+  );
+
+  const formData=new FormData();
+
+  formData.append("image",file);
+  formData.append("imageType",imageType);
+
+  try{
+
+    const response=await fetch(
+      "/api/upload-image",
+      {
+        method:"POST",
+        credentials:"include",
+        body:formData
+      }
+    );
+
+    const data=await response.json();
+
+    if(!response.ok || !data.success){
+
+      throw new Error(
+        data.message ||
+        "Image upload failed."
+      );
+
+    }
+
+    if(data.path){
+
+      setValue(
+        targetFieldId,
+        data.path
+      );
+
+      const preview=
+        document.getElementById(
+          fileInputId+"Preview"
+        );
+
+      if(preview){
+
+        preview.src=
+          data.path+
+          (data.path.includes("?")
+            ? "&"
+            : "?")+
+          "v="+Date.now();
+
+      }
+
+    }
+
+    fileInput.value="";
+
+    showMessage(
+      messageId,
+      "✓ Image uploaded successfully.",
+      "success"
+    );
+
+  }catch(error){
+
+    showMessage(
+      messageId,
+      error.message ||
+      "Unable to upload image.",
+      "error"
+    );
+
+  }
+}
+
+
+/* =========================================
+   CLIENT MANAGEMENT
+========================================= */
+
+async function loadClientManagement(){
+
+  const list=
+    document.getElementById("clientList");
+
+  const count=
+    document.getElementById(
+      "clientCountLabel"
+    );
+
+  list.innerHTML=
+    '<div class="info-box">Loading client accounts...</div>';
+
+  try{
+
+    const response=await fetch(
+      "/api/client-management",
+      {
+        method:"GET",
+        credentials:"include",
+        cache:"no-store"
+      }
+    );
+
+    const data=await response.json();
+
+    if(!response.ok || !data.success){
+
+      throw new Error(
+        data.message ||
+        "Unable to load client accounts."
+      );
+
+    }
+
+    const clients=
+      Array.isArray(data.clients)
+        ? data.clients
+        : [];
+
+    count.textContent=
+      clients.length===1
+        ? "1 client account"
+        : `${clients.length} client accounts`;
+
+    if(!clients.length){
+
+      list.innerHTML=
+        '<div class="info-box">No client accounts found yet.</div>';
+
+      return;
+    }
+
+    list.innerHTML=
+      clients.map(
+        function(client){
+
+          const id=Number(client.id);
+
+          const active=
+            client.status==="active";
+
+          const mustChange=
+            Number(
+              client.must_change_password
+            )===1;
+
+          return `
+
+          <article class="client-card">
+
+            <div class="client-header">
+
+              <div class="client-title">
+                Client #${id}
+              </div>
+
+              <div>
+
+                <span class="badge ${
+                  active
+                    ? "badge-active"
+                    : "badge-inactive"
+                }">
+                  ${active?"Active":"Inactive"}
+                </span>
+
+                ${
+                  mustChange
+                    ? `
+                      <span class="badge badge-temp">
+                        Temporary password required
+                      </span>
+                    `
+                    : ""
+                }
+
+              </div>
+
+            </div>
+
+            <div class="two-column">
+
+              <div class="field">
+
+                <label>
+                  Client Name
+                </label>
+
+                <input
+                  id="client-name-${id}"
+                  type="text"
+                  maxlength="100"
+                  value="${escapeHtml(client.name)}">
+
+              </div>
+
+              <div class="field">
+
+                <label>
+                  Client Email
+                </label>
+
+                <input
+                  id="client-email-${id}"
+                  type="email"
+                  value="${escapeHtml(client.email)}">
+
+              </div>
+
+            </div>
+
+            <div class="client-actions">
+
+              <button
+                class="green"
+                onclick="updateClientAccount(${id})">
+                💾 Save Client
+              </button>
+
+              ${
+                active
+                  ? `
+                    <button
+                      class="danger"
+                      onclick="changeClientStatus(${id},'inactive')">
+                      ⛔ Deactivate
+                    </button>
+                  `
+                  : `
+                    <button
+                      class="green"
+                      onclick="changeClientStatus(${id},'active')">
+                      ✅ Activate
+                    </button>
+                  `
+              }
+
+              <button
+                class="secondary"
+                onclick="resetClientPassword(${id})"
+                ${active?"":"disabled"}>
+                🔑 Reset Password
+              </button>
+<button
+  class="danger"
+  onclick="deleteClientAccount(${id})">
+  🗑️ Delete Client
+</button>
+            </div>
+
+            <div
+              id="clientResetBox-${id}"
+              class="temp-box">
+
+              <strong>
+                ⚠️ New Temporary Password
+              </strong>
+
+              <p style="margin-top:6px">
+                Give this password securely to the client.
+              </p>
+
+              <input
+                id="clientResetPassword-${id}"
+                class="temp-password"
+                type="text"
+                readonly>
+
+            </div>
+
+          </article>
+
+          `;
+
+        }
+      ).join("");
+
+  }catch(error){
+
+    list.innerHTML="";
+
+    showMessage(
+      "clientManagementMessage",
+      error.message ||
+      "Unable to load client accounts.",
+      "error"
+    );
+
+  }
+}
+
+
+async function updateClientAccount(clientId){
+
+  const nameInput=
+    document.getElementById(
+      "client-name-"+clientId
+    );
+
+  const emailInput=
+    document.getElementById(
+      "client-email-"+clientId
+    );
+
+  const name=nameInput.value.trim();
+  const email=emailInput.value.trim();
+
+  if(!name){
+
+    showMessage(
+      "clientManagementMessage",
+      "Client name is required.",
+      "error"
+    );
+
+    return;
+  }
+
+  if(!email){
+
+    showMessage(
+      "clientManagementMessage",
+      "Client email is required.",
+      "error"
+    );
+
+    return;
+  }
+
+  showMessage(
+    "clientManagementMessage",
+    "Saving client information...",
+    "info"
+  );
+
+  try{
+
+    const response=await fetch(
+      "/api/client-management",
+      {
+        method:"POST",
+        credentials:"include",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          action:"update",
+          id:clientId,
+          name:name,
+          email:email
+        })
+      }
+    );
+
+    const data=await response.json();
+
+    if(!response.ok || !data.success){
+
+      throw new Error(
+        data.message ||
+        "Unable to update client."
+      );
+
+    }
+
+    showMessage(
+      "clientManagementMessage",
+      "✓ Client information updated successfully.",
+      "success"
+    );
+
+    await loadClientManagement();
+
+  }catch(error){
+
+    showMessage(
+      "clientManagementMessage",
+      error.message ||
+      "Unable to update client.",
+      "error"
+    );
+
+  }
+}
+
+
+async function changeClientStatus(
+  clientId,
+  status
+){
+
+  const actionText=
+    status==="active"
+      ? "activate"
+      : "deactivate";
+
+  if(!confirm(
+    `Are you sure you want to ${actionText} this client account?`
+  )){
+    return;
+  }
+
+  showMessage(
+    "clientManagementMessage",
+    `${status==="active"?"Activating":"Deactivating"} client account...`,
+    "info"
+  );
+
+  try{
+
+    const response=await fetch(
+      "/api/client-management",
+      {
+        method:"POST",
+        credentials:"include",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          action:"status",
+          id:clientId,
+          status:status
+        })
+      }
+    );
+
+    const data=await response.json();
+
+    if(!response.ok || !data.success){
+
+      throw new Error(
+        data.message ||
+        "Unable to change client status."
+      );
+
+    }
+
+    showMessage(
+      "clientManagementMessage",
+      "✓ "+
+      (
+        data.message ||
+        "Client status updated successfully."
+      ),
+      "success"
+    );
+
+    await loadClientManagement();
+
+  }catch(error){
+
+    showMessage(
+      "clientManagementMessage",
+      error.message ||
+      "Unable to change client status.",
+      "error"
+    );
+
+  }
+}
+
+
+async function resetClientPassword(clientId){
+
+  if(!confirm(
+    "Reset this client's password? Their existing client sessions will be invalidated and they will need to choose a new password."
+  )){
+    return;
+  }
+
+  showMessage(
+    "clientManagementMessage",
+    "Generating a new temporary password...",
+    "info"
+  );
+
+  try{
+
+    const response=await fetch(
+      "/api/client-management",
+      {
+        method:"POST",
+        credentials:"include",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          action:"reset-password",
+          id:clientId
+        })
+      }
+    );
+
+    const data=await response.json();
+
+    if(!response.ok || !data.success){
+
+      throw new Error(
+        data.message ||
+        "Unable to reset client password."
+      );
+
+    }
+
+    await loadClientManagement();
+
+    const box=
+      document.getElementById(
+        "clientResetBox-"+clientId
+      );
+
+    const password=
+      document.getElementById(
+        "clientResetPassword-"+clientId
+      );
+
+    if(box && password){
+
+      password.value=
+        data.temporaryPassword || "";
+
+      box.style.display="block";
+
+      box.scrollIntoView({
+        behavior:"smooth",
+        block:"nearest"
+      });
+
+    }
+
+    showMessage(
+      "clientManagementMessage",
+      "✓ Client password reset successfully. Give the temporary password to the client securely.",
+      "success"
+    );
+
+  }catch(error){
+
+    showMessage(
+      "clientManagementMessage",
+      error.message ||
+      "Unable to reset client password.",
+      "error"
+    );
+
+  }
+}
+
+  /* =========================================
+   DELETE CLIENT
+========================================= */
+
+async function deleteClientAccount(
+  clientId
+){
+
+  const firstConfirm =
+    confirm(
+      "WARNING: This will permanently delete this client account. Continue?"
+    );
+
+
+  if(!firstConfirm){
+
+    return;
+
+  }
+
+
+  const secondConfirm =
+    confirm(
+      "This action cannot be undone. Delete this client permanently?"
+    );
+
+
+  if(!secondConfirm){
+
+    return;
+
+  }
+
+
+  showMessage(
+    "clientManagementMessage",
+    "Deleting client account...",
+    "info"
+  );
+
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/delete-client",
+        {
+          method:
+            "POST",
+
+          credentials:
+            "include",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              id:
+                clientId
+            })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if(
+      !response.ok ||
+      !data.success
+    ){
+
+      throw new Error(
+        data.message ||
+        "Unable to delete client account."
+      );
+
+    }
+
+
+    showMessage(
+      "clientManagementMessage",
+      "✓ "+
+      (
+        data.message ||
+        "Client account deleted successfully."
+      ),
+      "success"
+    );
+
+
+    await loadClientManagement();
+
+
+  }catch(error){
+
+    showMessage(
+      "clientManagementMessage",
+      error.message ||
+      "Unable to delete client account.",
+      "error"
+    );
+
+  }
+
+}
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+buildImageManagement();
+loadContent();
+loadClientManagement();
+loadWebsiteTheme();
+</script>
+
+</body>
+</html>

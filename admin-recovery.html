@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>LichaTwist Owner Password Recovery</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+
+      margin: 0;
+
+      min-height: 100vh;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 20px;
+
+      font-family:
+        Arial,
+        sans-serif;
+
+      background:
+        linear-gradient(
+          135deg,
+          #edf2f6,
+          #e4eaf0
+        );
+
+      color:
+        #16263a;
+    }
+
+
+    .box {
+
+      width:
+        min(100%, 440px);
+
+      background:
+        #ffffff;
+
+      border:
+        1px solid #d7e0e8;
+
+      border-radius:
+        18px;
+
+      padding:
+        28px;
+
+      box-shadow:
+        0 12px 35px
+        rgba(16,36,62,.10);
+    }
+
+
+    h1 {
+
+      margin:
+        0 0 8px;
+
+      color:
+        #071a33;
+
+      font-size:
+        25px;
+    }
+
+
+    .subtitle {
+
+      margin:
+        0 0 22px;
+
+      color:
+        #667589;
+
+      line-height:
+        1.5;
+
+      font-size:
+        14px;
+    }
+
+
+    label {
+
+      display:
+        block;
+
+      margin:
+        16px 0 7px;
+
+      color:
+        #071a33;
+
+      font-size:
+        14px;
+
+      font-weight:
+        700;
+    }
+
+
+    input {
+
+      width:
+        100%;
+
+      min-height:
+        46px;
+
+      padding:
+        12px;
+
+      border:
+        1px solid #cfd9e3;
+
+      border-radius:
+        10px;
+
+      background:
+        #f8fafc;
+
+      font-size:
+        15px;
+    }
+
+
+    input:focus {
+
+      outline:
+        none;
+
+      background:
+        #ffffff;
+
+      border-color:
+        #1769e0;
+
+      box-shadow:
+        0 0 0 4px
+        rgba(23,105,224,.10);
+    }
+
+
+    .hint {
+
+      margin-top:
+        8px;
+
+      padding:
+        11px;
+
+      border-radius:
+        9px;
+
+      background:
+        #eef3f7;
+
+      color:
+        #536477;
+
+      font-size:
+        12px;
+
+      line-height:
+        1.5;
+    }
+
+
+    button {
+
+      width:
+        100%;
+
+      min-height:
+        48px;
+
+      margin-top:
+        20px;
+
+      border:
+        0;
+
+      border-radius:
+        11px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #1769e0,
+          #0d4fae
+        );
+
+      color:
+        white;
+
+      font-size:
+        15px;
+
+      font-weight:
+        700;
+
+      cursor:
+        pointer;
+    }
+
+
+    button:disabled {
+
+      opacity:
+        .65;
+
+      cursor:
+        wait;
+    }
+
+
+    .back {
+
+      display:
+        block;
+
+      margin-top:
+        16px;
+
+      text-align:
+        center;
+
+      color:
+        #1769e0;
+
+      text-decoration:
+        none;
+
+      font-size:
+        13px;
+    }
+
+
+    .message {
+
+      display:
+        none;
+
+      margin-top:
+        16px;
+
+      padding:
+        12px;
+
+      border-radius:
+        10px;
+
+      font-size:
+        13px;
+
+      line-height:
+        1.5;
+    }
+
+
+    .message.info {
+
+      display:
+        block;
+
+      background:
+        #eff6ff;
+
+      color:
+        #1e40af;
+    }
+
+
+    .message.success {
+
+      display:
+        block;
+
+      background:
+        #ecfdf5;
+
+      color:
+        #065f46;
+    }
+
+
+    .message.error {
+
+      display:
+        block;
+
+      background:
+        #fef2f2;
+
+      color:
+        #991b1b;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+  <h1>
+    Owner Password Recovery
+  </h1>
+
+
+  <p class="subtitle">
+
+    Use your private recovery key to
+    create a new LichaTwist Admin Panel
+    password.
+
+  </p>
+
+
+  <label for="recoveryKey">
+    Recovery Key
+  </label>
+
+
+  <input
+    id="recoveryKey"
+    type="password"
+    autocomplete="off"
+    placeholder="Enter your recovery key"
+  >
+
+
+  <div
+    id="recoveryHint"
+    class="hint"
+  >
+    Loading your recovery key hint...
+
+  </div>
+
+
+  <label for="newPassword">
+    New Admin Password
+  </label>
+
+
+  <input
+    id="newPassword"
+    type="password"
+    autocomplete="new-password"
+    placeholder="Enter new password"
+  >
+
+
+  <label for="confirmPassword">
+    Confirm New Password
+  </label>
+
+
+  <input
+    id="confirmPassword"
+    type="password"
+    autocomplete="new-password"
+    placeholder="Confirm new password"
+  >
+
+
+  <button
+    id="recoverButton"
+    type="button"
+  >
+    Recover Owner Password
+  </button>
+
+
+  <div
+    id="message"
+    class="message"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <a
+    class="back"
+    href="/admin.html"
+  >
+    Return to Admin Login
+  </a>
+
+</div>
+
+
+<script>
+
+const recoveryKey =
+  document.getElementById(
+    "recoveryKey"
+  );
+
+
+const newPassword =
+  document.getElementById(
+    "newPassword"
+  );
+
+
+const confirmPassword =
+  document.getElementById(
+    "confirmPassword"
+  );
+
+
+const recoveryHint =
+  document.getElementById(
+    "recoveryHint"
+  );
+
+
+const recoverButton =
+  document.getElementById(
+    "recoverButton"
+  );
+
+
+const message =
+  document.getElementById(
+    "message"
+  );
+
+
+function showMessage(
+  text,
+  type
+) {
+
+  message.className =
+    "message " + type;
+
+  message.textContent =
+    text;
+
+  message.style.display =
+    "block";
+
+}
+
+
+/* =====================================
+   LOAD HINT
+===================================== */
+
+async function loadRecoveryHint() {
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/admin-recover-password",
+        {
+          method:
+            "GET",
+
+          cache:
+            "no-store"
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      recoveryHint.textContent =
+        "Enter the private clue you created for your recovery key.";
+
+      return;
+
+    }
+
+
+    recoveryHint.textContent =
+      "Hint: " +
+      (
+        data.hint ||
+        "Use your private recovery-key clue."
+      );
+
+
+  } catch {
+
+    recoveryHint.textContent =
+      "Use the private clue you created for your recovery key.";
+
+  }
+
+}
+
+
+/* =====================================
+   RECOVER PASSWORD
+===================================== */
+
+recoverButton.addEventListener(
+  "click",
+  async function() {
+
+    const key =
+      recoveryKey.value.trim();
+
+
+    const password =
+      newPassword.value;
+
+
+    const confirmation =
+      confirmPassword.value;
+
+
+    if (!key) {
+
+      showMessage(
+        "Please enter your recovery key.",
+        "error"
+      );
+
+      recoveryKey.focus();
+
+      return;
+
+    }
+
+
+    if (
+      password.length < 8
+    ) {
+
+      showMessage(
+        "New password must be at least 8 characters.",
+        "error"
+      );
+
+      newPassword.focus();
+
+      return;
+
+    }
+
+
+    if (
+      password !==
+      confirmation
+    ) {
+
+      showMessage(
+        "New passwords do not match.",
+        "error"
+      );
+
+      confirmPassword.focus();
+
+      return;
+
+    }
+
+
+    recoverButton.disabled =
+      true;
+
+
+    recoverButton.textContent =
+      "Recovering Password...";
+
+
+    showMessage(
+      "Verifying recovery key...",
+      "info"
+    );
+
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/admin-recover-password",
+          {
+            method:
+              "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+
+                recoveryKey:
+                  key,
+
+                newPassword:
+                  password,
+
+                confirmPassword:
+                  confirmation
+
+              })
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (
+        !response.ok ||
+        !data.success
+      ) {
+
+        throw new Error(
+          data.message ||
+          "Password recovery failed."
+        );
+
+      }
+
+
+      showMessage(
+        "✓ Owner password recovered successfully. Redirecting to login...",
+        "success"
+      );
+
+
+      recoveryKey.value =
+        "";
+
+      newPassword.value =
+        "";
+
+      confirmPassword.value =
+        "";
+
+
+      setTimeout(
+        function() {
+
+          window.location.href =
+            "/admin.html";
+
+        },
+        1800
+      );
+
+
+    } catch (error) {
+
+      showMessage(
+        error.message ||
+        "Unable to recover the owner password.",
+        "error"
+      );
+
+
+    } finally {
+
+      recoverButton.disabled =
+        false;
+
+      recoverButton.textContent =
+        "Recover Owner Password";
+
+    }
+
+  }
+);
+
+
+loadRecoveryHint();
+
+</script>
+
+
+</body>
+
+    </html>
