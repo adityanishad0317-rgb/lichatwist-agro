@@ -1373,35 +1373,14 @@
 
     <div class="field">
 
-      <label for="mission">
-        Mission
-      </label>
-
-      <textarea id="mission"></textarea>
-
-    </div>
 
 
     <div class="field">
 
-      <label for="vision">
-        Vision
-      </label>
-
-      <textarea id="vision"></textarea>
-
-    </div>
 
 
     <div class="field full">
 
-      <label for="values_text">
-        Values
-      </label>
-
-      <textarea id="values_text"></textarea>
-
-    </div>
 
 
   </div>
@@ -1409,147 +1388,8 @@
 </section>
 
 
-<!-- SUBSIDIARIES -->
-
-<section class="section">
-
-  <div class="section-header">
-
-    <h2>
-      Subsidiary Companies
-    </h2>
-
-    <p>
-      Manage subsidiary company names
-      and descriptions.
-    </p>
-
-  </div>
 
 
-  <div class="field-grid">
-
-
-    <div class="field">
-
-      <label for="agro_company_name">
-        LichaTwist Agro Name
-      </label>
-
-      <input
-        id="agro_company_name"
-        type="text"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label for="construction_company_name">
-        LichaTwist Construction Name
-      </label>
-
-      <input
-        id="construction_company_name"
-        type="text"
-      >
-
-    </div>
-
-
-    <div class="field full">
-
-      <label for="agro_company_description">
-        LichaTwist Agro Description
-      </label>
-
-      <textarea
-        id="agro_company_description"
-      ></textarea>
-
-    </div>
-
-
-    <div class="field full">
-
-      <label for="construction_company_description">
-        LichaTwist Construction Description
-      </label>
-
-      <textarea
-        id="construction_company_description"
-      ></textarea>
-
-    </div>
-
-
-    <div class="field">
-
-      <label for="transport_company_name">
-        LichaTwist Transport Name
-      </label>
-
-      <input
-        id="transport_company_name"
-        type="text"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label for="transport_company_description">
-        LichaTwist Transport Description
-      </label>
-
-      <textarea
-        id="transport_company_description"
-      ></textarea>
-
-    </div>
-
-
-  </div>
-
-</section>
-
-
-<!-- IMAGE MANAGEMENT -->
-
-<section class="section">
-
-  <div class="section-header">
-
-    <h2>
-      Image Management
-    </h2>
-
-    <p>
-      Upload permitted website images.
-      Existing images are shown below.
-    </p>
-
-  </div>
-
-
-  <div
-    id="imageGrid"
-    class="image-grid"
-  ></div>
-
-
-  <div class="image-note">
-
-    <strong>Image requirements:</strong>
-    JPG, PNG or WebP. Maximum file size:
-    5 MB. Only permitted website image
-    areas can be changed from this account.
-
-  </div>
-
-</section>
 
 
 <!-- ACCOUNT SECURITY -->
@@ -1747,9 +1587,6 @@ const CLIENT_FIELDS = [
   "about_heading",
   "about_description",
 
-  "mission",
-  "vision",
-  "values_text",
 
   "agriculture_title",
   "agriculture_description",
@@ -1769,17 +1606,8 @@ const CLIENT_FIELDS = [
   "transport_company_name",
   "transport_company_description",
 
-  "project1_category",
-  "project1_title",
-  "project1_description",
 
-  "project2_category",
-  "project2_title",
-  "project2_description",
 
-  "project3_category",
-  "project3_title",
-  "project3_description"
 
 ];
 
@@ -1882,46 +1710,16 @@ const IMAGE_FIELDS = [
 
   {
     type:
-      "project1",
-
-    title:
-      "Project 1 Image",
-
-    description:
-      "Image used for Project 1.",
-
-    field:
-      "project1_image"
   },
 
 
   {
     type:
-      "project2",
-
-    title:
-      "Project 2 Image",
-
-    description:
-      "Image used for Project 2.",
-
-    field:
-      "project2_image"
   },
 
 
   {
     type:
-      "project3",
-
-    title:
-      "Project 3 Image",
-
-    description:
-      "Image used for Project 3.",
-
-    field:
-      "project3_image"
   }
 
 ];
