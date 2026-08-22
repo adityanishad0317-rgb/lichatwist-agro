@@ -570,3 +570,144 @@ revealElements.forEach(
 );
 
 })();
+
+/* =====================================================
+   PRODUCT-SPECIFIC INQUIRY
+   ===================================================== */
+
+document.addEventListener("click", function(event){
+  const button = event.target.closest(".product-inquiry-btn");
+  if(!button) return;
+
+  const product = button.getAttribute("data-product") || "Agricultural Product";
+
+  const subjectField = document.querySelector('input[name="subject"]');
+  const messageField = document.querySelector('textarea[name="message"]');
+
+  if(subjectField){
+    subjectField.value = "Inquiry: " + product;
+  }
+
+  if(messageField){
+    messageField.value =
+      "Hello LichaTwist Agro,\n\n" +
+      "I am interested in: " + product + "\n\n" +
+      "Please share availability, pricing, specifications and minimum order details.\n\n" +
+      "Thank you.";
+  }
+
+  const contact = document.getElementById("contact");
+
+  if(contact){
+    setTimeout(function(){
+      const firstField = document.querySelector('input[name="name"]');
+      if(firstField) firstField.focus();
+    },500);
+  }
+});
+
+
+/* =====================================================
+   PRODUCT WHATSAPP INQUIRY
+   ===================================================== */
+
+document.addEventListener("click", function(event){
+  const button = event.target.closest(".product-whatsapp-btn");
+  if(!button) return;
+
+  const product = button.getAttribute("data-product") || "Agricultural Product";
+  const message =
+    "Hello LichaTwist Agro,\n\n" +
+    "I am interested in: " + product + "\n\n" +
+    "Please share availability, pricing, specifications and minimum order details.";
+
+  const url =
+    "https://wa.me/919026777932?text=" +
+    encodeURIComponent(message);
+
+  window.open(url, "_blank", "noopener,noreferrer");
+});
+
+
+/* =====================================================
+   AGRO PRODUCT CATEGORY FILTER
+   ===================================================== */
+
+document.addEventListener("DOMContentLoaded", function(){
+  const grid = document.getElementById("agroProductsGrid");
+  const filter = document.getElementById("productsFilter");
+  const count = document.getElementById("productsCount");
+
+  if(!grid || !filter) return;
+
+  function setupProductFilter(){
+    const cards = Array.from(grid.querySelectorAll(".agro-product-card"));
+    if(!cards.length) return;
+
+    const categories = [...new Set(
+      cards.map(card => {
+        const el = card.querySelector(".agro-product-content small");
+        return el ? el.textContent.trim() : "";
+      }).filter(Boolean)
+    )];
+
+    filter.innerHTML =
+      '<button type="button" class="active" data-category="all">All</button>' +
+      categories.map(category =>
+        '<button type="button" data-category="' +
+        category.replace(/"/g, '&quot;') +
+        '">' + category + '</button>'
+      ).join("");
+
+    function updateCount(number){
+      if(count){
+        count.textContent =
+          number + (number === 1 ? " product" : " products");
+      }
+    }
+
+    updateCount(cards.length);
+
+    filter.querySelectorAll("button").forEach(button => {
+      button.addEventListener("click", function(){
+        const selected = this.dataset.category;
+
+        filter.querySelectorAll("button").forEach(btn =>
+          btn.classList.remove("active")
+        );
+
+        this.classList.add("active");
+
+        let visible = 0;
+
+        cards.forEach(card => {
+          const category =
+            card.querySelector(".agro-product-content small")?.textContent.trim() || "";
+
+          const show =
+            selected === "all" || category === selected;
+
+          card.style.display = show ? "" : "none";
+
+          if(show) visible++;
+        });
+
+        updateCount(visible);
+      });
+    });
+  }
+
+  const observer = new MutationObserver(function(){
+    if(grid.querySelector(".agro-product-card")){
+      observer.disconnect();
+      setupProductFilter();
+    }
+  });
+
+  observer.observe(grid, {childList:true, subtree:true});
+
+  if(grid.querySelector(".agro-product-card")){
+    setupProductFilter();
+  }
+});
+

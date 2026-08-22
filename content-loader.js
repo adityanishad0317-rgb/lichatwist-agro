@@ -1441,7 +1441,11 @@ async function loadAgroProducts(){
     }
 
     grid.innerHTML=data.products.map(p=>{
+      const title=p.title || "Agricultural Product";
       const image=(p.main_image_url ? (p.main_image_url.startsWith("/") ? p.main_image_url : "/" + p.main_image_url) : "/images/agriculture.jpg");
+      const packaging=p.packaging || "As per buyer requirement";
+      const moq=p.minimum_order_quantity || "As per inquiry";
+      const specifications=p.specifications || "Quality focused; Reliable sourcing";
       return `
         <article class="agro-product-card">
           <div class="agro-product-image">
@@ -1451,11 +1455,16 @@ async function loadAgroProducts(){
             <small>${p.category_name || "AGRICULTURAL PRODUCT"}</small>
             <h3>${p.title || "Product"}</h3>
             <p>${p.short_description || p.description || ""}</p>
+            <div class="agro-product-details">
+              <div><strong>Packaging</strong><span>${packaging}</span></div>
+              <div><strong>Minimum order</strong><span>${moq}</span></div>
+              <div><strong>Specifications</strong><span>${specifications}</span></div>
+            </div>
             <div class="agro-product-meta">
               <span>Origin: ${p.origin || "India"}</span>
               <span>${p.availability || "Available"}</span>
             </div>
-            <a href="#contact">Send Inquiry <i class="fa-solid fa-arrow-right"></i></a>
+            <div class="agro-product-actions"><a href="#contact" class="product-inquiry-btn" data-product="${title}">Send Inquiry <i class="fa-solid fa-arrow-right"></i></a><button type="button" class="product-whatsapp-btn" data-product="${title}" aria-label="WhatsApp inquiry"><i class="fa-brands fa-whatsapp"></i></button></div>
           </div>
         </article>
       `;
