@@ -3520,9 +3520,13 @@ async function uploadProductImage(productId, productSlug){
   const data = await response.json();
 
   if(!response.ok || !data.success){
+    const extra = data.details
+      ? " | HTTP " + data.details.status +
+        " | " + JSON.stringify(data.details.github || {})
+      : "";
+
     throw new Error(
-      data.message ||
-      "Unable to upload product image."
+      (data.message || "Unable to upload product image.") + extra
     );
   }
 
