@@ -572,78 +572,84 @@ revealElements.forEach(
 })();
 
 /* =====================================================
-   PRODUCT-SPECIFIC INQUIRY
+   PRODUCT-SPECIFIC INQUIRY + WHATSAPP
    ===================================================== */
+
 document.addEventListener("click", function(event) {
-  const button = event.target.closest(".product-inquiry-btn");
-  if (!button) return;
 
-  event.preventDefault();
+  const inquiryButton = event.target.closest(".product-inquiry-btn");
 
-  const product =
-    button.getAttribute("data-product") || "Agricultural Product";
+  if (inquiryButton) {
+    event.preventDefault();
 
-  const subjectField =
-    document.querySelector('input[name="subject"]');
+    const product =
+      inquiryButton.getAttribute("data-product") ||
+      "Agricultural Product";
 
-  const messageField =
-    document.querySelector('textarea[name="message"]');
+    const form = document.querySelector("form.message-form");
 
-  if (subjectField) {
-    subjectField.value = "Inquiry: " + product;
-    subjectField.dispatchEvent(new Event("input", { bubbles: true }));
-    subjectField.dispatchEvent(new Event("change", { bubbles: true }));
+    if (form) {
+      const subjectField = form.querySelector('input[name="subject"]');
+      const messageField = form.querySelector('textarea[name="message"]');
+
+      if (subjectField) {
+        subjectField.value = "Inquiry: " + product;
+        subjectField.dispatchEvent(new Event("input", { bubbles: true }));
+        subjectField.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+
+      if (messageField) {
+        messageField.value =
+          "Hello LichaTwist Agro,\n\n" +
+          "I am interested in: " + product + "\n\n" +
+          "Please share availability, pricing, specifications and minimum order details.\n\n" +
+          "Thank you.";
+
+        messageField.dispatchEvent(new Event("input", { bubbles: true }));
+        messageField.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+
+      const contact = document.getElementById("contact");
+
+      if (contact) {
+        contact.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+
+      setTimeout(function() {
+        const nameField = form.querySelector('input[name="name"]');
+
+        if (nameField) {
+          nameField.focus();
+        }
+      }, 600);
+    }
+
+    return;
   }
 
-  if (messageField) {
-    messageField.value =
+  const whatsappButton =
+    event.target.closest(".product-whatsapp-btn");
+
+  if (whatsappButton) {
+    event.preventDefault();
+
+    const product =
+      whatsappButton.getAttribute("data-product") ||
+      "Agricultural Product";
+
+    const message =
       "Hello LichaTwist Agro,\n\n" +
       "I am interested in: " + product + "\n\n" +
-      "Please share availability, pricing, specifications and minimum order details.\n\n" +
-      "Thank you.";
+      "Please share availability, pricing, specifications and minimum order details.";
 
-    messageField.dispatchEvent(new Event("input", { bubbles: true }));
-    messageField.dispatchEvent(new Event("change", { bubbles: true }));
+    const url =
+      "https://wa.me/919026777932?text=" +
+      encodeURIComponent(message);
+
+    window.location.href = url;
   }
 
-  const contact = document.getElementById("contact");
-
-  if (contact) {
-    contact.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }
-
-  setTimeout(function() {
-    const firstField = document.querySelector('input[name="name"]');
-
-    if (firstField) {
-      firstField.focus();
-    }
-  }, 600);
-});
-
-/* =====================================================
-   PRODUCT WHATSAPP INQUIRY
-   ===================================================== */
-document.addEventListener("click", function(event) {
-  const button = event.target.closest(".product-whatsapp-btn");
-  if (!button) return;
-
-  event.preventDefault();
-
-  const product =
-    button.getAttribute("data-product") || "Agricultural Product";
-
-  const message =
-    "Hello LichaTwist Agro,\n\n" +
-    "I am interested in: " + product + "\n\n" +
-    "Please share availability, pricing, specifications and minimum order details.";
-
-  const url =
-    "https://wa.me/919026777932?text=" +
-    encodeURIComponent(message);
-
-  window.location.href = url;
 });
