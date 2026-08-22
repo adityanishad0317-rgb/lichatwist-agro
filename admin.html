@@ -1424,12 +1424,6 @@ It is shown here only after account creation.
   </div>
 
   <div class="field">
-    <label for="adminCategoryImage">Category Image URL</label>
-    <input id="adminCategoryImage" type="text"
-           placeholder="https://...">
-  </div>
-
-  <div class="field">
     <label for="adminCategorySort">Display Order</label>
     <input id="adminCategorySort" type="number" value="0" min="0">
   </div>
@@ -1479,7 +1473,12 @@ It is shown here only after account creation.
 <div class="field"><label>Packaging</label><input id="productPackaging" type="text"></div>
 <div class="field"><label>Minimum Order Quantity</label><input id="productMOQ" type="text"></div>
 <div class="field"><label>Availability</label><input id="productAvailability" type="text"></div>
-<div class="field"><label>Main Image URL</label><input id="productImage" type="text"></div>
+<div class="field">
+<label for="productImageFile">Product Main Image</label>
+<input id="productImageFile" type="file" accept="image/jpeg,image/png,image/webp">
+<div id="productImagePreview" style="margin-top:10px;"></div>
+<input id="productImage" type="hidden">
+</div>
 <div class="field"><label><input id="productFeatured" type="checkbox"> Featured</label></div>
 <div class="field"><label><input id="productPublished" type="checkbox" checked> Published</label></div>
 <button type="button" id="productSaveButton">➕ Create Product</button>
@@ -3419,6 +3418,111 @@ loadWebsiteTheme();
 
 <script>
 let adminProducts=[];
+
+let productImageFile = null;
+
+function setupProductImageUpload(){
+  const input = document.getElementById("productImageFile");
+  const preview = document.getElementById("productImagePreview");
+
+  if(!input) return;
+
+  input.addEventListener("change", ()=>{
+    productImageFile =
+      input.files && input.files[0]
+        ? input.files[0]
+        : null;
+
+    if(!preview) return;
+
+    preview.innerHTML = "";
+
+    if(!productImageFile) return;
+
+    const allowed = [
+      "image/jpeg",
+      "image/png",
+      "image/webp"
+    ];
+
+    if(!allowed.includes(productImageFile.type)){
+      input.value = "";
+      productImageFile = null;
+      productMessage(
+        "Only JPG, PNG and WebP images are allowed.",
+        "error"
+      );
+      return;
+    }
+
+    if(productImageFile.size > 5 * 1024 * 1024){
+      input.value = "";
+      productImageFile = null;
+      productMessage(
+        "Image must be smaller than 5 MB.",
+        "error"
+      );
+      return;
+    }
+
+    const img = document.createElement("img");
+
+    img.style.maxWidth = "180px";
+    img.style.maxHeight = "140px";
+    img.style.objectFit = "cover";
+    img.style.borderRadius = "12px";
+    img.style.display = "block";
+
+    img.src = URL.createObjectURL(productImageFile);
+
+    preview.appendChild(img);
+  });
+}
+
+async function uploadProductImage(productId, productSlug){
+  if(!productImageFile){
+    return null;
+  }
+
+  const formData = new FormData();
+
+  formData.append(
+    "image",
+    productImageFile
+  );
+
+  formData.append(
+    "productId",
+    String(productId)
+  );
+
+  formData.append(
+    "productSlug",
+    productSlug
+  );
+
+  const response = await fetch(
+    "/api/admin-product-image",
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: formData
+    }
+  );
+
+  const data = await response.json();
+
+  if(!response.ok || !data.success){
+    throw new Error(
+      data.message ||
+      "Unable to upload product image."
+    );
+  }
+
+  return data.path || null;
+}
+
+
 let adminCategories=[];
 let editingProductId=null;
 
@@ -3469,24 +3573,185 @@ document.getElementById("productManagement").scrollIntoView({behavior:"smooth"})
 
 function clearProductForm(){
 editingProductId=null;
-["productTitle","productSlug","productShortDescription","productDescription","productSpecifications","productOrigin","productPackaging","productMOQ","productAvailability","productImage"].forEach(id=>{const e=document.getElementById(id);if(e)e.value="";});
+
+[
+"productTitle",
+"productSlug",
+"productShortDescription",
+"productDescription",
+"productSpecifications",
+"productOrigin",
+"productPackaging",
+"productMOQ",
+"productAvailability",
+"productImage"
+].forEach(id=>{
+const e=document.getElementById(id);
+if(e)e.value="";
+});
+
+const imageInput =
+document.getElementById("productImageFile");
+
+if(imageInput){
+imageInput.value="";
+}
+
+productImageFile=null;
+
+const preview =
+document.getElementById("productImagePreview");
+
+if(preview){
+preview.innerHTML="";
+}
+
 document.getElementById("productFeatured").checked=false;
 document.getElementById("productPublished").checked=true;
 document.getElementById("productSaveButton").textContent="➕ Create Product";
 }
 
 async function saveAdminProduct(){
-const payload={categoryId:Number(productValue("productCategory")),title:productValue("productTitle"),slug:productValue("productSlug"),shortDescription:productValue("productShortDescription"),description:productValue("productDescription"),specifications:productValue("productSpecifications"),origin:productValue("productOrigin"),packaging:productValue("productPackaging"),minimumOrderQuantity:productValue("productMOQ"),availability:productValue("productAvailability"),mainImageUrl:productValue("productImage"),featured:productChecked("productFeatured")?1:0,published:productChecked("productPublished")?1:0};
-if(!payload.categoryId||!payload.title||!payload.slug){productMessage("Category, title and slug are required.","error");return;}
+const payload={
+categoryId:Number(productValue("productCategory")),
+title:productValue("productTitle"),
+slug:productValue("productSlug"),
+shortDescription:productValue("productShortDescription"),
+description:productValue("productDescription"),
+specifications:productValue("productSpecifications"),
+origin:productValue("productOrigin"),
+packaging:productValue("productPackaging"),
+minimumOrderQuantity:productValue("productMOQ"),
+availability:productValue("productAvailability"),
+mainImageUrl:productValue("productImage"),
+featured:productChecked("productFeatured")?1:0,
+published:productChecked("productPublished")?1:0
+};
+
+if(!payload.categoryId||!payload.title||!payload.slug){
+productMessage("Category, title and slug are required.","error");
+return;
+}
+
 if(editingProductId)payload.id=editingProductId;
+
 try{
-productMessage(editingProductId?"Updating product...":"Creating product...","info");
-const r=await fetch("/api/admin-products",{method:editingProductId?"PUT":"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+productMessage(
+editingProductId
+?"Updating product..."
+:"Creating product...",
+"info"
+);
+
+const r=await fetch(
+"/api/admin-products",
+{
+method:editingProductId?"PUT":"POST",
+credentials:"same-origin",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(payload)
+}
+);
+
 const d=await r.json();
-if(!r.ok||!d.success)throw new Error(d.message||"Unable to save product.");
-productMessage(editingProductId?"✓ Product updated successfully.":"✓ Product created successfully.","success");
-clearProductForm();await loadAdminProducts();
-}catch(e){console.error(e);productMessage(e.message,"error");}
+
+if(!r.ok||!d.success){
+throw new Error(
+d.message||"Unable to save product."
+);
+}
+
+const productId =
+editingProductId ||
+d.id ||
+d.productId;
+
+if(!productId){
+throw new Error(
+"Product was saved but its ID could not be determined for image upload."
+);
+}
+
+if(productImageFile){
+productMessage(
+"Product saved. Uploading image...",
+"info"
+);
+
+const imagePath =
+await uploadProductImage(
+productId,
+payload.slug
+);
+
+if(imagePath){
+const imageUpdate = {
+id:productId,
+categoryId:payload.categoryId,
+title:payload.title,
+slug:payload.slug,
+shortDescription:payload.shortDescription,
+description:payload.description,
+specifications:payload.specifications,
+origin:payload.origin,
+packaging:payload.packaging,
+minimumOrderQuantity:payload.minimumOrderQuantity,
+availability:payload.availability,
+mainImageUrl:imagePath,
+featured:payload.featured,
+published:payload.published
+};
+
+const imageSaveResponse =
+await fetch(
+"/api/admin-products",
+{
+method:"PUT",
+credentials:"same-origin",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(imageUpdate)
+}
+);
+
+const imageSaveData =
+await imageSaveResponse.json();
+
+if(
+!imageSaveResponse.ok ||
+!imageSaveData.success
+){
+throw new Error(
+imageSaveData.message ||
+"Image uploaded but could not be linked to the product."
+);
+}
+
+document.getElementById("productImage").value =
+imagePath;
+}
+}
+
+productMessage(
+editingProductId
+?"✓ Product updated successfully."
+:"✓ Product created successfully.",
+"success"
+);
+
+clearProductForm();
+await loadAdminProducts();
+
+}catch(e){
+console.error(e);
+productMessage(
+e.message,
+"error"
+);
+}
 }
 
 async function deleteAdminProduct(id){
@@ -3500,8 +3765,14 @@ productMessage("✓ Product deleted successfully.","success");await loadAdminPro
 }
 
 document.addEventListener("DOMContentLoaded",()=>{
+setupProductImageUpload();
+
 const b=document.getElementById("productSaveButton");
-if(b)b.onclick=saveAdminProduct;
+
+if(b){
+b.onclick=saveAdminProduct;
+}
+
 loadAdminProducts();
 });
 </script>
@@ -3523,7 +3794,6 @@ function clearAdminCategoryForm() {
   const name = document.getElementById("adminCategoryName");
   const slug = document.getElementById("adminCategorySlug");
   const description = document.getElementById("adminCategoryDescription");
-  const image = document.getElementById("adminCategoryImage");
   const sort = document.getElementById("adminCategorySort");
   const active = document.getElementById("adminCategoryActive");
   const button = document.getElementById("adminCategorySaveButton");
@@ -3531,7 +3801,6 @@ function clearAdminCategoryForm() {
   if (name) name.value = "";
   if (slug) slug.value = "";
   if (description) description.value = "";
-  if (image) image.value = "";
   if (sort) sort.value = "0";
   if (active) active.checked = true;
 
@@ -3551,8 +3820,6 @@ function editAdminCategory(category) {
   document.getElementById("adminCategoryDescription").value =
     category.description || "";
 
-  document.getElementById("adminCategoryImage").value =
-    category.image_url || "";
 
   document.getElementById("adminCategorySort").value =
     category.sort_order ?? 0;
@@ -3701,7 +3968,6 @@ async function saveAdminCategory() {
     document.getElementById("adminCategoryDescription").value.trim();
 
   const imageUrl =
-    document.getElementById("adminCategoryImage").value.trim();
 
   const sortOrder =
     Number(document.getElementById("adminCategorySort").value) || 0;
