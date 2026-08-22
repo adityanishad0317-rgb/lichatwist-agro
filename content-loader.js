@@ -1464,7 +1464,12 @@ async function loadAgroProducts(){
               <span>Origin: ${p.origin || "India"}</span>
               <span>${p.availability || "Available"}</span>
             </div>
-            <div class="agro-product-actions"><a href="#contact" class="product-inquiry-btn" data-product="${title}">Send Inquiry <i class="fa-solid fa-arrow-right"></i></a><button type="button" class="product-whatsapp-btn" data-product="${title}" aria-label="WhatsApp inquiry"><i class="fa-brands fa-whatsapp"></i></button></div>
+            <div class="agro-product-actions">
+              <a href="#contact" class="product-inquiry-btn" data-product="${title}" data-product-id="${p.id || ""}">Send Inquiry <i class="fa-solid fa-arrow-right"></i></a>
+              <button type="button" class="product-whatsapp-btn" data-product="${title}" data-product-id="${p.id || ""}" aria-label="WhatsApp inquiry for ${title}">
+                <i class="fa-brands fa-whatsapp"></i>
+              </button>
+            </div>
           </div>
         </article>
       `;

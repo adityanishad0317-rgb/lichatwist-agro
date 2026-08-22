@@ -7327,3 +7327,102 @@ footer a:hover {
   color:#fff;
 }
 
+
+/* =====================================================
+   AGRO PRODUCT UX — BATCH 2 POLISH
+   ===================================================== */
+
+.products-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  margin:-18px 0 32px;
+}
+
+.products-count{
+  color:#667169;
+  font-size:13px;
+  font-weight:700;
+}
+
+.products-filter{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:8px;
+}
+
+.products-filter button{
+  border:1px solid rgba(23,63,42,.16);
+  background:#fff;
+  color:#173f2a;
+  border-radius:999px;
+  padding:9px 15px;
+  font:inherit;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.products-filter button:hover,
+.products-filter button.active{
+  background:#173f2a;
+  color:#fff;
+  border-color:#173f2a;
+}
+
+.agro-product-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:4px;
+}
+
+.product-inquiry-btn{
+  min-height:42px;
+}
+
+.product-whatsapp-btn{
+  width:42px;
+  height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(23,63,42,.15);
+  border-radius:50%;
+  background:#fff;
+  color:#173f2a;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.product-whatsapp-btn:hover{
+  transform:translateY(-2px);
+}
+
+@media(max-width:600px){
+  .products-toolbar{
+    display:block;
+    margin:-5px 0 26px;
+  }
+
+  .products-filter{
+    justify-content:flex-start;
+    margin-top:14px;
+  }
+
+  .products-filter button{
+    padding:8px 12px;
+  }
+
+  .agro-product-actions{
+    width:100%;
+  }
+
+  .product-inquiry-btn{
+    flex:1;
+    justify-content:center;
+  }
+}
