@@ -239,29 +239,6 @@ transport_company_description = ?,
 transport_company_image =
   COALESCE(NULLIF(?, ''), transport_company_image),
 
-projects_heading = ?,
-projects_description = ?,
-
-project1_image =
-  COALESCE(NULLIF(?, ''), project1_image),
-
-project2_image =
-  COALESCE(NULLIF(?, ''), project2_image),
-
-project3_image =
-  COALESCE(NULLIF(?, ''), project3_image),
-project1_category = ?,
-project1_title = ?,
-project1_description = ?,
-
-project2_category = ?,
-project2_title = ?,
-project2_description = ?,
-
-project3_category = ?,
-project3_title = ?,
-project3_description = ?,
-
 updated_at = CURRENT_TIMESTAMP      WHERE id = 1
     `)
       .bind(
@@ -309,25 +286,6 @@ value(body, "constructionCompanyImage", "construction_company_image"),
 value(body, "transportCompanyName", "transport_company_name"),
 value(body, "transportCompanyDescription", "transport_company_description"),
 value(body, "transportCompanyImage", "transport_company_image"),
-
-       value(body, "projectsHeading", "projects_heading"),
-value(body, "projectsDescription", "projects_description"),
-
-value(body, "project1Image", "project1_image"),
-value(body, "project2Image", "project2_image"),
-value(body, "project3Image", "project3_image"),
-
-value(body, "project1Category", "project1_category"),
-value(body, "project1Title", "project1_title"),
-value(body, "project1Description", "project1_description"),
-
-value(body, "project2Category", "project2_category"),
-value(body, "project2Title", "project2_title"),
-value(body, "project2Description", "project2_description"),
-
-value(body, "project3Category", "project3_category"),
-value(body, "project3Title", "project3_title"),
-value(body, "project3Description", "project3_description")
       )
       .run();
 

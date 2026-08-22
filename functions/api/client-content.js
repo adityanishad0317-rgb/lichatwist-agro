@@ -487,24 +487,6 @@ const CLIENT_CONTENT_FIELDS = [
   "transport_company_description",
   "transport_company_image",
 
-  "projects_heading",
-  "projects_description",
-
-  "project1_category",
-  "project1_title",
-  "project1_description",
-  "project1_image",
-
-  "project2_category",
-  "project2_title",
-  "project2_description",
-  "project2_image",
-
-  "project3_category",
-  "project3_title",
-  "project3_description",
-  "project3_image"
-
 ];
 
 
