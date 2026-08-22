@@ -2328,32 +2328,11 @@ async function loadContent(){
       transportDescription:c.transport_description,
       transportImage:c.transport_image,
 
-      agroCompanyName:c.agro_company_name,
-      agroCompanyDescription:c.agro_company_description,
-      agroCompanyImage:c.agro_company_image,
 
-      constructionCompanyName:c.construction_company_name,
-      constructionCompanyDescription:c.construction_company_description,
-      constructionCompanyImage:c.construction_company_image,
 
-      transportCompanyName:c.transport_company_name,
-      transportCompanyDescription:c.transport_company_description,
-      transportCompanyImage:c.transport_company_image,
 
-      project1Category:c.project1_category,
-      project1Title:c.project1_title,
-      project1Description:c.project1_description,
-      project1Image:c.project1_image,
 
-      project2Category:c.project2_category,
-      project2Title:c.project2_title,
-      project2Description:c.project2_description,
-      project2Image:c.project2_image,
 
-      project3Category:c.project3_category,
-      project3Title:c.project3_title,
-      project3Description:c.project3_description,
-      project3Image:c.project3_image
     };
 
     Object.entries(fields).forEach(
@@ -2421,32 +2400,11 @@ async function saveAllContent(){
     transportDescription:getValue("transportDescription"),
     transportImage:getValue("transportImage"),
 
-    agroCompanyName:getValue("agroCompanyName"),
-    agroCompanyDescription:getValue("agroCompanyDescription"),
-    agroCompanyImage:getValue("agroCompanyImage"),
 
-    constructionCompanyName:getValue("constructionCompanyName"),
-    constructionCompanyDescription:getValue("constructionCompanyDescription"),
-    constructionCompanyImage:getValue("constructionCompanyImage"),
 
-    transportCompanyName:getValue("transportCompanyName"),
-    transportCompanyDescription:getValue("transportCompanyDescription"),
-    transportCompanyImage:getValue("transportCompanyImage"),
 
-    project1Category:getValue("project1Category"),
-    project1Title:getValue("project1Title"),
-    project1Description:getValue("project1Description"),
-    project1Image:getValue("project1Image"),
 
-    project2Category:getValue("project2Category"),
-    project2Title:getValue("project2Title"),
-    project2Description:getValue("project2Description"),
-    project2Image:getValue("project2Image"),
 
-    project3Category:getValue("project3Category"),
-    project3Title:getValue("project3Title"),
-    project3Description:getValue("project3Description"),
-    project3Image:getValue("project3Image")
   };
 
   try{
@@ -2501,23 +2459,11 @@ const imageDefinitions=[
 
   ["about","About Image","aboutImageFile","aboutImage","/images/office.jpg"],
 
-  ["agriculture","Agriculture Image","agricultureImageFile","agricultureImage","/images/agriculture.jpg"],
+  ["agriculture","Agriculture Section Image","agricultureImageFile","agricultureImage","/images/agriculture.jpg"],
 
-  ["construction","Construction Image","constructionImageFile","constructionImage","/images/construction.jpg"],
+  ["construction","Construction Section Image","constructionImageFile","constructionImage","/images/construction.jpg"],
 
-  ["transport","Transport Image","transportImageFile","transportImage","/images/transport.jpg"],
-
-  ["agroCompany","Agro Company Image","agroCompanyImageFile","agroCompanyImage","/images/agro-company.jpg"],
-
-  ["constructionCompany","Construction Company Image","constructionCompanyImageFile","constructionCompanyImage","/images/construction-company.jpg"],
-
-  ["transportCompany","Transport Company Image","transportCompanyImageFile","transportCompanyImage","/images/transport-company.jpg"],
-
-  ["project1","Project 1 Image","project1ImageFile","project1Image","/images/project1.jpg"],
-
-  ["project2","Project 2 Image","project2ImageFile","project2Image","/images/project2.jpg"],
-
-  ["project3","Project 3 Image","project3ImageFile","project3Image","/images/project3.jpg"]
+  ["transport","Transport Section Image","transportImageFile","transportImage","/images/transport.jpg"]
 
 ];
 
