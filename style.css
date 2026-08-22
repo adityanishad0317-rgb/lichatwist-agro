@@ -7722,3 +7722,52 @@ iframe {
     max-width: 100vw;
   }
 }
+
+/* FINAL MOBILE WIDTH NORMALIZATION */
+@media (max-width: 700px) {
+  html {
+    width: 100%;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: clip !important;
+  }
+
+  body {
+    width: 100%;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: clip !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  .site-header,
+  main,
+  section,
+  footer,
+  .hero-section,
+  .hero-container,
+  .section-container,
+  .contact-section,
+  .premium-footer {
+    max-width: 100vw !important;
+  }
+
+  img,
+  video,
+  iframe,
+  table {
+    max-width: 100% !important;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    max-width: 100% !important;
+  }
+}
