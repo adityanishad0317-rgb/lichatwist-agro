@@ -1615,6 +1615,41 @@
         type="text"
         placeholder="/images/products/example.jpg"
       >
+      <div class="field" style="margin-top:14px;">
+        <label for="clientProductImageFile">Product Main Image</label>
+
+        <input
+          id="clientProductImageFile"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+        >
+
+        <div
+          id="clientProductImagePreview"
+          style="margin-top:10px;"
+        ></div>
+
+        <button
+          id="clientProductImageUploadButton"
+          type="button"
+          style="margin-top:10px;"
+        >
+          Upload Product Image
+        </button>
+        <div
+          class="info-box"
+          style="margin-top:10px;font-size:13px;"
+        >
+          Save the product first, then select and upload its image.
+          When editing an existing product, you can replace its current image here.
+        </div>
+
+        <div
+          id="clientProductImageUploadStatus"
+          style="margin-top:8px;font-size:13px;"
+        ></div>
+      </div>
+
     </div>
 
     <div class="field">
@@ -2006,7 +2041,197 @@
     );
   }
 
-  function renderProducts() {
+
+/* =====================================
+   CLIENT PRODUCT IMAGE UPLOAD
+===================================== */
+
+let clientProductImageFile = null;
+
+const clientProductImageFileInput =
+  document.getElementById("clientProductImageFile");
+
+const clientProductImagePreview =
+  document.getElementById("clientProductImagePreview");
+
+const clientProductImageUploadButton =
+  document.getElementById("clientProductImageUploadButton");
+
+const clientProductImageUploadStatus =
+  document.getElementById("clientProductImageUploadStatus");
+
+if (clientProductImageFileInput) {
+  clientProductImageFileInput.addEventListener(
+    "change",
+    function () {
+      const file = clientProductImageFileInput.files[0];
+
+      if (!file) {
+        clientProductImageFile = null;
+        clientProductImagePreview.innerHTML = "";
+        return;
+      }
+
+      const allowed = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+      ];
+
+      if (!allowed.includes(file.type)) {
+        clientProductImageFile = null;
+        clientProductImageFileInput.value = "";
+        clientProductImagePreview.innerHTML = "";
+        clientProductImageUploadStatus.textContent =
+          "Please select a JPG, PNG, or WebP image.";
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        clientProductImageFile = null;
+        clientProductImageFileInput.value = "";
+        clientProductImagePreview.innerHTML = "";
+        clientProductImageUploadStatus.textContent =
+          "Image must be 5 MB or smaller.";
+        return;
+      }
+
+      clientProductImageFile = file;
+
+      const url = URL.createObjectURL(file);
+
+      clientProductImagePreview.innerHTML =
+        '<img src="' + url + '" alt="Product image preview" ' +
+        'style="max-width:220px;max-height:180px;border-radius:12px;object-fit:cover;">';
+
+      clientProductImageUploadStatus.textContent =
+        "Image selected and ready to upload.";
+    }
+  );
+}
+
+async function uploadClientProductImage(productId, productSlug) {
+
+  if (!clientProductImageFile) {
+    return null;
+  }
+
+  const formData = new FormData();
+
+  formData.append(
+    "image",
+    clientProductImageFile
+  );
+
+  formData.append(
+    "productId",
+    String(productId)
+  );
+
+  formData.append(
+    "productSlug",
+    productSlug || ""
+  );
+
+  clientProductImageUploadButton.disabled = true;
+
+  clientProductImageUploadStatus.textContent =
+    "Uploading product image...";
+
+  try {
+
+    const response = await fetch(
+      "/api/client-upload-image",
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.message ||
+        "Unable to upload product image."
+      );
+    }
+
+    const imageUrl =
+      data.url ||
+      data.imageUrl ||
+      data.path ||
+      "";
+
+    if (!imageUrl) {
+      throw new Error(
+        "Image uploaded but no image URL was returned."
+      );
+    }
+
+    document.getElementById(
+      "clientProductImageUrl"
+    ).value = imageUrl;
+
+    clientProductImageUploadStatus.textContent =
+      "✓ Product image uploaded successfully.";
+
+    return imageUrl;
+
+  } catch (error) {
+
+    clientProductImageUploadStatus.textContent =
+      error.message ||
+      "Unable to upload product image.";
+
+    throw error;
+
+  } finally {
+
+    clientProductImageUploadButton.disabled = false;
+
+  }
+}
+
+if (clientProductImageUploadButton) {
+
+  clientProductImageUploadButton.addEventListener(
+    "click",
+    async function () {
+
+      const productId =
+        window.editingClientProductId ||
+        null;
+
+      const slug =
+        document.getElementById(
+          "clientProductSlug"
+        )?.value || "";
+
+      if (!productId) {
+        clientProductImageUploadStatus.textContent =
+          "Save the product first, then upload its image.";
+
+        return;
+      }
+
+      try {
+        await uploadClientProductImage(
+          productId,
+          slug
+        );
+      } catch {
+        // Error already shown to the user.
+      }
+
+    }
+  );
+
+}
+
+
+function renderProducts() {
     const list =
       document.getElementById(
         "clientProductList"
@@ -2478,33 +2703,56 @@
     }
 
     try {
-      await api(
+      const savedProduct = await api(
         "/api/client-products",
         {
           method:
             editingClientProductId
               ? "PUT"
               : "POST",
-
           headers: {
             "Content-Type":
               "application/json"
           },
-
           body:
             JSON.stringify(payload)
         }
       );
 
-      showClientCatalogMessage(
-        editingClientProductId
-          ? "✓ Product updated successfully."
-          : "✓ Product created successfully.",
-        "success"
-      );
+      const savedProductId =
+        editingClientProductId ||
+        savedProduct?.product?.id ||
+        savedProduct?.id ||
+        savedProduct?.data?.id ||
+        null;
+
+      if (clientProductImageFile && savedProductId) {
+        showClientCatalogMessage(
+          "Product saved. Uploading image...",
+          "info"
+        );
+
+        await uploadClientProductImage(
+          savedProductId,
+          payload.slug
+        );
+
+        showClientCatalogMessage(
+          editingClientProductId
+            ? "✓ Product and image updated successfully."
+            : "✓ Product and image created successfully.",
+          "success"
+        );
+      } else {
+        showClientCatalogMessage(
+          editingClientProductId
+            ? "✓ Product updated successfully."
+            : "✓ Product created successfully.",
+          "success"
+        );
+      }
 
       clearProductForm();
-
       await loadProducts();
       await loadCategories();
 
