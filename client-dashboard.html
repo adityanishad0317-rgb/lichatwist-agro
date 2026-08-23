@@ -1703,7 +1703,7 @@
 <section class="section" id="clientEnquiries">
   <div class="section-header">
     <h2>📩 Enquiries</h2>
-    <p>View enquiries submitted to your company.</p>
+    <p>Manage company enquiries shared with all active staff accounts.</p>
   </div>
 
   <div id="clientEnquiryMessage"
@@ -1712,9 +1712,23 @@
        role="status"
        aria-live="polite"></div>
 
-  <button type="button" id="clientEnquiryRefreshButton">
-    🔄 Refresh Enquiries
-  </button>
+  <div style="display:grid;grid-template-columns:minmax(180px,1fr) 180px auto;gap:10px;margin-top:14px;">
+    <input id="clientEnquirySearch"
+           type="search"
+           placeholder="Search enquiries...">
+
+    <select id="clientEnquiryStatusFilter">
+      <option value="">All Statuses</option>
+      <option value="new">New</option>
+      <option value="contacted">Contacted</option>
+      <option value="replied">Replied</option>
+      <option value="closed">Closed</option>
+    </select>
+
+    <button type="button" id="clientEnquiryRefreshButton">
+      🔄 Refresh
+    </button>
+  </div>
 
   <div id="clientEnquiryList" style="margin-top:16px;">
     <div class="info-box">Loading enquiries...</div>
@@ -1727,24 +1741,27 @@
 
   const list = document.getElementById("clientEnquiryList");
   const message = document.getElementById("clientEnquiryMessage");
+  const search = document.getElementById("clientEnquirySearch");
+  const filter = document.getElementById("clientEnquiryStatusFilter");
   const refresh = document.getElementById("clientEnquiryRefreshButton");
 
-  function enquiryMessage(text, type) {
+  let enquiries = [];
+
+  function showMessage(text, type) {
     if (!message) return;
     message.className = "message " + (type || "");
     message.textContent = text || "";
     message.style.display = text ? "block" : "none";
   }
 
-  function escapeText(value) {
+  function escape(value) {
     return String(value ?? "");
   }
 
   function formatDate(value) {
     if (!value) return "-";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return escapeText(value);
-    return date.toLocaleString();
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? escape(value) : d.toLocaleString();
   }
 
   function statusLabel(status) {
@@ -1754,20 +1771,240 @@
       replied: "Replied",
       closed: "Closed"
     };
-    return labels[status] || escapeText(status || "Unknown");
+    return labels[status] || "Unknown";
+  }
+
+  function render() {
+    if (!list) return;
+
+    const term = (search?.value || "").trim().toLowerCase();
+    const selectedStatus = filter?.value || "";
+
+    const filtered = enquiries.filter(function (e) {
+      if (selectedStatus && e.status !== selectedStatus) return false;
+
+      if (!term) return true;
+
+      return [
+        e.name,
+        e.email,
+        e.phone,
+        e.subject,
+        e.message,
+        e.product_title,
+        e.source,
+        e.status,
+        e.admin_notes
+      ].some(function (value) {
+        return String(value ?? "").toLowerCase().includes(term);
+      });
+    });
+
+    if (!filtered.length) {
+      list.innerHTML = '<div class="info-box">No enquiries found.</div>';
+      return;
+    }
+
+    list.innerHTML = "";
+
+    filtered.forEach(function (enquiry) {
+      const card = document.createElement("div");
+
+      card.style.cssText =
+        "border:1px solid rgba(0,0,0,.12);" +
+        "border-radius:14px;" +
+        "padding:16px;" +
+        "margin-top:12px;" +
+        "background:rgba(255,255,255,.55);";
+
+      const title = document.createElement("h3");
+      title.textContent = enquiry.subject || "Untitled enquiry";
+
+      const details = document.createElement("div");
+      details.style.cssText = "line-height:1.7;margin-top:8px;";
+
+      details.innerHTML =
+        "<div><strong>Name:</strong> " + escape(enquiry.name || "-") + "</div>" +
+        "<div><strong>Email:</strong> " + escape(enquiry.email || "-") + "</div>" +
+        "<div><strong>Phone:</strong> " + escape(enquiry.phone || "-") + "</div>" +
+        "<div><strong>Product:</strong> " +
+          escape(enquiry.product_title || "General enquiry") + "</div>" +
+        "<div><strong>Source:</strong> " + escape(enquiry.source || "-") + "</div>" +
+        "<div><strong>Submitted:</strong> " + formatDate(enquiry.created_at) + "</div>" +
+        "<div style='margin-top:8px;'><strong>Message:</strong><br>" +
+          escape(enquiry.message || "-") + "</div>";
+
+      const controls = document.createElement("div");
+      controls.style.cssText =
+        "margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,0,0,.1);";
+
+      const statusLabelEl = document.createElement("label");
+      statusLabelEl.textContent = "Status";
+      statusLabelEl.style.display = "block";
+
+      const statusSelect = document.createElement("select");
+      statusSelect.style.cssText = "width:100%;margin-top:6px;";
+      statusSelect.innerHTML =
+        '<option value="new">New</option>' +
+        '<option value="contacted">Contacted</option>' +
+        '<option value="replied">Replied</option>' +
+        '<option value="closed">Closed</option>';
+
+      statusSelect.value = enquiry.status || "new";
+
+      const notesLabel = document.createElement("label");
+      notesLabel.textContent = "Internal Notes";
+      notesLabel.style.cssText = "display:block;margin-top:12px;";
+
+      const notes = document.createElement("textarea");
+      notes.style.cssText =
+        "width:100%;margin-top:6px;min-height:80px;";
+      notes.value = enquiry.admin_notes || "";
+      notes.placeholder = "Add internal notes...";
+
+      const saveButton = document.createElement("button");
+      saveButton.type = "button";
+      saveButton.textContent = "💾 Save Changes";
+      saveButton.style.marginTop = "10px";
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.textContent = "🗑️ Delete";
+      deleteButton.className = "secondary";
+      deleteButton.style.marginTop = "10px";
+      deleteButton.style.marginLeft = "8px";
+
+      saveButton.addEventListener("click", async function () {
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+
+        try {
+          const response = await fetch(
+            "/api/client-enquiries?id=" +
+              encodeURIComponent(enquiry.id),
+            {
+              method: "PUT",
+              credentials: "same-origin",
+              cache: "no-store",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                status: statusSelect.value,
+                admin_notes: notes.value
+              })
+            }
+          );
+
+          if (response.status === 401) {
+            window.location.href = "/client-login.html";
+            return;
+          }
+
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(
+              data.message || "Unable to update enquiry."
+            );
+          }
+
+          enquiry.status = statusSelect.value;
+          enquiry.admin_notes = notes.value;
+
+          showMessage("✓ Enquiry updated successfully.", "success");
+          render();
+        } catch (error) {
+          showMessage(
+            error.message || "Unable to update enquiry.",
+            "error"
+          );
+        } finally {
+          saveButton.disabled = false;
+          saveButton.textContent = "💾 Save Changes";
+        }
+      });
+
+      deleteButton.addEventListener("click", async function () {
+        if (!window.confirm(
+          "Delete this enquiry permanently?"
+        )) {
+          return;
+        }
+
+        deleteButton.disabled = true;
+        deleteButton.textContent = "Deleting...";
+
+        try {
+          const response = await fetch(
+            "/api/client-enquiries?id=" +
+              encodeURIComponent(enquiry.id),
+            {
+              method: "DELETE",
+              credentials: "same-origin",
+              cache: "no-store"
+            }
+          );
+
+          if (response.status === 401) {
+            window.location.href = "/client-login.html";
+            return;
+          }
+
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(
+              data.message || "Unable to delete enquiry."
+            );
+          }
+
+          enquiries = enquiries.filter(function (item) {
+            return Number(item.id) !== Number(enquiry.id);
+          });
+
+          showMessage("✓ Enquiry deleted successfully.", "success");
+          render();
+        } catch (error) {
+          showMessage(
+            error.message || "Unable to delete enquiry.",
+            "error"
+          );
+        } finally {
+          deleteButton.disabled = false;
+          deleteButton.textContent = "🗑️ Delete";
+        }
+      });
+
+      controls.appendChild(statusLabelEl);
+      controls.appendChild(statusSelect);
+      controls.appendChild(notesLabel);
+      controls.appendChild(notes);
+      controls.appendChild(saveButton);
+      controls.appendChild(deleteButton);
+
+      card.appendChild(title);
+      card.appendChild(details);
+      card.appendChild(controls);
+
+      list.appendChild(card);
+    });
   }
 
   async function loadClientEnquiries() {
     if (!list) return;
 
-    list.innerHTML = '<div class="info-box">Loading enquiries...</div>';
-    enquiryMessage("", "");
+    list.innerHTML =
+      '<div class="info-box">Loading enquiries...</div>';
 
     try {
-      const response = await fetch("/api/client-enquiries", {
-        credentials: "same-origin",
-        cache: "no-store"
-      });
+      const response = await fetch(
+        "/api/client-enquiries",
+        {
+          credentials: "same-origin",
+          cache: "no-store"
+        }
+      );
 
       if (response.status === 401) {
         window.location.href = "/client-login.html";
@@ -1777,78 +2014,45 @@
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || "Unable to load enquiries.");
+        throw new Error(
+          data.message || "Unable to load enquiries."
+        );
       }
 
-      const enquiries = Array.isArray(data.enquiries)
+      enquiries = Array.isArray(data.enquiries)
         ? data.enquiries
         : [];
 
-      if (!enquiries.length) {
-        list.innerHTML =
-          '<div class="info-box">No enquiries found.</div>';
-        return;
-      }
-
-      list.innerHTML = "";
-
-      enquiries.forEach(function (enquiry) {
-        const card = document.createElement("div");
-        card.style.cssText =
-          "border:1px solid rgba(0,0,0,.12);" +
-          "border-radius:14px;" +
-          "padding:16px;" +
-          "margin-top:12px;" +
-          "background:rgba(255,255,255,.55);";
-
-        const title = document.createElement("h3");
-        title.textContent = enquiry.subject || "Untitled enquiry";
-
-        const status = document.createElement("p");
-        status.textContent =
-          "Status: " + statusLabel(enquiry.status);
-
-        const product = document.createElement("p");
-        product.textContent =
-          "Product: " + (enquiry.product_title || "General enquiry");
-
-        const messageText = document.createElement("p");
-        messageText.textContent =
-          "Message: " + (enquiry.message || "-");
-
-        const contact = document.createElement("p");
-        contact.textContent =
-          "Contact: " +
-          (enquiry.email || "-") +
-          (enquiry.phone ? " • " + enquiry.phone : "");
-
-        const date = document.createElement("p");
-        date.textContent =
-          "Submitted: " + formatDate(enquiry.created_at);
-
-        card.appendChild(title);
-        card.appendChild(status);
-        card.appendChild(product);
-        card.appendChild(messageText);
-        card.appendChild(contact);
-        card.appendChild(date);
-
-        list.appendChild(card);
-      });
-
+      render();
     } catch (error) {
-      console.error("Client enquiries error:", error);
+      console.error(
+        "Client enquiries error:",
+        error
+      );
+
       list.innerHTML =
         '<div class="info-box">Unable to load enquiries.</div>';
-      enquiryMessage(
+
+      showMessage(
         error.message || "Unable to load enquiries.",
         "error"
       );
     }
   }
 
+  if (search) {
+    search.addEventListener("input", render);
+  }
+
+  if (filter) {
+    filter.addEventListener("change", render);
+  }
+
   if (refresh) {
-    refresh.addEventListener("click", loadClientEnquiries);
+    refresh.addEventListener(
+      "click",
+      loadClientEnquiries
+    );
   }
 
   if (document.readyState === "loading") {

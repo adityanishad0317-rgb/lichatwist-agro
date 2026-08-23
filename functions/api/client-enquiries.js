@@ -235,3 +235,145 @@ export async function onRequestGet(context) {
     }, 500);
   }
 }
+
+
+export async function onRequestPut(context) {
+  const auth = await requireClient(context);
+
+  if (!auth.ok) {
+    return auth.response;
+  }
+
+  try {
+    const url = new URL(context.request.url);
+    const id = Number(url.searchParams.get("id") || 0);
+
+    if (!id) {
+      return json({
+        success: false,
+        message: "Enquiry ID is required."
+      }, 400);
+    }
+
+    const body = await context.request.json();
+
+    const allowedStatuses = [
+      "new",
+      "contacted",
+      "replied",
+      "closed"
+    ];
+
+    const status = String(body.status ?? "")
+      .trim()
+      .slice(0, 40);
+
+    const adminNotes = String(body.admin_notes ?? "")
+      .trim()
+      .slice(0, 5000);
+
+    if (!allowedStatuses.includes(status)) {
+      return json({
+        success: false,
+        message: "Invalid enquiry status."
+      }, 400);
+    }
+
+    const now = new Date().toISOString();
+
+    const result = await context.env.DB
+      .prepare(`
+        UPDATE enquiries
+        SET
+          status = ?,
+          admin_notes = ?,
+          updated_at = ?
+        WHERE id = ?
+      `)
+      .bind(
+        status,
+        adminNotes || null,
+        now,
+        id
+      )
+      .run();
+
+    if (
+      !result.success ||
+      !result.meta?.changes
+    ) {
+      return json({
+        success: false,
+        message: "Enquiry not found or update failed."
+      }, 404);
+    }
+
+    return json({
+      success: true,
+      message: "Enquiry updated successfully."
+    });
+  } catch (error) {
+    console.error(
+      "Client enquiries PUT error:",
+      error
+    );
+
+    return json({
+      success: false,
+      message: "Unable to update enquiry."
+    }, 500);
+  }
+}
+
+export async function onRequestDelete(context) {
+  const auth = await requireClient(context);
+
+  if (!auth.ok) {
+    return auth.response;
+  }
+
+  try {
+    const url = new URL(context.request.url);
+    const id = Number(url.searchParams.get("id") || 0);
+
+    if (!id) {
+      return json({
+        success: false,
+        message: "Enquiry ID is required."
+      }, 400);
+    }
+
+    const result = await context.env.DB
+      .prepare(`
+        DELETE FROM enquiries
+        WHERE id = ?
+      `)
+      .bind(id)
+      .run();
+
+    if (
+      !result.success ||
+      !result.meta?.changes
+    ) {
+      return json({
+        success: false,
+        message: "Enquiry not found."
+      }, 404);
+    }
+
+    return json({
+      success: true,
+      message: "Enquiry deleted successfully."
+    });
+  } catch (error) {
+    console.error(
+      "Client enquiries DELETE error:",
+      error
+    );
+
+    return json({
+      success: false,
+      message: "Unable to delete enquiry."
+    }, 500);
+  }
+}
