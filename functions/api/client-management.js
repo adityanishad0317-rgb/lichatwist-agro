@@ -1243,6 +1243,7 @@ export async function onRequest(
     error
   ) {
 
+      console.error("CLIENT MANAGEMENT ERROR:", error);
     return json(
       {
         success:
