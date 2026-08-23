@@ -739,7 +739,7 @@ async function setClientStatus(
     status !==
       "active" &&
     status !==
-      "inactive"
+      "suspended"
   ) {
 
     return json(
