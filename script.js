@@ -571,6 +571,146 @@ revealElements.forEach(
 })();
 
 /* =====================================================
+   PUBLIC ENQUIRY → D1
+   ADDITIVE INTEGRATION
+   Existing FormSubmit flow remains intact.
+   ===================================================== */
+
+document.addEventListener("submit", async function(event) {
+  const form = event.target.closest("form.message-form");
+
+  if (!form) return;
+
+  /*
+   * Stop the browser's original submit temporarily so
+   * we can save the enquiry to D1 first.
+   */
+  event.preventDefault();
+
+  const button = form.querySelector('button[type="submit"]');
+
+  if (button) {
+    button.disabled = true;
+    button.dataset.originalText =
+      button.textContent;
+    button.textContent = "Sending...";
+  }
+
+  const productId =
+    sessionStorage.getItem(
+      "lt_agro_inquiry_product_id"
+    ) || "";
+
+  const productName =
+    sessionStorage.getItem(
+      "lt_agro_inquiry_product"
+    ) || "";
+
+  const data = {
+    name:
+      form.querySelector('[name="name"]')
+        ?.value?.trim() || "",
+
+    phone:
+      form.querySelector('[name="phone"]')
+        ?.value?.trim() || "",
+
+    email:
+      form.querySelector('[name="email"]')
+        ?.value?.trim() || "",
+
+    subject:
+      form.querySelector('[name="subject"]')
+        ?.value?.trim() || "",
+
+    message:
+      form.querySelector('[name="message"]')
+        ?.value?.trim() || "",
+
+    product_id:
+      productId &&
+      Number.isInteger(Number(productId))
+        ? Number(productId)
+        : null,
+
+    source:
+      productId ? "product" : "website"
+  };
+
+  /*
+   * Preserve product inquiry information if available.
+   */
+  if (productName && !data.subject) {
+    data.subject = "Inquiry: " + productName;
+  }
+
+  try {
+    const response = await fetch(
+      "/api/enquiries",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        cache: "no-store",
+        body: JSON.stringify(data)
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message ||
+        "D1 enquiry save failed."
+      );
+    }
+
+    console.log(
+      "Enquiry saved to D1:",
+      result.id
+    );
+
+  } catch (error) {
+
+    /*
+     * IMPORTANT:
+     * D1 failure must NOT break the existing
+     * FormSubmit/email functionality.
+     */
+    console.warn(
+      "D1 enquiry save failed. Continuing with existing FormSubmit flow:",
+      error
+    );
+  }
+
+  /*
+   * Clear product inquiry session data only after
+   * D1 processing has been attempted.
+   */
+  sessionStorage.removeItem(
+    "lt_agro_inquiry_product"
+  );
+
+  sessionStorage.removeItem(
+    "lt_agro_inquiry_product_id"
+  );
+
+  /*
+   * Continue through the ORIGINAL HTML form
+   * submission mechanism.
+   *
+   * This preserves:
+   * - FormSubmit
+   * - dynamically configured email
+   * - _next / thank-you page
+   * - existing form behavior
+   */
+  HTMLFormElement.prototype.submit.call(form);
+});
+
+/* =====================================================
    PRODUCT-SPECIFIC INQUIRY + WHATSAPP
    ===================================================== */
 
