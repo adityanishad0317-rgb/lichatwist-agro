@@ -1634,6 +1634,30 @@ if(document.getElementById("allAgroProductsGrid")){
   loadAllAgroProducts();
 }
 
+
+(function restoreProductInquiry() {
+  const product = sessionStorage.getItem("lt_agro_inquiry_product");
+  const productId = sessionStorage.getItem("lt_agro_inquiry_product_id");
+
+  if (!product) return;
+
+  const form = document.querySelector("form.message-form");
+  const message = form?.querySelector('textarea[name="message"]');
+
+  if (message) {
+    message.value =
+      "Hello LichaTwist Agro,\n\nI would like to send an inquiry regarding the following product:\n\n" +
+      product +
+      "\n\nPlease provide more information, pricing and availability.";
+
+    message.dispatchEvent(new Event("input", { bubbles: true }));
+    message.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  sessionStorage.removeItem("lt_agro_inquiry_product");
+  sessionStorage.removeItem("lt_agro_inquiry_product_id");
+})();
+
 loadPublicTheme();
 loadWebsiteContent();
 loadAgroProducts();

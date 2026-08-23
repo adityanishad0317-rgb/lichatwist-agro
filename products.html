@@ -79,5 +79,28 @@
 
   </main>
 
+
+<script>
+document.addEventListener("click", function (event) {
+  const inquiry = event.target.closest(".product-inquiry-btn");
+  const whatsapp = event.target.closest(".product-whatsapp-btn");
+
+  if (!inquiry && !whatsapp) return;
+
+  const product =
+    (inquiry || whatsapp)?.getAttribute("data-product") || "Agricultural Product";
+  const productId =
+    (inquiry || whatsapp)?.getAttribute("data-product-id") || "";
+
+  sessionStorage.setItem("lt_agro_inquiry_product", product);
+  sessionStorage.setItem("lt_agro_inquiry_product_id", productId);
+
+  if (inquiry) {
+    event.preventDefault();
+    window.location.href = "index.html#contact";
+  }
+});
+</script>
+
 </body>
 </html>
