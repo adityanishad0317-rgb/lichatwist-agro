@@ -77,34 +77,17 @@ const ALLOWED_TYPES = {
  */
 
 const DATABASE_FIELDS = {
-
-  agriculture:
-    "agriculture_image",
-
-  construction:
-    "construction_image",
-
-  transport:
-    "transport_image",
-
-  agroCompany:
-    "agro_company_image",
-
-  constructionCompany:
-    "construction_company_image",
-
-  transportCompany:
-    "transport_company_image",
-
-  project1:
-    "project1_image",
-
-  project2:
-    "project2_image",
-
-  project3:
-    "project3_image"
-
+  hero: "hero_image",
+  about: "about_image",
+  agriculture: "agriculture_image",
+  construction: "construction_image",
+  transport: "transport_image",
+  agroCompany: "agro_company_image",
+  constructionCompany: "construction_company_image",
+  transportCompany: "transport_company_image",
+  project1: "project1_image",
+  project2: "project2_image",
+  project3: "project3_image"
 };
 
 
@@ -1019,6 +1002,31 @@ export async function onRequestPost(
      * present in the existing upload
      * mapping.
      */
+
+    if (imageType === "product") {
+      await context.env.DB.prepare(
+        `
+        UPDATE products
+        SET main_image_url = ?,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+        `
+      )
+        .bind(path, productId)
+        .run();
+
+      return Response.json(
+        {
+          success: true,
+          message: "Product image uploaded successfully.",
+          path,
+          imageType,
+          productId,
+          clientId: authenticated.id
+        },
+        { status: 200 }
+      );
+    }
 
     const databaseField =
       DATABASE_FIELDS[

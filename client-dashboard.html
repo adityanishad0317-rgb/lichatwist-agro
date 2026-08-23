@@ -2704,7 +2704,7 @@ function renderProducts() {
 
     try {
       const savedProduct = await api(
-        "/api/client-products",
+        "/api/client-products" + (editingClientProductId ? "?id=" + encodeURIComponent(editingClientProductId) : ""),
         {
           method:
             editingClientProductId
@@ -2719,12 +2719,13 @@ function renderProducts() {
         }
       );
 
-      const savedProductId =
+      const savedProductId = Number(
         editingClientProductId ||
-        savedProduct?.product?.id ||
         savedProduct?.id ||
+        savedProduct?.product?.id ||
         savedProduct?.data?.id ||
-        null;
+        0
+      ) || null;
 
       if (clientProductImageFile && savedProductId) {
         showClientCatalogMessage(
@@ -3010,14 +3011,11 @@ const CLIENT_FIELDS = [
   "transport_title",
   "transport_description",
 
-  "agro_company_name",
-  "agro_company_description",
 
-  "construction_company_name",
-  "construction_company_description",
 
-  "transport_company_name",
-  "transport_company_description",
+
+
+
 
 
 
@@ -3030,6 +3028,18 @@ const CLIENT_FIELDS = [
 ===================================== */
 
 const IMAGE_FIELDS = [
+  {
+    type: "hero",
+    title: "Hero Image",
+    description: "Main hero/banner image used on the website.",
+    field: "hero_image"
+  },
+  {
+    type: "about",
+    title: "About Image",
+    description: "Main image used in the About section.",
+    field: "about_image"
+  },
 
   {
     type:
@@ -3078,7 +3088,6 @@ const IMAGE_FIELDS = [
 
   {
     type:
-      "agroCompany",
 
     title:
       "LichaTwist Agro Image",
@@ -3087,13 +3096,11 @@ const IMAGE_FIELDS = [
       "Image displayed for LichaTwist Agro.",
 
     field:
-      "agro_company_image"
   },
 
 
   {
     type:
-      "constructionCompany",
 
     title:
       "LichaTwist Construction Image",
@@ -3102,13 +3109,11 @@ const IMAGE_FIELDS = [
       "Image displayed for LichaTwist Construction.",
 
     field:
-      "construction_company_image"
   },
 
 
   {
     type:
-      "transportCompany",
 
     title:
       "LichaTwist Transport Image",
@@ -3117,7 +3122,6 @@ const IMAGE_FIELDS = [
       "Image displayed for LichaTwist Transport.",
 
     field:
-      "transport_company_image"
   },
 
 
