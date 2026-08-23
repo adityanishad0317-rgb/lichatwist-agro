@@ -281,35 +281,51 @@ export async function onRequestDelete(context) {
       }, 400);
     }
 
-    const count = await context.env.DB.prepare(`
-      SELECT COUNT(*) AS total
-      FROM products
-      WHERE category_id = ?
+    /* Verify category exists */
+    const category = await context.env.DB.prepare(`
+      SELECT id, name
+      FROM categories
+      WHERE id = ?
     `).bind(id).first();
 
-    if (Number(count?.total || 0) > 0) {
-      return json({
-        success: false,
-        message: "This category contains products. Move or delete those products before deleting the category."
-      }, 409);
-    }
-
-    const result = await context.env.DB.prepare(`
-      DELETE FROM categories
-      WHERE id = ?
-    `).bind(id).run();
-
-    if (!result.meta?.changes) {
+    if (!category) {
       return json({
         success: false,
         message: "Category not found."
       }, 404);
     }
 
+    /*
+      Delete all products belonging to this category first.
+      This allows the category to be deleted even when it
+      contains products.
+    */
+    const productDelete = await context.env.DB.prepare(`
+      DELETE FROM products
+      WHERE category_id = ?
+    `).bind(id).run();
+
+    /* Now delete the category */
+    const categoryDelete = await context.env.DB.prepare(`
+      DELETE FROM categories
+      WHERE id = ?
+    `).bind(id).run();
+
+    if (!categoryDelete.meta?.changes) {
+      return json({
+        success: false,
+        message: "Category could not be deleted."
+      }, 500);
+    }
+
     return json({
       success: true,
-      message: "Category deleted successfully."
+      message: "Category and all products in it were deleted successfully.",
+      deletedCategoryId: id,
+      deletedCategoryName: category.name,
+      deletedProducts: productDelete.meta?.changes || 0
     });
+
   } catch (error) {
     console.error("Admin categories DELETE error:", error);
 
