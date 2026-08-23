@@ -1394,6 +1394,1171 @@
 
 <!-- ACCOUNT SECURITY -->
 
+
+<section class="section" id="clientCatalogManagement">
+
+  <div class="section-header">
+    <h2>📦 Products & Categories</h2>
+    <p>Manage your agriculture categories and products.</p>
+  </div>
+
+  <div id="clientCatalogMessage"
+       class="message"
+       style="display:none;"></div>
+
+  <!-- =========================
+       CATEGORY MANAGEMENT
+  ========================== -->
+
+  <div id="clientCategoryManagement"
+       style="margin-bottom:28px;">
+
+    <h3>🗂️ Category Management</h3>
+
+    <p class="editor-description">
+      Create, edit, activate/deactivate and delete product categories.
+    </p>
+
+    <div class="field">
+      <label for="clientCategoryName">Category Name</label>
+      <input
+        id="clientCategoryName"
+        type="text"
+        maxlength="100"
+        placeholder="Enter category name"
+      >
+    </div>
+
+    <div class="field">
+      <label for="clientCategorySlug">Category Slug</label>
+      <input
+        id="clientCategorySlug"
+        type="text"
+        maxlength="120"
+        placeholder="category-slug"
+      >
+    </div>
+
+    <div class="field">
+      <label for="clientCategoryDescription">Description</label>
+      <textarea
+        id="clientCategoryDescription"
+        placeholder="Category description"
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label for="clientCategorySort">Display Order</label>
+      <input
+        id="clientCategorySort"
+        type="number"
+        min="0"
+        value="0"
+      >
+    </div>
+
+    <div class="field">
+      <label>
+        <input
+          id="clientCategoryActive"
+          type="checkbox"
+          checked
+        >
+        Active Category
+      </label>
+    </div>
+
+    <button
+      type="button"
+      id="clientCategorySaveButton"
+    >
+      ➕ Create Category
+    </button>
+
+    <button
+      type="button"
+      id="clientCategoryClearButton"
+      class="secondary"
+    >
+      Clear
+    </button>
+
+    <div id="clientCategoryList">
+      <div class="info-box">
+        Loading categories...
+      </div>
+    </div>
+
+  </div>
+
+  <hr>
+
+  <!-- =========================
+       PRODUCT MANAGEMENT
+  ========================== --><div id="clientProductManagement">
+
+    <h3>📦 Product Management</h3>
+
+    <p class="editor-description">
+      Create, edit, publish, feature and delete products.
+    </p>
+
+    <div class="info-box">
+      Manage products through the secure client product API.
+    </div>
+
+    <div class="field">
+      <label for="clientProductCategory">Category</label>
+      <select id="clientProductCategory"></select>
+    </div>
+
+    <div class="field">
+      <label for="clientProductTitle">Product Title</label>
+      <input
+        id="clientProductTitle"
+        type="text"
+      >
+    </div>
+
+    <div class="field">
+      <label for="clientProductSlug">Slug</label>
+      <input
+        id="clientProductSlug"
+        type="text"
+      >
+    </div>
+
+    <div class="field">
+      <label for="clientProductShortDescription">
+        Short Description
+      </label>
+      <textarea
+        id="clientProductShortDescription"
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label for="clientProductDescription">
+        Description
+      </label>
+      <textarea
+        id="clientProductDescription"
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label for="clientProductSpecifications">
+        Specifications
+      </label>
+      <textarea
+        id="clientProductSpecifications"
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label for="clientProductOrigin">
+        Origin
+      </label>
+      <input
+        id="clientProductOrigin"
+        type="text"
+      >
+    </div>
+
+    <div class="field">
+      <label for="clientProductPackaging">
+        Packaging
+      </label>
+      <input
+        id="clientProductPackaging"
+        type="text"
+      >
+    </div>
+
+    <div class="field">
+      <label for="clientProductMOQ">
+        Minimum Order Quantity
+      </label>
+      <input
+        id="clientProductMOQ"
+        type="text"
+      >
+    </div>
+
+    <div class="field">
+      <label for="clientProductAvailability">
+        Availability
+      </label>
+
+      <select id="clientProductAvailability">
+        <option value="available">
+          Available
+        </option>
+
+        <option value="limited">
+          Limited
+        </option>
+
+        <option value="out_of_stock">
+          Out of Stock
+        </option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="clientProductImageUrl">
+        Main Image URL
+      </label>
+
+      <input
+        id="clientProductImageUrl"
+        type="text"
+        placeholder="/images/products/example.jpg"
+      >
+    </div>
+
+    <div class="field">
+      <label>
+        <input
+          id="clientProductFeatured"
+          type="checkbox"
+        >
+        Featured
+      </label>
+    </div>
+
+    <div class="field">
+      <label>
+        <input
+          id="clientProductPublished"
+          type="checkbox"
+          checked
+        >
+        Published
+      </label>
+    </div>
+
+    <button
+      type="button"
+      id="clientProductSaveButton"
+    >
+      ➕ Create Product
+    </button>
+
+    <button
+      type="button"
+      id="clientProductClearButton"
+      class="secondary"
+    >
+      Clear
+    </button>
+
+    <div id="clientProductList">
+      <div class="info-box">
+        Loading products...
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+(function () {
+  "use strict";
+
+  let clientCategories = [];
+  let clientProducts = [];
+  let editingClientCategoryId = null;
+  let editingClientProductId = null;
+
+  function showClientCatalogMessage(text, type) {
+    const box =
+      document.getElementById("clientCatalogMessage");
+
+    if (!box) return;
+
+    box.className =
+      "message " + (type || "");
+
+    box.textContent =
+      text || "";
+
+    box.style.display =
+      text ? "block" : "none";
+  }
+
+  function value(id) {
+    const el =
+      document.getElementById(id);
+
+    return el
+      ? el.value.trim()
+      : "";
+  }
+
+  function checked(id) {
+    const el =
+      document.getElementById(id);
+
+    return !!el && el.checked;
+  }
+
+  async function api(url, options) {
+    const response =
+      await fetch(url, {
+        credentials: "include",
+        cache: "no-store",
+        ...(options || {})
+      });
+
+    let data = {};
+
+    try {
+      data =
+        await response.json();
+    } catch (_) {}
+
+    if (response.status === 401) {
+      window.location.href =
+        "/client-login.html";
+
+      throw new Error(
+        "Unauthorized."
+      );
+    }
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.message ||
+        "Request failed."
+      );
+    }
+
+    return data;
+  }
+
+  function clearCategoryForm() {
+    editingClientCategoryId =
+      null;
+
+    document.getElementById(
+      "clientCategoryName"
+    ).value = "";
+
+    document.getElementById(
+      "clientCategorySlug"
+    ).value = "";
+
+    document.getElementById(
+      "clientCategoryDescription"
+    ).value = "";
+
+    document.getElementById(
+      "clientCategorySort"
+    ).value = "0";
+
+    document.getElementById(
+      "clientCategoryActive"
+    ).checked = true;
+
+    document.getElementById(
+      "clientCategorySaveButton"
+    ).textContent =
+      "➕ Create Category";
+  }
+
+  function clearProductForm() {
+    editingClientProductId =
+      null;
+
+    const ids = [
+      "clientProductTitle",
+      "clientProductSlug",
+      "clientProductShortDescription",
+      "clientProductDescription",
+      "clientProductSpecifications",
+      "clientProductOrigin",
+      "clientProductPackaging",
+      "clientProductMOQ",
+      "clientProductImageUrl"
+    ];
+
+    ids.forEach(function (id) {
+      const el =
+        document.getElementById(id);
+
+      if (el) {
+        el.value = "";
+      }
+    });
+
+    document.getElementById(
+      "clientProductAvailability"
+    ).value = "available";
+
+    document.getElementById(
+      "clientProductFeatured"
+    ).checked = false;
+
+    document.getElementById(
+      "clientProductPublished"
+    ).checked = true;
+
+    document.getElementById(
+      "clientProductSaveButton"
+    ).textContent =
+      "➕ Create Product";
+  }
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function populateCategorySelect() {
+    const select =
+      document.getElementById(
+        "clientProductCategory"
+      );
+
+    if (!select) return;
+
+    select.innerHTML =
+      '<option value="">Select category</option>';
+
+    clientCategories.forEach(
+      function (category) {
+        const option =
+          document.createElement("option");
+
+        option.value =
+          category.id;
+
+        option.textContent =
+          category.name +
+          (
+            Number(category.active)
+              ? ""
+              : " (Inactive)"
+          );
+
+        select.appendChild(
+          option
+        );
+      }
+    );
+  }
+
+  function renderCategories() {
+    const list =
+      document.getElementById(
+        "clientCategoryList"
+      );
+
+    if (!list) return;
+
+    if (!clientCategories.length) {
+      list.innerHTML =
+        '<div class="info-box">No categories found.</div>';
+
+      return;
+    }
+
+    list.innerHTML = "";
+
+    clientCategories.forEach(
+      function (category) {
+        const card =
+          document.createElement("div");
+
+        card.style.cssText =
+          "border:1px solid rgba(0,0,0,.12);" +
+          "border-radius:14px;" +
+          "padding:16px;" +
+          "margin-top:12px;" +
+          "background:rgba(255,255,255,.55);";
+
+        const title =
+          document.createElement("h4");
+
+        title.textContent =
+          category.name +
+          (
+            Number(category.active)
+              ? " • Active"
+              : " • Inactive"
+          );
+
+        const details =
+          document.createElement("p");
+
+        details.textContent =
+          "Slug: " +
+          (category.slug || "-") +
+          " | Products: " +
+          (category.product_count || 0) +
+          " | Order: " +
+          (category.sort_order ?? 0);
+
+        const edit =
+          document.createElement("button");
+
+        edit.type = "button";
+        edit.textContent = "✏️ Edit";
+
+        edit.onclick =
+          function () {
+            editingClientCategoryId =
+              Number(category.id);
+
+            document.getElementById(
+              "clientCategoryName"
+            ).value =
+              category.name || "";
+
+            document.getElementById(
+              "clientCategorySlug"
+            ).value =
+              category.slug || "";
+
+            document.getElementById(
+              "clientCategoryDescription"
+            ).value =
+              category.description || "";
+
+            document.getElementById(
+              "clientCategorySort"
+            ).value =
+              category.sort_order ?? 0;
+
+            document.getElementById(
+              "clientCategoryActive"
+            ).checked =
+              Number(category.active) === 1;
+
+            document.getElementById(
+              "clientCategorySaveButton"
+            ).textContent =
+              "💾 Update Category";
+          };
+
+        const del =
+          document.createElement("button");
+
+        del.type = "button";
+        del.className = "secondary";
+        del.style.marginLeft = "8px";
+        del.textContent = "🗑️ Delete";
+
+        del.onclick =
+          async function () {
+            if (
+              !confirm(
+                "Delete category '" +
+                category.name +
+                "' and all products inside it?"
+              )
+            ) {
+              return;
+            }
+
+            try {
+              await api(
+                "/api/client-categories?id=" +
+                encodeURIComponent(
+                  category.id
+                ),
+                {
+                  method: "DELETE"
+                }
+              );
+
+              showClientCatalogMessage(
+                "✓ Category and its products deleted successfully.",
+                "success"
+              );
+
+              clearCategoryForm();
+
+              await loadCategories();
+              await loadProducts();
+
+            } catch (error) {
+              showClientCatalogMessage(
+                error.message ||
+                "Unable to delete category.",
+                "error"
+              );
+            }
+          };
+
+        card.appendChild(title);
+        card.appendChild(details);
+        card.appendChild(edit);
+        card.appendChild(del);
+
+        list.appendChild(card);
+      }
+    );
+  }
+
+  function renderProducts() {
+    const list =
+      document.getElementById(
+        "clientProductList"
+      );
+
+    if (!list) return;
+
+    if (!clientProducts.length) {
+      list.innerHTML =
+        '<div class="info-box">No products found.</div>';
+
+      return;
+    }
+
+    list.innerHTML = "";
+
+    clientProducts.forEach(
+      function (product) {
+        const card =
+          document.createElement("div");
+
+        card.style.cssText =
+          "border:1px solid rgba(0,0,0,.12);" +
+          "border-radius:14px;" +
+          "padding:16px;" +
+          "margin-top:12px;" +
+          "background:rgba(255,255,255,.55);";
+
+        if (product.main_image_url) {
+          const image =
+            document.createElement("img");
+
+          image.src =
+            product.main_image_url +
+            (
+              product.main_image_url.includes("?")
+                ? "&"
+                : "?"
+            ) +
+            "v=" +
+            Date.now();
+
+          image.alt =
+            product.title ||
+            "Product image";
+
+          image.style.cssText =
+            "display:block;" +
+            "width:100%;" +
+            "max-width:220px;" +
+            "height:140px;" +
+            "object-fit:cover;" +
+            "border-radius:12px;" +
+            "margin-bottom:12px;";
+
+          card.appendChild(image);
+        }
+
+        const title =
+          document.createElement("h4");
+
+        title.textContent =
+          product.title ||
+          "Untitled Product";
+
+        const details =
+          document.createElement("p");
+
+        details.textContent =(product.category_name ||
+            "No category") +
+          " • " +
+          (
+            Number(product.published)
+              ? "Published"
+              : "Draft"
+          ) +
+          " • " +
+          (
+            Number(product.featured)
+              ? "Featured"
+              : "Standard"
+          ) +
+          " • " +
+          (
+            product.availability ||
+            "available"
+          );
+
+        const edit =
+          document.createElement("button");
+
+        edit.type = "button";
+        edit.textContent = "✏️ Edit";
+
+        edit.onclick =
+          function () {
+            editProduct(product);
+          };
+
+        const del =
+          document.createElement("button");
+
+        del.type = "button";
+        del.className = "secondary";
+        del.style.marginLeft = "8px";
+        del.textContent = "🗑️ Delete";
+
+        del.onclick =
+          async function () {
+            if (
+              !confirm(
+                "Delete product '" +
+                (
+                  product.title ||
+                  "this product"
+                ) +
+                "' permanently?"
+              )
+            ) {
+              return;
+            }
+
+            try {
+              await api(
+                "/api/client-products?id=" +
+                encodeURIComponent(
+                  product.id
+                ),
+                {
+                  method: "DELETE"
+                }
+              );
+
+              showClientCatalogMessage(
+                "✓ Product deleted successfully.",
+                "success"
+              );
+
+              clearProductForm();
+
+              await loadProducts();
+              await loadCategories();
+
+            } catch (error) {
+              showClientCatalogMessage(
+                error.message ||
+                "Unable to delete product.",
+                "error"
+              );
+            }
+          };
+
+        card.appendChild(title);
+        card.appendChild(details);
+        card.appendChild(edit);
+        card.appendChild(del);
+
+        list.appendChild(card);
+      }
+    );
+  }
+
+  function editProduct(product) {
+    editingClientProductId =
+      Number(product.id);
+
+    populateCategorySelect();
+
+    document.getElementById(
+      "clientProductCategory"
+    ).value =
+      product.category_id || "";
+
+    document.getElementById(
+      "clientProductTitle"
+    ).value =
+      product.title || "";
+
+    document.getElementById(
+      "clientProductSlug"
+    ).value =
+      product.slug || "";
+
+    document.getElementById(
+      "clientProductShortDescription"
+    ).value =
+      product.short_description || "";
+
+    document.getElementById(
+      "clientProductDescription"
+    ).value =
+      product.description || "";
+
+    document.getElementById(
+      "clientProductSpecifications"
+    ).value =
+      product.specifications || "";
+
+    document.getElementById(
+      "clientProductOrigin"
+    ).value =
+      product.origin || "";
+
+    document.getElementById(
+      "clientProductPackaging"
+    ).value =
+      product.packaging || "";
+
+    document.getElementById(
+      "clientProductMOQ"
+    ).value =
+      product.minimum_order_quantity || "";
+
+    document.getElementById(
+      "clientProductAvailability"
+    ).value =
+      (
+        [
+          "available",
+          "limited",
+          "out_of_stock"
+        ].includes(product.availability)
+      )
+        ? product.availability
+        : "available";
+
+    document.getElementById(
+      "clientProductImageUrl"
+    ).value =
+      product.main_image_url || "";
+
+    document.getElementById(
+      "clientProductFeatured"
+    ).checked =
+      Number(product.featured) === 1;
+
+    document.getElementById(
+      "clientProductPublished"
+    ).checked =
+      Number(product.published) === 1;
+
+    document.getElementById(
+      "clientProductSaveButton"
+    ).textContent =
+      "💾 Update Product";
+
+    const section =
+      document.getElementById(
+        "clientProductManagement"
+      );
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  }
+
+  async function loadCategories() {
+    const data =
+      await api(
+        "/api/client-categories"
+      );
+
+    clientCategories =
+      data.categories || [];
+
+    renderCategories();
+    populateCategorySelect();
+  }
+
+  async function loadProducts() {
+    const data =
+      await api(
+        "/api/client-products"
+      );
+
+    clientProducts =
+      data.products || [];
+
+    renderProducts();
+  }
+
+  async function saveCategory() {
+    const payload = {
+      id:
+        editingClientCategoryId ||
+        undefined,
+
+      name:
+        value(
+          "clientCategoryName"
+        ),
+
+      slug:
+        value(
+          "clientCategorySlug"
+        ),
+
+      description:
+        value(
+          "clientCategoryDescription"
+        ),
+
+      sortOrder:
+        Number(
+          document.getElementById(
+            "clientCategorySort"
+          ).value
+        ) || 0,
+
+      active:
+        document.getElementById(
+          "clientCategoryActive"
+        ).checked
+          ? 1
+          : 0
+    };
+
+    if (!payload.name) {
+      showClientCatalogMessage(
+        "Category name is required.",
+        "error"
+      );
+
+      return;
+    }
+
+    try {
+      await api(
+        "/api/client-categories",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify(payload)
+        }
+      );
+
+      showClientCatalogMessage(
+        editingClientCategoryId
+          ? "✓ Category updated successfully."
+          : "✓ Category created successfully.",
+        "success"
+      );
+
+      clearCategoryForm();
+
+      await loadCategories();
+      await loadProducts();
+
+    } catch (error) {
+      showClientCatalogMessage(
+        error.message ||
+        "Unable to save category.",
+        "error"
+      );
+    }
+  }
+
+  async function saveProduct() {const payload = {
+      id:
+        editingClientProductId ||
+        undefined,
+
+      categoryId:
+        Number(
+          value(
+            "clientProductCategory"
+          )
+        ),
+
+      title:
+        value(
+          "clientProductTitle"
+        ),
+
+      slug:
+        value(
+          "clientProductSlug"
+        ),
+
+      shortDescription:
+        value(
+          "clientProductShortDescription"
+        ),
+
+      description:
+        value(
+          "clientProductDescription"
+        ),
+
+      specifications:
+        value(
+          "clientProductSpecifications"
+        ),
+
+      origin:
+        value(
+          "clientProductOrigin"
+        ),
+
+      packaging:
+        value(
+          "clientProductPackaging"
+        ),
+
+      minimumOrderQuantity:
+        value(
+          "clientProductMOQ"
+        ),
+
+      availability:
+        value(
+          "clientProductAvailability"
+        ),
+
+      featured:
+        checked(
+          "clientProductFeatured"
+        )
+          ? 1
+          : 0,
+
+      published:
+        checked(
+          "clientProductPublished"
+        )
+          ? 1
+          : 0,
+
+      mainImageUrl:
+        value(
+          "clientProductImageUrl"
+        )
+    };
+
+    if (!payload.categoryId) {
+      showClientCatalogMessage(
+        "Product category is required.",
+        "error"
+      );
+
+      return;
+    }
+
+    if (!payload.title) {
+      showClientCatalogMessage(
+        "Product title is required.",
+        "error"
+      );
+
+      return;
+    }
+
+    if (!payload.slug) {
+      showClientCatalogMessage(
+        "Product slug is required.",
+        "error"
+      );
+
+      return;
+    }
+
+    try {
+      await api(
+        "/api/client-products",
+        {
+          method:
+            editingClientProductId
+              ? "PUT"
+              : "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify(payload)
+        }
+      );
+
+      showClientCatalogMessage(
+        editingClientProductId
+          ? "✓ Product updated successfully."
+          : "✓ Product created successfully.",
+        "success"
+      );
+
+      clearProductForm();
+
+      await loadProducts();
+      await loadCategories();
+
+    } catch (error) {
+      showClientCatalogMessage(
+        error.message ||
+        "Unable to save product.",
+        "error"
+      );
+    }
+  }
+
+  document.getElementById(
+    "clientCategorySaveButton"
+  ).addEventListener(
+    "click",
+    saveCategory
+  );
+
+  document.getElementById(
+    "clientCategoryClearButton"
+  ).addEventListener(
+    "click",
+    clearCategoryForm
+  );
+
+  document.getElementById(
+    "clientProductSaveButton"
+  ).addEventListener(
+    "click",
+    saveProduct
+  );
+
+  document.getElementById(
+    "clientProductClearButton"
+  ).addEventListener(
+    "click",
+    clearProductForm
+  );
+
+  loadCategories()
+    .then(loadProducts)
+    .catch(function (error) {
+      showClientCatalogMessage(
+        error.message ||
+        "Unable to load product management.",
+        "error"
+      );
+    });
+
+})();
+</script>
+
+
 <section class="section">
 
   <div class="section-header">
@@ -1708,19 +2873,6 @@ const IMAGE_FIELDS = [
   },
 
 
-  {
-    type:
-  },
-
-
-  {
-    type:
-  },
-
-
-  {
-    type:
-  }
 
 ];
 
@@ -2973,6 +4125,38 @@ loadContent();
 
 </script>
 
+
+
+<script>
+/* LICHATWIST_AGRO_FUNCTIONAL_INIT_V1 */
+(function () {
+  function agroClientManagementInit() {
+    try {
+      if (typeof loadCategories === "function") {
+        Promise.resolve(loadCategories()).catch(function (error) {
+          console.error("Client category initialization error:", error);
+        });
+      }
+
+      if (typeof loadProducts === "function") {
+        Promise.resolve(loadProducts()).catch(function (error) {
+          console.error("Client product initialization error:", error);
+        });
+      }
+    } catch (error) {
+      console.error("Client management initialization error:", error);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", agroClientManagementInit, {
+      once: true
+    });
+  } else {
+    agroClientManagementInit();
+  }
+})();
+</script>
 
 </body>
 
