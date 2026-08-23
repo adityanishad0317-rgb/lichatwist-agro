@@ -11,6 +11,7 @@ const MAX_FILE_SIZE =
  */
 
 const ALLOWED_FILES = {
+  product: "product.jpg",
 
   hero:
     "hero.jpg",
