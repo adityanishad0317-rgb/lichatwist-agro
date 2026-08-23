@@ -1085,6 +1085,7 @@ body {
     <h3>👥 Clients</h3>
     <p>Create and manage client accounts.</p>
 <button onclick="goTo('productManagement')">📦 Products</button>
+    <button onclick="goTo('enquiryManagement')">📩 Enquiries</button>
     <button onclick="goTo('clientManagement')">Create Client</button>
     <button
       class="secondary"
@@ -1108,6 +1109,41 @@ body {
 <div id="status" class="message info" style="display:block">
   Admin panel loaded successfully.
 </div>
+
+
+<!-- ENQUIRY MANAGEMENT -->
+<section class="editor-section" id="enquiryManagement">
+  <h2>📩 Enquiries</h2>
+  <p class="editor-description">
+    View and manage enquiries submitted through the Agro website.
+  </p>
+
+  <div class="field">
+    <label for="enquirySearch">Search</label>
+    <input id="enquirySearch" type="text"
+           placeholder="Name, email, phone, subject or product">
+  </div>
+
+  <div class="field">
+    <label for="enquiryStatusFilter">Status</label>
+    <select id="enquiryStatusFilter">
+      <option value="">All Statuses</option>
+      <option value="new">New</option>
+      <option value="contacted">Contacted</option>
+      <option value="replied">Replied</option>
+      <option value="closed">Closed</option>
+    </select>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;">
+    <button type="button" onclick="loadAdminEnquiries()">🔄 Refresh Enquiries</button>
+  </div>
+
+  <div id="enquiryMessage" class="message"></div>
+  <div id="adminEnquiryList">
+    <div class="info-box">Loading enquiries...</div>
+  </div>
+</section>
 
 <!-- OWNER PASSWORD -->
 
@@ -4060,6 +4096,406 @@ document.addEventListener("DOMContentLoaded", function() {
 
   loadAdminCategories();
 });
+</script>
+
+
+<script>
+/* ================================================
+   ADMIN ENQUIRIES MANAGEMENT
+   Independent module — does not modify other admin features
+================================================ */
+
+let adminEnquiries = [];
+
+function enquiryMessage(text, type) {
+  const box = document.getElementById("enquiryMessage");
+  if (!box) return;
+
+  box.className = "message " + (type || "");
+  box.textContent = text || "";
+  box.style.display = text ? "block" : "none";
+}
+
+function escapeEnquiryHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatEnquiryDate(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return date.toLocaleString();
+}
+
+function renderAdminEnquiries() {
+  const list = document.getElementById("adminEnquiryList");
+  if (!list) return;
+
+  if (!adminEnquiries.length) {
+    list.innerHTML =
+      '<div class="info-box">No enquiries found.</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+
+  adminEnquiries.forEach(function(enquiry) {
+    const card = document.createElement("div");
+
+    card.style.cssText =
+      "border:1px solid rgba(0,0,0,.12);" +
+      "border-radius:14px;" +
+      "padding:16px;" +
+      "margin-top:12px;" +
+      "background:rgba(255,255,255,.55);";
+
+    const title = document.createElement("h4");
+    title.textContent =
+      (enquiry.name || "Unknown") +
+      (enquiry.product_title
+        ? " • " + enquiry.product_title
+        : "");
+
+    const details = document.createElement("div");
+
+    details.innerHTML =
+      "<p><strong>Email:</strong> " +
+      escapeEnquiryHtml(enquiry.email || "-") +
+      "</p>" +
+
+      "<p><strong>Phone:</strong> " +
+      escapeEnquiryHtml(enquiry.phone || "-") +
+      "</p>" +
+
+      "<p><strong>Subject:</strong> " +
+      escapeEnquiryHtml(enquiry.subject || "-") +
+      "</p>" +
+
+      "<p><strong>Message:</strong><br>" +
+      escapeEnquiryHtml(enquiry.message || "-")
+        .replace(/\n/g, "<br>") +
+      "</p>" +
+
+      "<p><strong>Source:</strong> " +
+      escapeEnquiryHtml(enquiry.source || "-") +
+      "</p>" +
+
+      "<p><strong>Submitted:</strong> " +
+      escapeEnquiryHtml(formatEnquiryDate(enquiry.created_at)) +
+      "</p>";
+
+    const controls = document.createElement("div");
+
+    controls.style.cssText =
+      "display:flex;" +
+      "gap:8px;" +
+      "flex-wrap:wrap;" +
+      "margin-top:12px;";
+
+    const statusLabel = document.createElement("label");
+    statusLabel.textContent = "Status";
+
+    statusLabel.style.cssText =
+      "display:flex;" +
+      "align-items:center;" +
+      "gap:6px;";
+
+    const status = document.createElement("select");
+
+    ["new", "contacted", "replied", "closed"].forEach(function(value) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent =
+        value.charAt(0).toUpperCase() + value.slice(1);
+
+      if (value === enquiry.status) {
+        option.selected = true;
+      }
+
+      status.appendChild(option);
+    });
+
+    statusLabel.appendChild(status);
+
+    const notes = document.createElement("textarea");
+
+    notes.placeholder = "Admin notes";
+    notes.value = enquiry.admin_notes || "";
+
+    notes.style.cssText =
+      "width:100%;" +
+      "min-height:80px;" +
+      "margin-top:10px;" +
+      "box-sizing:border-box;";
+
+    const update = document.createElement("button");
+
+    update.type = "button";
+    update.textContent = "💾 Save";
+
+    update.onclick = async function() {
+      update.disabled = true;
+
+      try {
+        const response = await fetch(
+          "/api/admin-enquiries?id=" +
+          encodeURIComponent(enquiry.id),
+          {
+            method: "PUT",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              status: status.value,
+              admin_notes: notes.value
+            })
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.message ||
+            "Unable to update enquiry."
+          );
+        }
+
+        enquiryMessage(
+          "✓ Enquiry updated successfully.",
+          "success"
+        );
+
+        await loadAdminEnquiries();
+
+      } catch (error) {
+        console.error(error);
+
+        enquiryMessage(
+          error.message ||
+          "Unable to update enquiry.",
+          "error"
+        );
+
+      } finally {
+        update.disabled = false;
+      }
+    };
+
+    const del = document.createElement("button");
+
+    del.type = "button";
+    del.className = "secondary";
+    del.textContent = "🗑️ Delete";
+
+    del.onclick = async function() {
+      if (
+        !confirm(
+          "Delete this enquiry permanently?"
+        )
+      ) {
+        return;
+      }
+
+      del.disabled = true;
+
+      try {
+        const response = await fetch(
+          "/api/admin-enquiries?id=" +
+          encodeURIComponent(enquiry.id),
+          {
+            method: "DELETE",
+            credentials: "same-origin"
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.message ||
+            "Unable to delete enquiry."
+          );
+        }
+
+        enquiryMessage(
+          "✓ Enquiry deleted successfully.",
+          "success"
+        );
+
+        await loadAdminEnquiries();
+
+      } catch (error) {
+        console.error(error);
+
+        enquiryMessage(
+          error.message ||
+          "Unable to delete enquiry.",
+          "error"
+        );
+
+      } finally {
+        del.disabled = false;
+      }
+    };
+
+    controls.appendChild(statusLabel);
+    controls.appendChild(update);
+    controls.appendChild(del);
+
+    card.appendChild(title);
+    card.appendChild(details);
+    card.appendChild(notes);
+    card.appendChild(controls);
+
+    list.appendChild(card);
+  });
+}
+
+async function loadAdminEnquiries() {
+  const list = document.getElementById("adminEnquiryList");
+
+  if (!list) return;
+
+  list.innerHTML =
+    '<div class="info-box">Loading enquiries...</div>';
+
+  try {
+    const searchElement =
+      document.getElementById("enquirySearch");
+
+    const statusElement =
+      document.getElementById("enquiryStatusFilter");
+
+    const search =
+      searchElement
+        ? searchElement.value.trim()
+        : "";
+
+    const status =
+      statusElement
+        ? statusElement.value
+        : "";
+
+    const params = new URLSearchParams();
+
+    if (search) {
+      params.set("search", search);
+    }
+
+    if (status) {
+      params.set("status", status);
+    }
+
+    const query =
+      params.toString()
+        ? "?" + params.toString()
+        : "";
+
+    const response = await fetch(
+      "/api/admin-enquiries" + query,
+      {
+        credentials: "same-origin"
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.message ||
+        "Unable to load enquiries."
+      );
+    }
+
+    adminEnquiries = data.enquiries || [];
+
+    renderAdminEnquiries();
+
+    enquiryMessage(
+      adminEnquiries.length +
+      " enquiry" +
+      (adminEnquiries.length === 1 ? "" : "ies") +
+      " loaded.",
+      "success"
+    );
+
+  } catch (error) {
+    console.error(
+      "Admin enquiries load error:",
+      error
+    );
+
+    list.innerHTML =
+      '<div class="info-box">' +
+      escapeEnquiryHtml(
+        error.message ||
+        "Unable to load enquiries."
+      ) +
+      "</div>";
+
+    enquiryMessage(
+      error.message ||
+      "Unable to load enquiries.",
+      "error"
+    );
+  }
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+    const search =
+      document.getElementById("enquirySearch");
+
+    const status =
+      document.getElementById(
+        "enquiryStatusFilter"
+      );
+
+    if (search) {
+      let timer;
+
+      search.addEventListener(
+        "input",
+        function() {
+          clearTimeout(timer);
+
+          timer = setTimeout(
+            loadAdminEnquiries,
+            300
+          );
+        }
+      );
+    }
+
+    if (status) {
+      status.addEventListener(
+        "change",
+        loadAdminEnquiries
+      );
+    }
+
+    if (
+      document.getElementById(
+        "adminEnquiryList"
+      )
+    ) {
+      loadAdminEnquiries();
+    }
+  }
+);
 </script>
 
 </body>
