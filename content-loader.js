@@ -1414,33 +1414,74 @@ async function loadAgroProducts(){
       return;
     }
 
-    grid.innerHTML=data.products.map(p=>{
+    /*
+     * PUBLIC HOMEPAGE:
+     * Only show the first 3 products.
+     * The complete catalogue is available on products.html.
+     */
+    const products=data.products.slice(0,3);
+
+    grid.innerHTML=products.map(p=>{
       const title=p.title || "Agricultural Product";
-      const image=(p.main_image_url ? (p.main_image_url.startsWith("/") ? p.main_image_url : "/" + p.main_image_url) : "/images/agriculture.jpg");
+      const image=(p.main_image_url
+        ? (p.main_image_url.startsWith("/")
+          ? p.main_image_url
+          : "/" + p.main_image_url)
+        : "/images/agriculture.jpg");
+
       const packaging=p.packaging || "As per buyer requirement";
       const moq=p.minimum_order_quantity || "As per inquiry";
       const specifications=p.specifications || "Quality focused; Reliable sourcing";
+
       return `
         <article class="agro-product-card">
           <div class="agro-product-image">
             <img src="${image}" alt="${p.title || "Agricultural product"}" loading="lazy">
           </div>
+
           <div class="agro-product-content">
             <small>${p.category_name || "AGRICULTURAL PRODUCT"}</small>
+
             <h3>${p.title || "Product"}</h3>
+
             <p>${p.short_description || p.description || ""}</p>
+
             <div class="agro-product-details">
-              <div><strong>Packaging</strong><span>${packaging}</span></div>
-              <div><strong>Minimum order</strong><span>${moq}</span></div>
-              <div><strong>Specifications</strong><span>${specifications}</span></div>
+              <div>
+                <strong>Packaging</strong>
+                <span>${packaging}</span>
+              </div>
+
+              <div>
+                <strong>Minimum order</strong>
+                <span>${moq}</span>
+              </div>
+
+              <div>
+                <strong>Specifications</strong>
+                <span>${specifications}</span>
+              </div>
             </div>
+
             <div class="agro-product-meta">
               <span>Origin: ${p.origin || "India"}</span>
               <span>${p.availability || "Available"}</span>
             </div>
+
             <div class="agro-product-actions">
-              <a href="#contact" class="product-inquiry-btn" data-product="${title}" data-product-id="${p.id || ""}">Send Inquiry <i class="fa-solid fa-arrow-right"></i></a>
-              <button type="button" class="product-whatsapp-btn" data-product="${title}" data-product-id="${p.id || ""}" aria-label="WhatsApp inquiry for ${title}">
+              <a href="#contact"
+                 class="product-inquiry-btn"
+                 data-product="${title}"
+                 data-product-id="${p.id || ""}">
+                Send Inquiry
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+
+              <button type="button"
+                      class="product-whatsapp-btn"
+                      data-product="${title}"
+                      data-product-id="${p.id || ""}"
+                      aria-label="WhatsApp inquiry for ${title}">
                 <i class="fa-brands fa-whatsapp"></i>
               </button>
             </div>
@@ -1448,68 +1489,149 @@ async function loadAgroProducts(){
         </article>
       `;
     }).join("");
-    const filter = document.getElementById("productsFilter");
-    const count = document.getElementById("productsCount");
-    const cards = Array.from(grid.querySelectorAll(".agro-product-card"));
 
-    if (filter && cards.length) {
-      const categories = [...new Set(
-        cards.map(card => {
-          const el = card.querySelector(".agro-product-content small");
-          return el ? el.textContent.trim() : "";
-        }).filter(Boolean)
-      )];
+    const count=document.getElementById("productsCount");
 
-      filter.innerHTML =
-        '<button type="button" class="active" data-category="all">All</button>' +
-        categories.map(category =>
-          '<button type="button" data-category="' +
-          category.replace(/"/g, "&quot;") +
-          '">' + category + '</button>'
-        ).join("");
+    if(count){
+      count.textContent =
+        products.length +
+        (products.length === 1 ? " product" : " products");
+    }
 
-      const updateCount = number => {
-        if (count) {
-          count.textContent =
-            number + (number === 1 ? " product" : " products");
-        }
-      };
+    /*
+     * Homepage intentionally has no category filtering because
+     * it displays only the selected 3 products.
+     */
+    const filter=document.getElementById("productsFilter");
 
-      updateCount(cards.length);
-
-      filter.querySelectorAll("button").forEach(button => {
-        button.addEventListener("click", function () {
-          const selected = this.dataset.category;
-
-          filter.querySelectorAll("button").forEach(btn =>
-            btn.classList.remove("active")
-          );
-
-          this.classList.add("active");
-
-          let visible = 0;
-
-          cards.forEach(card => {
-            const category =
-              card.querySelector(".agro-product-content small")?.textContent.trim() || "";
-
-            const show =
-              selected === "all" || category === selected;
-
-            card.style.display = show ? "" : "none";
-
-            if (show) visible++;
-          });
-
-          updateCount(visible);
-        });
-      });
+    if(filter){
+      filter.innerHTML="";
+      filter.style.display="none";
     }
 
   }catch(error){
     console.log("Products could not be loaded.",error);
     grid.innerHTML="<p>Products are currently unavailable.</p>";
   }
+}
+
+
+/* ============================================================
+ * COMPLETE PUBLIC PRODUCT CATALOGUE
+ * Used only by products.html
+ * ============================================================ */
+
+async function loadAllAgroProducts(){
+  const grid=document.getElementById("allAgroProductsGrid");
+  const count=document.getElementById("allProductsCount");
+
+  if(!grid) return;
+
+  try{
+    const response=await fetch("/api/products",{cache:"no-store"});
+    const data=await response.json();
+
+    if(!data.success || !Array.isArray(data.products)){
+      throw new Error("Products unavailable");
+    }
+
+    if(count){
+      count.textContent =
+        data.products.length +
+        (data.products.length === 1 ? " product" : " products");
+    }
+
+    if(!data.products.length){
+      grid.innerHTML="<p class=\"products-empty\">No agricultural products available.</p>";
+      return;
+    }
+
+    grid.innerHTML=data.products.map(p=>{
+      const title=p.title || "Agricultural Product";
+
+      const image=(p.main_image_url
+        ? (p.main_image_url.startsWith("/")
+          ? p.main_image_url
+          : "/" + p.main_image_url)
+        : "/images/agriculture.jpg");
+
+      const packaging=p.packaging || "As per buyer requirement";
+      const moq=p.minimum_order_quantity || "As per inquiry";
+      const specifications=p.specifications || "Quality focused; Reliable sourcing";
+
+      return `
+        <article class="agro-product-card">
+          <div class="agro-product-image">
+            <img src="${image}"
+                 alt="${p.title || "Agricultural product"}"
+                 loading="lazy">
+          </div>
+
+          <div class="agro-product-content">
+            <small>${p.category_name || "AGRICULTURAL PRODUCT"}</small>
+
+            <h3>${p.title || "Product"}</h3>
+
+            <p>${p.short_description || p.description || ""}</p>
+
+            <div class="agro-product-details">
+              <div>
+                <strong>Packaging</strong>
+                <span>${packaging}</span>
+              </div>
+
+              <div>
+                <strong>Minimum order</strong>
+                <span>${moq}</span>
+              </div>
+
+              <div>
+                <strong>Specifications</strong>
+                <span>${specifications}</span>
+              </div>
+            </div>
+
+            <div class="agro-product-meta">
+              <span>Origin: ${p.origin || "India"}</span>
+              <span>${p.availability || "Available"}</span>
+            </div>
+
+            <div class="agro-product-actions">
+              <a href="index.html#contact"
+                 class="product-inquiry-btn"
+                 data-product="${title}"
+                 data-product-id="${p.id || ""}">
+                Send Inquiry
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+
+              <button type="button"
+                      class="product-whatsapp-btn"
+                      data-product="${title}"
+                      data-product-id="${p.id || ""}"
+                      aria-label="WhatsApp inquiry for ${title}">
+                <i class="fa-brands fa-whatsapp"></i>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+  }catch(error){
+    console.log("Products could not be loaded.",error);
+
+    if(count){
+      count.textContent="Products unavailable";
+    }
+
+    grid.innerHTML=
+      "<p class=\"products-error\">Products are currently unavailable.</p>";
+  }
+}
+
+if(document.getElementById("allAgroProductsGrid")){
+  loadAllAgroProducts();
 }
 
 loadPublicTheme();

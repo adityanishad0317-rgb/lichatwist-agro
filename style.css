@@ -7791,3 +7791,57 @@ iframe {
     overflow-x: hidden !important;
   }
 }
+
+
+/* ============================================================
+   PUBLIC PRODUCT CATALOGUE PAGE
+   ============================================================ */
+
+.products-view-all{
+  display:flex;
+  justify-content:center;
+  margin-top:42px;
+}
+
+.products-view-all-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+}
+
+.products-page-header{
+  position:relative;
+  z-index:10;
+  padding:24px 0;
+}
+
+.products-page-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.products-back-link,
+.products-contact-link{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  text-decoration:none;
+}
+
+.products-page-section{
+  min-height:100vh;
+}
+
+@media (max-width:700px){
+  .products-page-nav{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .products-view-all{
+    margin-top:30px;
+  }
+}
