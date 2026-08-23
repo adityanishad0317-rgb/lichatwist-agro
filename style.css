@@ -7075,7 +7075,7 @@ footer a:hover {
 .agro-products-grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:26px;
+  gap:22px;
 }
 
 .agro-product-card{
@@ -7093,7 +7093,7 @@ footer a:hover {
 }
 
 .agro-product-image{
-  height:230px;
+  height:190px;
   overflow:hidden;
   background:#e9eee8;
 }
@@ -7111,7 +7111,7 @@ footer a:hover {
 }
 
 .agro-product-content{
-  padding:28px;
+  padding:22px;
 }
 
 .agro-product-content small{
@@ -7125,7 +7125,7 @@ footer a:hover {
 .agro-product-content h3{
   margin:10px 0 12px;
   color:#173f2a;
-  font-size:24px;
+  font-size:21px;
 }
 
 .agro-product-content p{
