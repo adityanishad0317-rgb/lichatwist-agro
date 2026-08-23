@@ -1249,7 +1249,7 @@ export async function onRequest(
           false,
 
         message:
-          "Unable to process client management request."
+          message: error?.message || "Unable to process client management request."
       },
       500
     );
