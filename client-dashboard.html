@@ -1698,6 +1698,171 @@
 
 </section>
 
+
+<!-- CLIENT ENQUIRIES -->
+<section class="section" id="clientEnquiries">
+  <div class="section-header">
+    <h2>📩 Enquiries</h2>
+    <p>View enquiries submitted to your company.</p>
+  </div>
+
+  <div id="clientEnquiryMessage"
+       class="message"
+       style="display:none;"
+       role="status"
+       aria-live="polite"></div>
+
+  <button type="button" id="clientEnquiryRefreshButton">
+    🔄 Refresh Enquiries
+  </button>
+
+  <div id="clientEnquiryList" style="margin-top:16px;">
+    <div class="info-box">Loading enquiries...</div>
+  </div>
+</section>
+
+<script>
+(function () {
+  "use strict";
+
+  const list = document.getElementById("clientEnquiryList");
+  const message = document.getElementById("clientEnquiryMessage");
+  const refresh = document.getElementById("clientEnquiryRefreshButton");
+
+  function enquiryMessage(text, type) {
+    if (!message) return;
+    message.className = "message " + (type || "");
+    message.textContent = text || "";
+    message.style.display = text ? "block" : "none";
+  }
+
+  function escapeText(value) {
+    return String(value ?? "");
+  }
+
+  function formatDate(value) {
+    if (!value) return "-";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return escapeText(value);
+    return date.toLocaleString();
+  }
+
+  function statusLabel(status) {
+    const labels = {
+      new: "New",
+      contacted: "Contacted",
+      replied: "Replied",
+      closed: "Closed"
+    };
+    return labels[status] || escapeText(status || "Unknown");
+  }
+
+  async function loadClientEnquiries() {
+    if (!list) return;
+
+    list.innerHTML = '<div class="info-box">Loading enquiries...</div>';
+    enquiryMessage("", "");
+
+    try {
+      const response = await fetch("/api/client-enquiries", {
+        credentials: "same-origin",
+        cache: "no-store"
+      });
+
+      if (response.status === 401) {
+        window.location.href = "/client-login.html";
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Unable to load enquiries.");
+      }
+
+      const enquiries = Array.isArray(data.enquiries)
+        ? data.enquiries
+        : [];
+
+      if (!enquiries.length) {
+        list.innerHTML =
+          '<div class="info-box">No enquiries found.</div>';
+        return;
+      }
+
+      list.innerHTML = "";
+
+      enquiries.forEach(function (enquiry) {
+        const card = document.createElement("div");
+        card.style.cssText =
+          "border:1px solid rgba(0,0,0,.12);" +
+          "border-radius:14px;" +
+          "padding:16px;" +
+          "margin-top:12px;" +
+          "background:rgba(255,255,255,.55);";
+
+        const title = document.createElement("h3");
+        title.textContent = enquiry.subject || "Untitled enquiry";
+
+        const status = document.createElement("p");
+        status.textContent =
+          "Status: " + statusLabel(enquiry.status);
+
+        const product = document.createElement("p");
+        product.textContent =
+          "Product: " + (enquiry.product_title || "General enquiry");
+
+        const messageText = document.createElement("p");
+        messageText.textContent =
+          "Message: " + (enquiry.message || "-");
+
+        const contact = document.createElement("p");
+        contact.textContent =
+          "Contact: " +
+          (enquiry.email || "-") +
+          (enquiry.phone ? " • " + enquiry.phone : "");
+
+        const date = document.createElement("p");
+        date.textContent =
+          "Submitted: " + formatDate(enquiry.created_at);
+
+        card.appendChild(title);
+        card.appendChild(status);
+        card.appendChild(product);
+        card.appendChild(messageText);
+        card.appendChild(contact);
+        card.appendChild(date);
+
+        list.appendChild(card);
+      });
+
+    } catch (error) {
+      console.error("Client enquiries error:", error);
+      list.innerHTML =
+        '<div class="info-box">Unable to load enquiries.</div>';
+      enquiryMessage(
+        error.message || "Unable to load enquiries.",
+        "error"
+      );
+    }
+  }
+
+  if (refresh) {
+    refresh.addEventListener("click", loadClientEnquiries);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      loadClientEnquiries,
+      { once: true }
+    );
+  } else {
+    loadClientEnquiries();
+  }
+})();
+</script>
+
 <script>
 (function () {
   "use strict";
