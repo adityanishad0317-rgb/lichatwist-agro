@@ -1643,6 +1643,15 @@ if(document.getElementById("allAgroProductsGrid")){
 
   const form = document.querySelector("form.message-form");
   const message = form?.querySelector('textarea[name="message"]');
+  const subject =
+    form?.querySelector('input[name="subject"]') ||
+    form?.querySelector("#subject");
+
+  if (subject) {
+    subject.value = "Product Inquiry — " + product;
+    subject.dispatchEvent(new Event("input", { bubbles: true }));
+    subject.dispatchEvent(new Event("change", { bubbles: true }));
+  }
 
   if (message) {
     message.value =
@@ -1653,6 +1662,20 @@ if(document.getElementById("allAgroProductsGrid")){
     message.dispatchEvent(new Event("input", { bubbles: true }));
     message.dispatchEvent(new Event("change", { bubbles: true }));
   }
+
+  requestAnimationFrame(() => {
+    const target =
+      document.querySelector("#contact-message") ||
+      message ||
+      form;
+
+    if (target) {
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  });
 
   sessionStorage.removeItem("lt_agro_inquiry_product");
   sessionStorage.removeItem("lt_agro_inquiry_product_id");
