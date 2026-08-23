@@ -663,11 +663,21 @@ async function loadWebsiteContent() {
        Uses the company email stored in site_content.email.
        This keeps the public message form synchronized
        with the Admin/Client Contact Email setting. */
+    /* Use the current website origin for FormSubmit redirects.
+       This automatically follows Pages/custom-domain changes. */
+    const currentOrigin = window.location.origin;
+    const thankYouPath = "/thank-you.html";
+
     const messageForm = document.querySelector("form.message-form");
 
     if (messageForm && email.trim()) {
       messageForm.action =
         "https://formsubmit.co/" + encodeURIComponent(email.trim());
+
+      const nextField = messageForm.querySelector('input[name="_next"]');
+      if (nextField) {
+        nextField.value = currentOrigin + thankYouPath;
+      }
     }
 
 
