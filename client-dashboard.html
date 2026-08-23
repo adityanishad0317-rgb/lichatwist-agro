@@ -4286,105 +4286,27 @@ changePasswordButton.addEventListener(
 logoutButton.addEventListener(
   "click",
   async function() {
-
-    logoutButton.disabled =
-      true;
-
-
-    logoutButton.textContent =
-      "Signing out...";
-
+    logoutButton.disabled = true;
+    logoutButton.textContent = "Signing out...";
 
     try {
-
-      const response =
-        await fetch(
-          "/api/client-logout",
-          {
-            method:
-              "POST",
-
-            credentials:
-              "include",
-
-            cache:
-              "no-store"
-          }
-        );
-
-
-      const data =
-        await response.json();
-
-
-      if (
-        !response.ok ||
-        !data.success
-      ) {
-
-        throw new Error(
-          data.message ||
-          "Logout failed."
-        );
-
-      }
-
-
-      /*
-       * The server has now:
-       *
-       * 1. Invalidated the client session.
-       * 2. Cleared CLIENT_SESSION_V1.
-       *
-       * Now return to client login.
-       */
-
-      window.location.href =
-        window.location.origin + "/client-login.html";
-
-
-    } catch (error) {
-
-      logoutButton.disabled =
-        false;
-
-
-      logoutButton.textContent =
-        "Sign Out";
-
-
-      showMessage(
-        error.message ||
-        "Unable to sign out. Please try again.",
-        "error"
+      await fetch(
+        "/api/client-logout",
+        {
+          method: "POST",
+          credentials: "include",
+          cache: "no-store"
+        }
       );
-
+    } catch (error) {
+      console.warn("Client logout request failed:", error);
     }
 
+    window.location.replace(
+      window.location.origin + "/client-login.html"
+    );
   }
 );
-
-
-/* =====================================
-   INITIAL LOAD
-===================================== */
-
-loadContent();
-
-
-</script>
-
-
-
-<script>
-/* LICHATWIST_AGRO_FUNCTIONAL_INIT_V1 */
-(function () {
-  function agroClientManagementInit() {
-    try {
-      if (typeof loadCategories === "function") {
-        Promise.resolve(loadCategories()).catch(function (error) {
-          console.error("Client category initialization error:", error);
-        });
       }
 
       if (typeof loadProducts === "function") {
