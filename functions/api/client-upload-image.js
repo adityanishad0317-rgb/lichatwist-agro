@@ -652,7 +652,11 @@ export async function onRequestPost(
       );
 
 
-    /*
+
+    const productId = Number(
+      formData.get("productId") || 0
+    );
+/*
      * -------------------------------------
      * CHECK IMAGE
      * -------------------------------------
