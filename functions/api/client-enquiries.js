@@ -196,8 +196,6 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const clientId = auth.session.id;
-
     const result = await context.env.DB.prepare(`
       SELECT
         e.id,
@@ -216,10 +214,8 @@ export async function onRequestGet(context) {
       FROM enquiries e
       LEFT JOIN products p
         ON p.id = e.product_id
-      WHERE e.client_id = ?
       ORDER BY e.created_at DESC
     `)
-      .bind(clientId)
       .all();
 
     return json({
