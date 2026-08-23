@@ -659,6 +659,18 @@ async function loadWebsiteContent() {
 
     const phone = content.phone || "";
     const email = content.email || "";
+    /* Dynamic FormSubmit recipient
+       Uses the company email stored in site_content.email.
+       This keeps the public message form synchronized
+       with the Admin/Client Contact Email setting. */
+    const messageForm = document.querySelector("form.message-form");
+
+    if (messageForm && email.trim()) {
+      messageForm.action =
+        "https://formsubmit.co/" + encodeURIComponent(email.trim());
+    }
+
+
     const address = content.address || "";
     const whatsapp = content.whatsapp || "";
     
