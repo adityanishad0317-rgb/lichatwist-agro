@@ -7845,3 +7845,106 @@ iframe {
     margin-top:30px;
   }
 }
+
+/* =====================================================
+   COMPACT AGRICULTURAL PRODUCT CARDS
+   Applies to homepage + products catalogue
+   ===================================================== */
+
+.agro-products-grid{
+  gap:18px;
+}
+
+.agro-product-card{
+  border-radius:15px;
+  box-shadow:0 8px 24px rgba(23,63,42,.07);
+}
+
+.agro-product-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 30px rgba(23,63,42,.11);
+}
+
+.agro-product-image{
+  height:155px;
+}
+
+.agro-product-content{
+  padding:16px;
+}
+
+.agro-product-content small{
+  font-size:10px;
+  letter-spacing:.10em;
+}
+
+.agro-product-content h3{
+  margin:7px 0 8px;
+  font-size:18px;
+  line-height:1.35;
+}
+
+.agro-product-content p{
+  font-size:13px;
+  line-height:1.5;
+  min-height:42px;
+  margin:0;
+}
+
+.agro-product-meta{
+  gap:8px;
+  margin:13px 0;
+  padding-top:11px;
+  font-size:10px;
+  line-height:1.45;
+}
+
+.agro-product-content > a{
+  gap:6px;
+  font-size:13px;
+}
+
+/* Catalogue page + homepage on smaller screens */
+@media(max-width:600px){
+  .agro-products-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+
+  .agro-product-card{
+    border-radius:13px;
+  }
+
+  .agro-product-image{
+    height:125px;
+  }
+
+  .agro-product-content{
+    padding:12px;
+  }
+
+  .agro-product-content small{
+    font-size:8px;
+  }
+
+  .agro-product-content h3{
+    font-size:15px;
+    margin:5px 0 6px;
+  }
+
+  .agro-product-content p{
+    font-size:11px;
+    line-height:1.4;
+    min-height:34px;
+  }
+
+  .agro-product-meta{
+    margin:9px 0;
+    padding-top:8px;
+    font-size:9px;
+  }
+
+  .agro-product-content > a{
+    font-size:11px;
+  }
+}
