@@ -572,25 +572,37 @@ export async function onRequestPost(
       ) + 1;
 
 
-    await context.env.DB.prepare(`
-      UPDATE client_accounts
-      SET
-        password_hash = ?,
-        password_salt = ?,
-        password_iterations = ?,
-        must_change_password = 0,
-        session_version = ?,
-        updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `)
-      .bind(
-        hashBase64,
-        saltBase64,
-        PBKDF2_ITERATIONS,
-        newSessionVersion,
-        clientId
-      )
-      .run();
+    const result =
+      await context.env.DB.prepare(`
+        UPDATE client_accounts
+        SET
+          password_hash = ?,
+          password_salt = ?,
+          password_iterations = ?,
+          must_change_password = 0,
+          session_version = ?,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `)
+        .bind(
+          hashBase64,
+          saltBase64,
+          PBKDF2_ITERATIONS,
+          newSessionVersion,
+          clientId
+        )
+        .run();
+
+    if (!result.success) {
+      return json(
+        {
+          success: false,
+          message:
+            "Unable to update client password."
+        },
+        500
+      );
+    }
 
 
     return json({
